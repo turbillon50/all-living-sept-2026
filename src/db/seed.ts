@@ -40,7 +40,7 @@ async function main() {
       phone: null,
     })
     .onConflictDoNothing();
-  for (const role of ["owner", "guest", "provider"] as const) {
+  for (const role of ["owner", "guest", "provider", "operator", "admin"] as const) {
     await db.insert(schema.userRoles).values({ userId: user.id, role }).onConflictDoNothing();
   }
 

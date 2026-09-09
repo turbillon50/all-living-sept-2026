@@ -30,7 +30,7 @@ export async function claimDemoFor(userId: string): Promise<{ claimed: boolean }
   await d.update(schema.incomeEntries).set({ ownerUserId: userId }).where(eq(schema.incomeEntries.ownerUserId, demo.id));
   await d.update(schema.notifications).set({ userId }).where(eq(schema.notifications.userId, demo.id));
   await d.update(schema.providers).set({ userId }).where(eq(schema.providers.userId, demo.id));
-  for (const role of ["owner", "guest", "provider"] as const) {
+  for (const role of ["owner", "guest", "provider", "operator", "admin"] as const) {
     await d.insert(schema.userRoles).values({ userId, role }).onConflictDoNothing();
   }
   await audit({ actorUserId: userId, action: "demo.claim", entity: "users", entityId: demo.id, after: { claimedBy: userId } });

@@ -3,6 +3,7 @@ import { Fraunces, Inter } from "next/font/google";
 import { ClerkProvider } from "@clerk/nextjs";
 import { esMX } from "@clerk/localizations";
 import { Providers } from "./providers";
+import { RegisterSW } from "@/ui/register-sw";
 import "./globals.css";
 
 const fraunces = Fraunces({
@@ -48,6 +49,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
       <html lang="es-MX" className={`${fraunces.variable} ${inter.variable}`} suppressHydrationWarning>
         <body>
           <Providers>{children}</Providers>
+          <RegisterSW />
         </body>
       </html>
     </ClerkProvider>

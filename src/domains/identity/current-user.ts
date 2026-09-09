@@ -3,7 +3,7 @@ import { cookies } from "next/headers";
 import { auth, currentUser } from "@clerk/nextjs/server";
 import { eq } from "drizzle-orm";
 import { db, schema } from "@/db/client";
-import { hasDb, hasClerk } from "@/core/env";
+import { env, hasDb, hasClerk } from "@/core/env";
 import { isRole, type Role, SELF_SERVICE_ROLES } from "@/core/roles";
 import { unauthorized, forbidden } from "@/core/errors";
 
@@ -57,6 +57,9 @@ export const getSessionUser = cache(async (): Promise<SessionUser | null> => {
       .onConflictDoNothing();
     // Todo usuario nace como huésped: es el rol mínimo. Owner/provider se activan por titularidad o alta.
     await d.insert(schema.userRoles).values({ userId: row.id, role: "guest" }).onConflictDoNothing();
+    if (env().ADMIN_EMAILS.includes(email.toLowerCase())) {
+      await d.insert(schema.userRoles).values([{ userId: row.id, role: "admin" }, { userId: row.id, role: "operator" }, { userId: row.id, role: "owner" }]).onConflictDoNothing();
+    }
   }
 
   const [roleRows, profile] = await Promise.all([
