@@ -28,7 +28,7 @@ export default async function ProJobs() {
             <h2 className="mb-2 text-[12px] tracking-[0.24em] uppercase text-muted font-sans font-medium capitalize">{day}</h2>
             <ul className="flex flex-col gap-2">
               {list.map(({ b, service, property }) => { const st = BOOKING_STATUS[b.status] ?? { label: b.status, tone: "neutral" as const }; return (
-                <li key={b.id}><Link href={`/pro/jobs/${b.id}`} className="press flex items-center gap-4 rounded-[var(--radius-card)] bg-surface hairline p-4 hover:bg-surface-2"><span className="w-12 shrink-0 font-serif text-[18px]">{fmtTime.format(b.scheduledAt)}</span><span className="min-w-0 flex-1"><span className="block font-medium truncate">{service.name}</span><span className="block text-sm text-text-2 truncate">{property ? `${property.name} · ${property.city}` : "Sin propiedad"} · {money(b.total, b.currency)}</span></span><Chip tone={st.tone}>{st.label}</Chip></Link></li>
+                <li key={b.id}><Link href={`/pro/jobs/${b.id}`} className="press flex items-center gap-4 rounded-[var(--radius-card)] bg-surface hairline p-4 hover:bg-surface-2"><span className="w-14 shrink-0 font-serif text-[18px] leading-tight">{fmtTime.format(b.scheduledAt).split(" ")[0]}<span className="block font-sans text-[11px] tracking-wide text-muted">{fmtTime.format(b.scheduledAt).split(" ").slice(1).join(" ")}</span></span><span className="min-w-0 flex-1"><span className="block font-medium truncate">{service.name}</span><span className="block text-sm text-text-2 truncate">{property ? `${property.name} · ${property.city}` : "Sin propiedad"} · {money(b.total, b.currency)}</span></span><Chip tone={st.tone}>{st.label}</Chip></Link></li>
               ); })}
             </ul>
           </section>

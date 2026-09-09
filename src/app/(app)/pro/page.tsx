@@ -36,7 +36,11 @@ export default async function ProHome() {
     .leftJoin(schema.properties, eq(schema.properties.id, schema.serviceBookings.propertyId))
     .where(and(eq(schema.serviceBookings.providerId, prov.id), gte(schema.serviceBookings.scheduledAt, start), lt(schema.serviceBookings.scheduledAt, end)))
     .orderBy(asc(schema.serviceBookings.scheduledAt));
-  const total = today.filter((r) => r.b.status !== "cancelled").reduce((s, r) => s + Number(r.b.total), 0);
+  // Solo lo aceptado cuenta como confirmado; lo solicitado se dice aparte. Nunca se suman.
+  const CONFIRMED = new Set(["confirmed", "payment_pending", "paid", "in_progress", "completed"]);
+  const confirmed = today.filter((r) => CONFIRMED.has(r.b.status));
+  const requested = today.filter((r) => r.b.status === "requested" || r.b.status === "pending_provider").length;
+  const confirmedTotal = confirmed.reduce((s, r) => s + Number(r.b.total), 0);
   const fmtTime = new Intl.DateTimeFormat("es-MX", { hour: "2-digit", minute: "2-digit" });
 
   return (
@@ -54,7 +58,7 @@ export default async function ProHome() {
       <header className="mt-7 fade-up">
         <p className="text-[11px] tracking-[0.28em] uppercase text-muted">{new Intl.DateTimeFormat("es-MX", { weekday: "long", day: "numeric", month: "short" }).format(new Date())}</p>
         <h1 className="mt-1 text-[28px] leading-[1.08]">Hoy</h1>
-        <p className="mt-1 text-[16px] text-text-2">{today.length} {today.length === 1 ? "servicio" : "servicios"} · {money(total)}</p>
+        <p className="mt-1 text-[16px] text-text-2">{today.length} {today.length === 1 ? "servicio" : "servicios"}{confirmed.length ? ` · ${money(confirmedTotal)} confirmados` : ""}{requested ? ` · ${requested} por confirmar` : ""}</p>
       </header>
       <section className="mt-5">
         {today.length === 0 ? (
