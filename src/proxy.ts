@@ -1,21 +1,34 @@
 import { clerkMiddleware, createRouteMatcher } from "@clerk/nextjs/server";
 
-/** Rutas públicas: todo lo demás exige sesión. */
-const isPublic = createRouteMatcher([
-  "/",
-  "/welcome(.*)",
-  "/sign-in(.*)",
-  "/sign-up(.*)",
-  "/i/(.*)",
-  "/offline",
-  "/maintenance",
-  "/api/health",
-  "/api/webhooks/(.*)",
-  "/manifest.webmanifest",
+/**
+ * Rutas que exigen sesión. Todo lo demás (marketing, auth, invitaciones, offline, health, 404) es público.
+ * Los layouts de (app) y (onboarding) vuelven a verificar la sesión: esto es defensa en profundidad, no la única puerta.
+ */
+const isProtected = createRouteMatcher([
+  "/home(.*)",
+  "/onboarding(.*)",
+  "/stays(.*)",
+  "/weeks(.*)",
+  "/properties(.*)",
+  "/fractions(.*)",
+  "/explore(.*)",
+  "/services(.*)",
+  "/providers(.*)",
+  "/book(.*)",
+  "/bookings(.*)",
+  "/pass(.*)",
+  "/notifications(.*)",
+  "/income(.*)",
+  "/support(.*)",
+  "/incidents(.*)",
+  "/profile(.*)",
+  "/pro(.*)",
+  "/ops(.*)",
+  "/admin(.*)",
 ]);
 
 export default clerkMiddleware(async (auth, req) => {
-  if (!isPublic(req)) await auth.protect();
+  if (isProtected(req)) await auth.protect();
 });
 
 export const config = {
