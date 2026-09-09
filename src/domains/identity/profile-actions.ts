@@ -7,10 +7,9 @@ import { db, schema } from "@/db/client";
 import { homeFor, isRole } from "@/core/roles";
 import { requireUser, switchContext } from "./current-user";
 
-/** Pantalla 50: cambiar modo. No cierra sesión; persiste. */
-export async function setMode(form: FormData) {
+/** Pantalla 50: cambiar modo. No cierra sesión; persiste. El rol llega enlazado (bind), no por el submitter. */
+export async function setMode(next: unknown) {
   const user = await requireUser();
-  const next = form.get("role");
   if (!isRole(next)) redirect("/profile/mode");
   await switchContext(user.id, user.roles, next);
   revalidatePath("/", "layout");
