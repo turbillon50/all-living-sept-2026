@@ -13,13 +13,13 @@ export type LucideIcon = Icon;
 
 const WEIGHT: IconWeight = "duotone";
 
-function withWeight(Base: Icon): Icon {
-  const Wrapped = (props: IconProps) => <Base weight={WEIGHT} {...props} />;
+function withWeight(Base: Icon, weight: IconWeight = WEIGHT): Icon {
+  const Wrapped = (props: IconProps) => <Base weight={weight} {...props} />;
   Wrapped.displayName = Base.displayName ?? "Icon";
   return Wrapped;
 }
 
-export const ArrowRight = withWeight(P.ArrowRight);
+export const ArrowRight = withWeight(P.ArrowRight, "bold"); // glifo de navegación, no duotone
 export const Baby = withWeight(P.Baby);
 export const BadgeCheck = withWeight(P.SealCheck);
 export const Bell = withWeight(P.Bell);
@@ -28,10 +28,10 @@ export const Building2 = withWeight(P.Buildings);
 export const CalendarCheck = withWeight(P.CalendarCheck);
 export const CalendarDays = withWeight(P.CalendarDots);
 export const Car = withWeight(P.Car);
-export const Check = withWeight(P.Check);
+export const Check = withWeight(P.Check, "bold"); // glifo de navegación, no duotone
 export const ChefHat = withWeight(P.ChefHat);
-export const ChevronLeft = withWeight(P.CaretLeft);
-export const ChevronRight = withWeight(P.CaretRight);
+export const ChevronLeft = withWeight(P.CaretLeft, "bold"); // glifo de navegación, no duotone
+export const ChevronRight = withWeight(P.CaretRight, "bold"); // glifo de navegación, no duotone
 export const Compass = withWeight(P.Compass);
 export const ConciergeBell = withWeight(P.CallBell);
 export const Gift = withWeight(P.Gift);
@@ -45,7 +45,7 @@ export const LifeBuoy = withWeight(P.Lifebuoy);
 export const ListChecks = withWeight(P.ListChecks);
 export const MapPin = withWeight(P.MapPin);
 export const MessageCircle = withWeight(P.ChatCircle);
-export const MoreHorizontal = withWeight(P.DotsThree);
+export const MoreHorizontal = withWeight(P.DotsThree, "bold"); // glifo de navegación, no duotone
 export const PartyPopper = withWeight(P.Confetti);
 export const Phone = withWeight(P.Phone);
 export const Repeat = withWeight(P.Repeat);
