@@ -1,4 +1,4 @@
-import { Bell, MapPin } from "lucide-react";
+import { Bell, MapPin } from "@/ui/icons";
 import { Page } from "@/ui/page";
 import { Button } from "@/ui/button";
 import { Steps } from "@/domains/identity/onboarding-steps";
@@ -26,7 +26,7 @@ function Toggle({ name, Icon, title, body, defaultChecked }: { name: string; Ico
   return (
     <label className="flex cursor-pointer items-center gap-4 rounded-[var(--radius-card)] bg-surface hairline p-4">
       <span className="flex size-11 shrink-0 items-center justify-center rounded-full bg-accent-soft text-green-900">
-        <Icon size={20} strokeWidth={1.8} aria-hidden />
+        <Icon size={20} aria-hidden />
       </span>
       <span className="min-w-0 flex-1">
         <span className="block font-medium">{title}</span>

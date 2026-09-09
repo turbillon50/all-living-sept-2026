@@ -1,5 +1,5 @@
 import { notFound } from "next/navigation";
-import { MapPin, Phone } from "lucide-react";
+import { MapPin, Phone } from "@/ui/icons";
 import { requireRole } from "@/domains/identity/current-user";
 import { jobById } from "@/domains/providers/queries";
 import { acceptBooking, rejectBooking, startJob, completeJob } from "@/domains/bookings/actions";

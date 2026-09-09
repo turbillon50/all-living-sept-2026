@@ -1,6 +1,6 @@
 import { notFound } from "next/navigation";
 import Link from "next/link";
-import { KeyRound, Users, Sparkles, LifeBuoy, Info, Car, ShoppingBasket, ChefHat, Baby, PartyPopper, CalendarCheck } from "lucide-react";
+import { KeyRound, Users, Sparkles, LifeBuoy, Info, Car, ShoppingBasket, ChefHat, Baby, PartyPopper, CalendarCheck } from "@/ui/icons";
 import { requireUser } from "@/domains/identity/current-user";
 import { stayById } from "@/domains/stays/queries";
 import { checkIn, checkOut } from "@/domains/stays/actions";

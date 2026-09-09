@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { Home, Sparkles, MoreHorizontal } from "lucide-react";
+import { Home, Sparkles, MoreHorizontal } from "@/ui/icons";
 import { requireRole } from "@/domains/identity/current-user";
 import { incomeForOwner, expensesForOwner, totalsByStatus } from "@/domains/finance/queries";
 import { money } from "@/core/format";

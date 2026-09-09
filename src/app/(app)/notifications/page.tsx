@@ -1,5 +1,5 @@
 import { desc, eq } from "drizzle-orm";
-import { CalendarDays, Sparkles, Wallet, KeyRound, Briefcase, Wrench, MessageCircle, Info, Bell } from "lucide-react";
+import { CalendarDays, Sparkles, Wallet, KeyRound, Briefcase, Wrench, MessageCircle, Info, Bell } from "@/ui/icons";
 import { db, schema } from "@/db/client";
 import { requireUser } from "@/domains/identity/current-user";
 import { Page, PageHeader } from "@/ui/page";

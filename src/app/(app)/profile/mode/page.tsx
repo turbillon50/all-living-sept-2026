@@ -1,4 +1,4 @@
-import { Check, Home, Compass, Briefcase, Wrench, ShieldCheck } from "lucide-react";
+import { Check, Home, Compass, Briefcase, Wrench, ShieldCheck } from "@/ui/icons";
 import { requireUser } from "@/domains/identity/current-user";
 import { ROLE_LABEL, ROLES, SELF_SERVICE_ROLES, type Role } from "@/core/roles";
 import { setMode } from "@/domains/identity/profile-actions";
@@ -27,7 +27,7 @@ export default async function ModePage() {
       <form className="mt-6 divide-y divide-line rounded-[var(--radius-card)] bg-surface hairline overflow-hidden">
         {available.map((r) => { const active = r === user.activeContext; const { body, Icon } = META[r]; return (
           <button key={r} formAction={setMode.bind(null, r)} aria-pressed={active} className={cn("press flex w-full items-center gap-4 px-4 py-3.5 text-left hover:bg-surface-2", active && "bg-accent-soft/60")}>
-            <span className="flex size-10 shrink-0 items-center justify-center rounded-full bg-accent-soft text-green-900"><Icon size={18} strokeWidth={1.7} aria-hidden /></span>
+            <span className="flex size-10 shrink-0 items-center justify-center rounded-full bg-accent-soft text-green-900"><Icon size={18} aria-hidden /></span>
             <span className="min-w-0 flex-1"><span className="block text-[15px] font-medium">{ROLE_LABEL[r]}</span><span className="block text-[13px] text-text-2">{body}</span></span>
             {active ? <Check size={20} className="text-green-900" aria-hidden /> : null}
           </button>

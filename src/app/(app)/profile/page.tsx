@@ -1,6 +1,6 @@
 import Image from "next/image";
 import Link from "next/link";
-import { Settings, Home, CalendarDays, Sparkles, Users, Wallet, Gift, LifeBuoy, Bell, ShieldCheck, Repeat, SlidersHorizontal, IdCard } from "lucide-react";
+import { Settings, Home, CalendarDays, Sparkles, Users, Wallet, Gift, LifeBuoy, Bell, ShieldCheck, Repeat, SlidersHorizontal, IdCard } from "@/ui/icons";
 import { SignOutButton } from "@clerk/nextjs";
 import { requireUser } from "@/domains/identity/current-user";
 import { ROLE_LABEL } from "@/core/roles";
@@ -19,7 +19,7 @@ export default async function ProfilePage() {
   return (
     <Page>
       <BrandPanel className="pb-8 md:mt-6">
-        <div className="flex justify-end pt-4"><Link href="/profile/preferences" aria-label="Ajustes" className="press flex size-11 items-center justify-center rounded-full text-ivory/80 hover:bg-ivory/10"><Settings size={20} strokeWidth={1.7} /></Link></div>
+        <div className="flex justify-end pt-4"><Link href="/profile/preferences" aria-label="Ajustes" className="press flex size-11 items-center justify-center rounded-full text-ivory/80 hover:bg-ivory/10"><Settings size={20} /></Link></div>
         <div className="flex flex-col items-center text-center">
           <span className="relative size-24 overflow-hidden rounded-full bg-ivory/10 ring-2 ring-ivory/30">{user.avatarUrl ? <Image src={user.avatarUrl} alt="" fill sizes="96px" className="object-cover" /> : null}</span>
           <h1 className="mt-4 text-[26px] leading-tight text-ivory">{user.name}</h1>

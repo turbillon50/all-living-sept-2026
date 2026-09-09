@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { Home, CalendarDays, Compass, Sparkles, UserRound, Wallet, Briefcase, ListChecks, Building2 } from "lucide-react";
+import { Home, CalendarDays, Compass, Sparkles, UserRound, Wallet, Briefcase, ListChecks, Building2 } from "@/ui/icons";
 import type { NavItem } from "./nav";
 import { cn } from "./cn";
 
@@ -70,7 +70,7 @@ export function Sidebar({ items, name, contextLabel }: { items: NavItem[]; name:
                   active ? "bg-accent-soft text-green-900 font-medium" : "text-text-2 hover:bg-surface-2",
                 )}
               >
-                <Icon size={19} strokeWidth={1.8} aria-hidden />
+                <Icon size={19} aria-hidden />
                 {it.label}
               </Link>
             </li>

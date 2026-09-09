@@ -1,7 +1,7 @@
 import { notFound } from "next/navigation";
 import Link from "next/link";
 import Image from "next/image";
-import { BadgeCheck, MapPin, Star, Users, Tag } from "lucide-react";
+import { BadgeCheck, MapPin, Star, Users, Tag } from "@/ui/icons";
 import { providerBySlug } from "@/domains/services/queries";
 import { categoryBySlug } from "@/domains/services/categories";
 import { money } from "@/core/format";

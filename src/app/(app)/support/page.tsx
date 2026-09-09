@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { MessageCircle, Siren, Wrench, Sparkles, KeyRound, HelpCircle } from "lucide-react";
+import { MessageCircle, Siren, Wrench, Sparkles, KeyRound, HelpCircle } from "@/ui/icons";
 import { requireUser } from "@/domains/identity/current-user";
 import { nextStayFor } from "@/domains/stays/queries";
 import { Page, PageHeader } from "@/ui/page";
@@ -28,7 +28,7 @@ export default async function SupportPage({ searchParams }: { searchParams: Prom
         {OPTIONS.map(({ href, title, body, Icon }) => (
           <li key={title}>
             <Link href={href.replace("?stay=&", "?").replace(/\?$/, "")} className="press flex items-center gap-4 rounded-[var(--radius-card)] bg-surface hairline p-4 hover:bg-surface-2">
-              <span className="flex size-11 shrink-0 items-center justify-center rounded-full bg-accent-soft text-green-900"><Icon size={20} strokeWidth={1.8} aria-hidden /></span>
+              <span className="flex size-11 shrink-0 items-center justify-center rounded-full bg-accent-soft text-green-900"><Icon size={20} aria-hidden /></span>
               <span className="min-w-0"><span className="block font-medium">{title}</span><span className="block text-sm text-text-2">{body}</span></span>
             </Link>
           </li>

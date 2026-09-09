@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { ChevronLeft } from "lucide-react";
+import { ChevronLeft } from "@/ui/icons";
 import { cn } from "./cn";
 
 /** Barra superior de pantallas internas: volver + título. Fina, sin peso. */

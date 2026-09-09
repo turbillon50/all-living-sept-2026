@@ -1,6 +1,6 @@
 import Link from "next/link";
 import Image from "next/image";
-import { BadgeCheck, Star } from "lucide-react";
+import { BadgeCheck, Star } from "@/ui/icons";
 import { money } from "@/core/format";
 import { Chip } from "@/ui/chip";
 import type { ProviderCard as Card } from "./queries";

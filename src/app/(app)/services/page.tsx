@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { Star, Ship, ChefHat, Baby, Car, HeartPulse, ConciergeBell } from "lucide-react";
+import { Star, Ship, ChefHat, Baby, Car, HeartPulse, ConciergeBell } from "@/ui/icons";
 import { SERVICE_CATEGORIES } from "@/domains/services/categories";
 import { providersByCategory } from "@/domains/services/queries";
 import { Page, PageHeader, Section } from "@/ui/page";

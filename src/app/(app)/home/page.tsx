@@ -1,7 +1,7 @@
 import Link from "next/link";
 import Image from "next/image";
 import { redirect } from "next/navigation";
-import { ArrowRight, CalendarCheck, KeyRound, Repeat } from "lucide-react";
+import { ArrowRight, CalendarCheck, KeyRound, Repeat } from "@/ui/icons";
 import { requireUser } from "@/domains/identity/current-user";
 import { homeFor } from "@/core/roles";
 import { fractionCore, weeksForOwner } from "@/domains/fractions/local-fraction-core";

@@ -1,4 +1,4 @@
-import { Home, Compass, Briefcase } from "lucide-react";
+import { Home, Compass, Briefcase } from "@/ui/icons";
 import { TopBar } from "@/ui/top-bar";
 import { Page } from "@/ui/page";
 import { chooseIntent } from "@/domains/identity/onboarding-actions";
@@ -20,7 +20,7 @@ export default function RolePage() {
       <form className="flex flex-col gap-3">
         {OPTIONS.map(({ role, title, body, Icon }) => (
           <button key={role} formAction={chooseIntent.bind(null, role)} className="press flex items-center gap-4 rounded-[var(--radius-card)] bg-surface hairline p-4 text-left hover:bg-surface-2 transition-colors">
-            <span className="flex size-12 shrink-0 items-center justify-center rounded-full bg-surface hairline text-green-900"><Icon size={20} strokeWidth={1.7} aria-hidden /></span>
+            <span className="flex size-12 shrink-0 items-center justify-center rounded-full bg-surface hairline text-green-900"><Icon size={20} aria-hidden /></span>
             <span className="min-w-0"><span className="block font-medium">{title}</span><span className="block text-[13px] text-text-2">{body}</span></span>
           </button>
         ))}

@@ -1,6 +1,6 @@
 import Image from "next/image";
 import Link from "next/link";
-import { ChevronRight } from "lucide-react";
+import { ChevronRight } from "@/ui/icons";
 import { requireUser } from "@/domains/identity/current-user";
 import { fractionCore } from "@/domains/fractions/local-fraction-core";
 import { coverFor } from "@/domains/properties/queries";

@@ -1,4 +1,4 @@
-import { Sparkles, Car, ChefHat, Ship, ConciergeBell } from "lucide-react";
+import { Sparkles, Car, ChefHat, Ship, ConciergeBell } from "@/ui/icons";
 import { IconAction } from "@/ui/primitives";
 
 const ITEMS = [

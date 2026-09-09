@@ -1,7 +1,7 @@
 import Link from "next/link";
 import Image from "next/image";
-import { ChevronRight } from "lucide-react";
-import type { LucideIcon } from "lucide-react";
+import { ChevronRight } from "@/ui/icons";
+import type { LucideIcon } from "@/ui/icons";
 import { cn } from "./cn";
 
 /** Tarjeta contenida: blanca, hairline, radio de la casa. */
@@ -20,7 +20,7 @@ export function IconAction({ href, label, Icon, tone = "soft", className }: { hr
   return (
     <Link href={href} className={cn("press flex flex-col items-center gap-2 text-center", className)}>
       <span className={cn("flex size-14 items-center justify-center rounded-full transition-colors", circle)}>
-        <Icon size={22} strokeWidth={1.7} aria-hidden />
+        <Icon size={22} aria-hidden />
       </span>
       <span className="text-[12px] font-medium text-text-2">{label}</span>
     </Link>
@@ -33,7 +33,7 @@ export function ListRow({ href, Icon, title, subtitle, right, className, onDark 
     <>
       {Icon ? (
         <span className={cn("flex size-10 shrink-0 items-center justify-center rounded-full", onDark ? "bg-ivory/10 text-ivory" : "bg-accent-soft text-green-900")}>
-          <Icon size={18} strokeWidth={1.7} aria-hidden />
+          <Icon size={18} aria-hidden />
         </span>
       ) : null}
       <span className="min-w-0 flex-1">
@@ -116,7 +116,7 @@ export function PhotoTile({ href, src, alt, title, subtitle, ratio = "4/3", badg
 export function IconTile({ href, label, Icon, active }: { href: string; label: string; Icon: LucideIcon; active?: boolean }) {
   return (
     <Link href={href} aria-current={active ? "page" : undefined} className={cn("press flex flex-col items-center gap-2 rounded-[var(--radius-card)] px-2 py-3.5 hairline", active ? "bg-accent-soft border-green-100" : "bg-surface")}>
-      <Icon size={22} strokeWidth={1.6} className="text-green-900" aria-hidden />
+      <Icon size={22} className="text-green-900" aria-hidden />
       <span className="text-[12px] font-medium text-text-2">{label}</span>
     </Link>
   );
