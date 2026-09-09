@@ -32,7 +32,7 @@ export default async function InvitePage({ params }: { params: Promise<{ token: 
           <>
             <h1 className="mt-8 text-[34px] leading-[1.06]">Esta invitación ya no está disponible.</h1>
             <p className="mt-3 text-ivory/80">Pídele a quien te invitó que te mande una nueva.</p>
-            <div className="mt-8 w-full max-w-sm"><ButtonLink href="/welcome" size="lg" className="bg-ivory text-green-950">Conocer All Living</ButtonLink></div>
+            <div className="mt-8 w-full max-w-sm"><ButtonLink href="/welcome" size="lg" variant="light">Conocer All Living</ButtonLink></div>
           </>
         ) : (
           <>
@@ -41,11 +41,11 @@ export default async function InvitePage({ params }: { params: Promise<{ token: 
             <p className="mt-3 text-[17px] text-ivory/85">{formatRange(stay.startDate, stay.endDate)}</p>
             <div className="mt-8 w-full max-w-sm">
               {user ? (
-                <form action={accept}><Button type="submit" size="lg" className="bg-ivory text-green-950 hover:bg-sand-100">Aceptar invitación</Button></form>
+                <form action={accept}><Button type="submit" size="lg" variant="light">Aceptar invitación</Button></form>
               ) : (
-                <ButtonLink href={`/sign-up?redirect_url=${encodeURIComponent(`/i/${token}`)}`} size="lg" className="bg-ivory text-green-950 hover:bg-sand-100">Crear mi cuenta y entrar</ButtonLink>
+                <ButtonLink href={`/sign-up?redirect_url=${encodeURIComponent(`/i/${token}`)}`} size="lg" variant="light">Crear mi cuenta y entrar</ButtonLink>
               )}
-              {!user ? <ButtonLink href={`/sign-in?redirect_url=${encodeURIComponent(`/i/${token}`)}`} size="lg" variant="ghost" className="mt-2 text-ivory hover:bg-ivory/10">Ya tengo cuenta</ButtonLink> : null}
+              {!user ? <ButtonLink href={`/sign-in?redirect_url=${encodeURIComponent(`/i/${token}`)}`} size="lg" variant="ghost-light" className="mt-2">Ya tengo cuenta</ButtonLink> : null}
             </div>
           </>
         )}

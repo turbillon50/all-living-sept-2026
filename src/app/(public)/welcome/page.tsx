@@ -12,10 +12,10 @@ export default function Welcome() {
         <h1 className="mt-3 text-[38px] leading-[1.04] md:text-[56px] max-w-xl text-balance">Más que propiedades, experiencias de vida.</h1>
         <p className="mt-4 text-ivory/80 max-w-md">Nosotros hacemos que lo vivas.</p>
         <div className="mt-8 flex flex-col gap-3 md:flex-row md:justify-center w-full max-w-sm">
-          <ButtonLink href="/welcome/role" size="lg" className="bg-ivory text-green-950 hover:bg-sand-100 active:bg-sand-200">
+          <ButtonLink href="/welcome/role" size="lg" variant="light">
             Comenzar
           </ButtonLink>
-          <ButtonLink href="/sign-in" size="lg" variant="ghost" className="text-ivory hover:bg-ivory/10">
+          <ButtonLink href="/sign-in" size="lg" variant="ghost-light">
             Ya tengo cuenta
           </ButtonLink>
         </div>

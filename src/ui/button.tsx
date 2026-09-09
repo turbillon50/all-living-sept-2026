@@ -1,7 +1,7 @@
 import Link from "next/link";
 import { cn } from "./cn";
 
-type Variant = "primary" | "secondary" | "ghost" | "danger";
+type Variant = "primary" | "secondary" | "ghost" | "danger" | "light" | "ghost-light";
 type Size = "md" | "lg" | "sm";
 
 const base =
@@ -11,6 +11,9 @@ const variants: Record<Variant, string> = {
   secondary: "bg-surface text-text hairline hover:bg-surface-2",
   ghost: "text-text hover:bg-surface-2",
   danger: "bg-danger text-ivory hover:brightness-95",
+  /** Sobre fotografía oscura: botón claro con texto verde profundo. */
+  light: "bg-ivory text-green-950 hover:bg-sand-100 active:bg-sand-200",
+  "ghost-light": "text-ivory hover:bg-ivory/10",
 };
 const sizes: Record<Size, string> = { sm: "px-3.5 text-sm min-h-10", md: "px-5 text-[15px]", lg: "px-6 text-base min-h-13 w-full" };
 
