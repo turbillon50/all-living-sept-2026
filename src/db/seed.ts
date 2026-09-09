@@ -69,7 +69,7 @@ async function main() {
       lat: "20.2114",
       lng: "-87.4654",
       description:
-        "Villa de tres recámaras entre la selva y el mar, a cuatro minutos de la playa. Alberca privada, terraza de lectura y cocina abierta para chef.",
+        "Villa de tres recámaras frente al mar Caribe, con acceso directo a la playa. Alberca infinita hacia el mar, terraza de lectura y cocina abierta para chef.",
       amenities: ["Alberca privada", "Terraza", "Cocina para chef", "Aire acondicionado", "Wi-Fi", "Estacionamiento", "Servicio de limpieza"],
       rules: ["Sin fiestas", "Mascotas con aviso previo", "Check-in desde 15:00", "Check-out hasta 11:00"],
       bedrooms: 3,
@@ -84,9 +84,9 @@ async function main() {
   const existingMedia = await db.query.propertyMedia.findMany({ where: eq(schema.propertyMedia.propertyId, casaMar.id) });
   if (existingMedia.length === 0) {
     const photos: Array<[string, string, boolean]> = [
-      ["/demo/villa-pool.webp", "Alberca privada de Casa Mar al atardecer", true],
-      ["/demo/villa-facade.webp", "Fachada de Casa Mar entre el jardín", false],
-      ["/demo/villa-interior.webp", "Sala de Casa Mar con vista a la selva", false],
+      ["/demo/villa-pool.webp", "Alberca infinita de Casa Mar hacia el mar Caribe", true],
+      ["/demo/villa-facade.webp", "Fachada de Casa Mar junto a la playa", false],
+      ["/demo/villa-interior.webp", "Sala de Casa Mar con vista al mar", false],
       ["/demo/tulum-sea.webp", "Mar Caribe frente a Tulum", false],
       ["/demo/breakfast.webp", "Desayuno en la terraza", false],
       ["/demo/palms.webp", "Palmeras del jardín", false],
