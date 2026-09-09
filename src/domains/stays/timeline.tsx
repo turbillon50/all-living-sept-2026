@@ -8,13 +8,14 @@ export type TimelineItem = { id: string; at: Date; title: string; subtitle?: str
 export function Timeline({ items }: { items: TimelineItem[] }) {
   const fmtTime = new Intl.DateTimeFormat("es-MX", { hour: "2-digit", minute: "2-digit" });
   const fmtDay = new Intl.DateTimeFormat("es-MX", { weekday: "short", day: "numeric", month: "short" });
-  let lastDay = "";
+  const rows = items.map((it, i) => {
+    const day = fmtDay.format(it.at);
+    const prev = i > 0 ? fmtDay.format(items[i - 1]!.at) : "";
+    return { it, day, showDay: day !== prev };
+  });
   return (
     <ol className="flex flex-col">
-      {items.map((it) => {
-        const day = fmtDay.format(it.at);
-        const showDay = day !== lastDay;
-        lastDay = day;
+      {rows.map(({ it, day, showDay }) => {
         const st = BOOKING_STATUS[it.status] ?? { label: it.status, tone: "neutral" as const };
         const body = (
           <div className="flex items-start gap-4 py-3">

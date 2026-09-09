@@ -1,10 +1,7 @@
-import QRCode from "qrcode";
 import { requireUser } from "@/domains/identity/current-user";
 import { fractionCore } from "@/domains/fractions/local-fraction-core";
 import { staysForUser } from "@/domains/stays/queries";
-import { accessControl } from "@/integrations/access-control";
-import { db, schema } from "@/db/client";
-import { createHash } from "node:crypto";
+import { issueQr } from "@/domains/identity/pass";
 import { formatRange } from "@/core/format";
 import { Page } from "@/ui/page";
 import { TopBar } from "@/ui/top-bar";
@@ -17,15 +14,7 @@ export const dynamic = "force-dynamic";
 export default async function PassPage() {
   const user = await requireUser();
   const [ownerships, stays] = await Promise.all([fractionCore().getUserOwnerships(user.id), staysForUser(user.id)]);
-  const ttl = 60 * 10;
-  const token = await accessControl().issue({ sub: user.id, kind: "living_pass", memberId: user.memberId }, ttl);
-  await db().insert(schema.accessTokens).values({
-    userId: user.id,
-    kind: "living_pass",
-    tokenHash: createHash("sha256").update(token).digest("hex"),
-    expiresAt: new Date(Date.now() + ttl * 1000),
-  });
-  const svg = await QRCode.toString(token, { type: "svg", margin: 0, color: { dark: "#0f3d3a", light: "#0000" }, errorCorrectionLevel: "M" });
+  const { svg } = await issueQr({ userId: user.id, kind: "living_pass", memberId: user.memberId, ttlSeconds: 60 * 10 });
   const upcoming = stays.filter((s) => s.status !== "completed").slice(0, 2);
 
   return (

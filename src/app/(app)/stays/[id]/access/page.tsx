@@ -1,10 +1,8 @@
 import { notFound } from "next/navigation";
-import QRCode from "qrcode";
-import { createHash } from "node:crypto";
 import { requireUser } from "@/domains/identity/current-user";
 import { stayById } from "@/domains/stays/queries";
 import { accessControl } from "@/integrations/access-control";
-import { db, schema } from "@/db/client";
+import { issueQr } from "@/domains/identity/pass";
 import { formatLongDate } from "@/core/format";
 import { Page } from "@/ui/page";
 import { TopBar } from "@/ui/top-bar";
@@ -23,12 +21,7 @@ export default async function AccessPage({ params }: { params: Promise<{ id: str
   if (!isHost && !(me && me.status === "accepted" && me.permissions?.can_view_access)) notFound();
   const active = stay.status === "upcoming" || stay.status === "in_progress";
   let svg: string | null = null;
-  if (active) {
-    const ttl = 60 * 15;
-    const token = await accessControl().issue({ sub: user.id, kind: "stay_access", stayId: stay.id }, ttl);
-    await db().insert(schema.accessTokens).values({ userId: user.id, stayId: stay.id, kind: "stay_access", tokenHash: createHash("sha256").update(token).digest("hex"), expiresAt: new Date(Date.now() + ttl * 1000) });
-    svg = await QRCode.toString(token, { type: "svg", margin: 0, color: { dark: "#0f3d3a", light: "#0000" } });
-  }
+  if (active) svg = (await issueQr({ userId: user.id, kind: "stay_access", stayId: stay.id, ttlSeconds: 60 * 15 })).svg;
   const unlock = await accessControl().unlock(stay.id);
   return (
     <Page>
