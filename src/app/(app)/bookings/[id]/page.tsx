@@ -8,13 +8,15 @@ import { Page } from "@/ui/page";
 import { TopBar } from "@/ui/top-bar";
 import { Chip } from "@/ui/chip";
 import { Photo } from "@/ui/photo";
-import { ButtonLink } from "@/ui/button";
+import { Button, ButtonLink } from "@/ui/button";
+import { cancelBooking, payBooking } from "@/domains/bookings/actions";
 
 export const dynamic = "force-dynamic";
 
 /** Pantalla 33: confirmación / detalle de una reserva de servicio. */
-export default async function BookingDetail({ params }: { params: Promise<{ id: string }> }) {
+export default async function BookingDetail({ params, searchParams }: { params: Promise<{ id: string }>; searchParams: Promise<{ requested?: string; payment?: string }> }) {
   const { id } = await params;
+  const { requested, payment } = await searchParams;
   const user = await requireUser();
   const d = db();
   const row = (
@@ -36,6 +38,8 @@ export default async function BookingDetail({ params }: { params: Promise<{ id: 
   return (
     <Page>
       <TopBar back={row.b.stayId ? `/stays/${row.b.stayId}` : isProvider ? "/pro" : "/home"} title="Reserva" />
+      {requested ? <div role="status" className="mt-4 rounded-[var(--radius-card)] bg-accent-soft px-4 py-3 text-sm text-green-900">Solicitud enviada. El proveedor confirma y te avisamos.</div> : null}
+      {payment === "failed" ? <div role="alert" className="mt-4 rounded-[var(--radius-card)] bg-[#f7e6e4] px-4 py-3 text-sm text-danger">El pago no se completó. Intenta de nuevo o cambia de método.</div> : null}
       {row.service.coverUrl ? <Photo src={row.service.coverUrl} alt={row.service.name} className="mt-2" sizes="(max-width: 768px) 100vw, 672px" /> : null}
       <header className="mt-5 flex items-start justify-between gap-3">
         <div><h1 className="text-[28px] leading-[1.08]">{row.service.name}</h1><p className="mt-1 text-text-2">{row.provider.businessName}{row.provider.status === "approved" ? " · All Living Verified" : ""}</p></div>
@@ -55,6 +59,12 @@ export default async function BookingDetail({ params }: { params: Promise<{ id: 
           {history.map((h) => <li key={h.id} className="flex justify-between px-4 py-2.5"><span>{BOOKING_STATUS[h.toStatus]?.label ?? h.toStatus}</span><span className="text-muted">{new Intl.DateTimeFormat("es-MX", { day: "numeric", month: "short", hour: "2-digit", minute: "2-digit" }).format(h.createdAt)}</span></li>)}
         </ol>
       </section>
+      {isRequester && row.b.status === "payment_pending" ? (
+        <form action={payBooking} className="mt-8 flex flex-col gap-2"><input type="hidden" name="bookingId" value={row.b.id} /><Button type="submit" size="lg">Pagar {money(row.b.total, row.b.currency)}</Button><p className="text-center text-[12px] text-muted">Sin pasarela conectada, el pago se registra como demo y no mueve dinero.</p></form>
+      ) : null}
+      {isRequester && ["requested", "pending_provider", "confirmed", "payment_pending"].includes(row.b.status) ? (
+        <form action={cancelBooking} className="mt-3"><input type="hidden" name="bookingId" value={row.b.id} /><Button type="submit" variant="ghost" size="sm" className="w-full text-danger">Cancelar solicitud</Button></form>
+      ) : null}
       {isProvider ? <div className="mt-8"><ButtonLink href={`/pro/jobs/${row.b.id}`} variant="secondary">Gestionar como proveedor</ButtonLink></div> : null}
     </Page>
   );
