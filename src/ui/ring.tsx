@@ -5,26 +5,29 @@ import { cn } from "./cn";
 
 export const RING_PHOTOS = [
   "/demo/tulum-sea-sm.webp",
-  "/demo/sand-dunes-sm.webp",
   "/demo/palms-sm.webp",
-  "/demo/villa-facade-sm.webp",
-  "/demo/yacht-sm.webp",
   "/demo/sunset-sm.webp",
+  "/demo/yacht-sm.webp",
+  "/demo/cenote-sm.webp",
+  "/demo/villa-pool-sm.webp",
   "/demo/mountain-sm.webp",
   "/demo/city-sm.webp",
 ];
 
+export const RING_MESSAGES = ["Preparando tu estancia…", "Conectando destinos…", "Buscando experiencias…", "Casi listo…", "Preparando algo extraordinario…"];
+
 /**
- * EL ANILLO. Mientras la app carga, el usuario ya empieza a viajar.
- * SVG + máscara circular + crossfade de fotografía. Calmado, nunca ruleta. Respeta reduced-motion.
+ * EL ANILLO. La fotografía vive en la banda; se revela alrededor y cambia con crossfade.
+ * Calmado, nunca ruleta. Respeta prefers-reduced-motion. Sin porcentaje salvo progreso real.
  */
 export function Ring({
-  size = 168,
+  size = 176,
   photos = RING_PHOTOS,
   message,
   className,
-  interval = 2600,
+  interval = 2800,
   label = "Cargando",
+  band = 0.36,
 }: {
   size?: number;
   photos?: string[];
@@ -32,40 +35,38 @@ export function Ring({
   className?: string;
   interval?: number;
   label?: string;
+  band?: number;
 }) {
   const [i, setI] = useState(0);
   useEffect(() => {
-    if (photos.length < 2) return;
-    const reduce = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
-    if (reduce) return;
+    if (photos.length < 2 || window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
     const t = setInterval(() => setI((v) => (v + 1) % photos.length), interval);
     return () => clearInterval(t);
   }, [photos.length, interval]);
-
-  const r = 46;
   return (
-    <div className={cn("flex flex-col items-center gap-6", className)} role="status" aria-live="polite" aria-label={label}>
-      <div className="ring ring-enter" style={{ ["--ring-size" as string]: `${size}px` }}>
-        <div className="ring-photo">
+    <div className={cn("flex flex-col items-center gap-7", className)} role="status" aria-live="polite" aria-label={label}>
+      <div className="ring ring-enter" style={{ ["--ring-size" as string]: `${size}px`, ["--ring-band" as string]: String(band) }}>
+        <div className="ring-band">
           {photos.map((src, idx) => (
             // eslint-disable-next-line @next/next/no-img-element
             <img key={src} src={src} alt="" className={idx === i ? "is-active" : undefined} draggable={false} decoding="async" />
           ))}
         </div>
-        <svg className="ring-svg" viewBox="0 0 100 100" aria-hidden>
-          <circle className="ring-track" cx="50" cy="50" r={r} fill="none" strokeWidth="1.2" />
-          <circle className="ring-arc" cx="50" cy="50" r={r} fill="none" strokeWidth="1.6" pathLength="600" />
-        </svg>
+        <div className="ring-reveal" aria-hidden />
+        <div className="ring-track" aria-hidden />
+        <div className="ring-inner" aria-hidden />
       </div>
-      {message ? <p className="text-sm text-text-2 tracking-wide fade-in">{message}</p> : null}
+      {message ? (
+        <div className="flex flex-col items-center gap-3">
+          <p className="text-[14px] text-text-2 tracking-wide fade-in">{message}</p>
+          <span className="hairline-short" aria-hidden />
+        </div>
+      ) : null}
     </div>
   );
 }
 
-export const RING_MESSAGES = [
-  "Preparando tu estancia…",
-  "Conectando destinos…",
-  "Buscando experiencias…",
-  "Casi listo…",
-  "Preparando algo extraordinario…",
-];
+/** Símbolo estático de la marca: aro bronce. */
+export function RingMark({ size = 28, className, onDark = false }: { size?: number; className?: string; onDark?: boolean }) {
+  return <span className={cn("ring-mark shrink-0", onDark && "on-dark", className)} style={{ width: size, height: size }} aria-hidden />;
+}

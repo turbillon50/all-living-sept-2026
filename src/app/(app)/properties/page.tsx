@@ -1,15 +1,18 @@
+import Image from "next/image";
 import Link from "next/link";
+import { ChevronRight } from "lucide-react";
 import { requireUser } from "@/domains/identity/current-user";
 import { fractionCore } from "@/domains/fractions/local-fraction-core";
 import { coverFor } from "@/domains/properties/queries";
 import { Page, PageHeader } from "@/ui/page";
-import { Photo } from "@/ui/photo";
 import { EmptyState } from "@/ui/empty-state";
 import { Chip } from "@/ui/chip";
+import { ButtonLink } from "@/ui/button";
+import { Segmented } from "@/ui/primitives";
 
 export const dynamic = "force-dynamic";
 
-/** Pantalla 12/14: mis propiedades y fracciones vinculadas a la cuenta. */
+/** Pantalla 12/14: mis propiedades. Control segmentado y filas con miniatura. */
 export default async function PropertiesPage({ searchParams }: { searchParams: Promise<{ tab?: string }> }) {
   const { tab = "properties" } = await searchParams;
   const user = await requireUser();
@@ -20,53 +23,33 @@ export default async function PropertiesPage({ searchParams }: { searchParams: P
 
   return (
     <Page>
-      <PageHeader eyebrow="Mis propiedades" title="Lo que es tuyo" />
-      <div className="flex gap-2">
-        {[["properties", "Propiedades"], ["fractions", "Fracciones"]].map(([k, l]) => (
-          <Link key={k} href={`/properties?tab=${k}`} className={`inline-flex min-h-10 items-center rounded-[var(--radius-pill)] px-4 text-sm hairline ${tab === k ? "bg-accent text-on-accent border-accent" : "bg-surface"}`} aria-current={tab === k ? "page" : undefined}>{l}</Link>
-        ))}
-      </div>
+      <PageHeader eyebrow="Mis propiedades" title="Mis propiedades" />
+      <Segmented current={tab} items={[{ key: "properties", label: "Propiedades", href: "/properties" }, { key: "fractions", label: "Fracciones", href: "/properties?tab=fractions" }]} />
       <div className="mt-6">
         {ownerships.length === 0 ? (
           <EmptyState title="Aún no hay propiedades a tu nombre." body="Cuando adquieras una fracción en V&LIVING, aparece aquí lista para vivirla." />
-        ) : tab === "fractions" ? (
+        ) : (
           <ul className="flex flex-col gap-3">
-            {ownerships.map((o) => (
-              <li key={o.id}>
-                <Link href={`/fractions/${o.fractionId}`} className="press flex items-center gap-4 rounded-[var(--radius-card)] bg-surface hairline p-3 hover:bg-surface-2">
-                  {covers.get(o.propertyId) ? <Photo src={covers.get(o.propertyId)!.url} alt="" className="w-20 shrink-0" ratio="1/1" sizes="80px" /> : null}
+            {(tab === "fractions"
+              ? ownerships.map((o) => ({ key: o.id, href: `/fractions/${o.fractionId}`, cover: covers.get(o.propertyId), title: `${o.destination} · ${o.propertyName}`, sub: `Fracción ${o.fractionCode}`, meta: "3 semanas al año", chip: "Activa" }))
+              : [...byProperty.entries()].map(([pid, list]) => ({ key: pid, href: `/properties/${pid}`, cover: covers.get(pid), title: `${list[0]!.destination} · ${list[0]!.propertyName}`, sub: list.map((o) => `Fracción ${o.fractionCode}`).join(", "), meta: `${list.length * 3} semanas al año`, chip: null }))
+            ).map((r) => (
+              <li key={r.key}>
+                <Link href={r.href} className="press flex items-center gap-4 rounded-[var(--radius-card)] bg-surface hairline p-3 hover:bg-surface-2">
+                  <span className="relative size-20 shrink-0 overflow-hidden rounded-[14px] bg-sand-200">{r.cover ? <Image src={r.cover.url} alt="" fill sizes="80px" className="object-cover" /> : null}</span>
                   <span className="min-w-0 flex-1">
-                    <span className="block font-serif text-[19px]">Fracción {o.fractionCode}</span>
-                    <span className="block text-sm text-text-2">{o.propertyName} · {o.destination}</span>
+                    <span className="block text-[15px] font-medium truncate">{r.title}</span>
+                    <span className="block text-[13px] text-text-2 truncate">{r.sub}</span>
+                    <span className="block text-[12px] text-muted">{r.meta}</span>
                   </span>
-                  <Chip tone="accent">Activa</Chip>
+                  {r.chip ? <Chip tone="accent">{r.chip}</Chip> : <ChevronRight size={18} className="text-muted" aria-hidden />}
                 </Link>
               </li>
             ))}
           </ul>
-        ) : (
-          <ul className="flex flex-col gap-5">
-            {[...byProperty.entries()].map(([propertyId, list]) => {
-              const first = list[0]!;
-              const cover = covers.get(propertyId);
-              return (
-                <li key={propertyId}>
-                  <Link href={`/properties/${propertyId}`} className="press block">
-                    {cover ? <Photo src={cover.url} alt={cover.alt} sizes="(max-width: 768px) 100vw, 672px" /> : null}
-                    <div className="mt-3 flex items-start justify-between">
-                      <div>
-                        <p className="font-serif text-[22px]">{first.propertyName}</p>
-                        <p className="text-sm text-text-2">{first.destination} · {list.map((o) => o.fractionCode).join(", ")}</p>
-                      </div>
-                      <Chip>{list.length} {list.length === 1 ? "fracción" : "fracciones"}</Chip>
-                    </div>
-                  </Link>
-                </li>
-              );
-            })}
-          </ul>
         )}
       </div>
+      <div className="mt-8"><ButtonLink href="/explore" size="lg">Explorar más propiedades</ButtonLink></div>
     </Page>
   );
 }

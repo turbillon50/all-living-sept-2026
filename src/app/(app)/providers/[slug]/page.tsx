@@ -1,7 +1,7 @@
 import { notFound } from "next/navigation";
 import Link from "next/link";
 import Image from "next/image";
-import { BadgeCheck, MapPin, Star } from "lucide-react";
+import { BadgeCheck, MapPin, Star, Users, Tag } from "lucide-react";
 import { providerBySlug } from "@/domains/services/queries";
 import { categoryBySlug } from "@/domains/services/categories";
 import { money } from "@/core/format";
@@ -10,6 +10,7 @@ import { TopBar } from "@/ui/top-bar";
 import { Photo } from "@/ui/photo";
 import { Chip } from "@/ui/chip";
 import { ButtonLink } from "@/ui/button";
+import { ListRow, RowGroup } from "@/ui/primitives";
 
 export const dynamic = "force-dynamic";
 
@@ -39,7 +40,14 @@ export default async function ProviderDetail({ params, searchParams }: { params:
         {p.isDemo ? <Chip>Demo</Chip> : null}
       </header>
       {p.description ? <p className="mt-4 max-w-prose text-[16px] leading-relaxed">{p.description}</p> : null}
-      <Chip tone="accent" className="mt-4">All Living Verified</Chip>
+      <div className="mt-5">
+        <RowGroup>
+          <ListRow Icon={MapPin} title={p.areas.length ? p.areas.join(" · ") : "Zona por confirmar"} />
+          {p.services[0]?.maxPeople ? <ListRow Icon={Users} title={`Capacidad hasta ${Math.max(...p.services.map((s) => s.maxPeople ?? 0))} personas`} /> : null}
+          {p.services.find((s) => s.priceFrom) ? <ListRow Icon={Tag} title={`Desde ${money(p.services.filter((s) => s.priceFrom).sort((a, b) => Number(a.priceFrom) - Number(b.priceFrom))[0]!.priceFrom!, p.services[0]!.currency)}`} /> : null}
+        </RowGroup>
+      </div>
+      <div className="mt-6"><ButtonLink href={`/book/${p.services[0]?.id ?? ""}${stay ? `?stay=${stay}` : ""}`} size="lg">Solicitar reserva</ButtonLink></div>
 
       <Section title="Servicios">
         <ul className="grid gap-3 md:grid-cols-2">

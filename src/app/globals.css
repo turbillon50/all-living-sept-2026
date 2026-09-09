@@ -19,12 +19,17 @@
   --color-hairline: #e6dfd3;
 
   /* Verde Caribe profundo: el acento de la casa */
-  --color-green-950: #0a2c2a;
-  --color-green-900: #0f3d3a;
-  --color-green-700: #175e58;
-  --color-green-500: #2f8a80;
-  --color-green-100: #dcebe6;
-  --color-green-50: #eef5f2;
+  --color-green-950: #0f2a24;
+  --color-green-900: #173a31;
+  --color-green-700: #22574a;
+  --color-green-500: #3a8a74;
+  --color-green-100: #dfece6;
+  --color-green-50: #eef5f1;
+
+  /* Bronce del anillo: solo en el símbolo, nunca dominante */
+  --color-bronze-700: #8c6b3f;
+  --color-bronze-500: #b08d57;
+  --color-bronze-200: #dcc9a6;
 
   /* Estados (nunca solo por color: siempre con texto o icono) */
   --color-success: #2e7d5b;
@@ -44,9 +49,9 @@
   --color-on-accent: var(--color-ivory);
 
   /* Radios: solo cuatro formas */
-  --radius-ctl: 12px;
-  --radius-card: 18px;
-  --radius-panel: 24px;
+  --radius-ctl: 14px;
+  --radius-card: 20px;
+  --radius-panel: 26px;
   --radius-pill: 999px;
 
   /* Sombras: apenas presentes */
@@ -155,47 +160,58 @@
 }
 @keyframes shimmer { to { transform: translateX(100%); } }
 
-/* ---------- EL ANILLO ---------- */
+/* ---------- EL ANILLO ----------
+   La fotografía vive en la banda del anillo (una dona), no en el centro.
+   La banda se revela alrededor de la circunferencia y las fotos hacen crossfade. */
 .ring {
-  --ring-size: 168px;
+  --ring-size: 176px;
+  --ring-band: 0.36;          /* grosor de la banda como fracción del radio */
+  --ring-p: 0%;               /* progreso del revelado (animado) */
   position: relative;
   width: var(--ring-size);
   height: var(--ring-size);
-}
-.ring-svg { position: absolute; inset: 0; width: 100%; height: 100%; }
-.ring-track { stroke: color-mix(in oklab, var(--color-accent) 18%, transparent); }
-.ring-arc {
-  stroke: var(--color-accent);
-  stroke-linecap: round;
-  transform-origin: 50% 50%;
-  animation: ring-spin 4.8s var(--ease-out) infinite, ring-dash 4.8s var(--ease-out) infinite;
-}
-.ring-photo {
-  position: absolute;
-  inset: 12px;
   border-radius: 50%;
-  overflow: hidden;
-  background: var(--color-surface-2);
 }
-.ring-photo img {
-  position: absolute;
-  inset: 0;
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-  opacity: 0;
-  transform: scale(1.06);
-  transition: opacity 1400ms var(--ease-out), transform 6000ms linear;
+.ring-band {
+  position: absolute; inset: 0; border-radius: 50%; overflow: hidden;
+  -webkit-mask: radial-gradient(circle at 50% 50%, transparent calc(50% * (1 - var(--ring-band)) - 0.5px), #000 calc(50% * (1 - var(--ring-band)) + 0.5px), #000 100%);
+  mask: radial-gradient(circle at 50% 50%, transparent calc(50% * (1 - var(--ring-band)) - 0.5px), #000 calc(50% * (1 - var(--ring-band)) + 0.5px), #000 100%);
 }
-.ring-photo img.is-active { opacity: 1; transform: scale(1); }
+.ring-band img {
+  position: absolute; inset: -6%; width: 112%; height: 112%; object-fit: cover;
+  opacity: 0; transform: scale(1.04);
+  transition: opacity 1600ms var(--ease-out), transform 7000ms linear;
+}
+.ring-band img.is-active { opacity: 1; transform: scale(1); }
+/* velo que va destapando la banda en sentido horario */
+.ring-reveal {
+  position: absolute; inset: -1px; border-radius: 50%;
+  background: conic-gradient(from -90deg, transparent var(--ring-p), var(--color-bg) var(--ring-p));
+  animation: ring-reveal 5.2s var(--ease-out) infinite;
+}
+.ring-track {
+  position: absolute; inset: 0; border-radius: 50%;
+  border: 1px solid color-mix(in oklab, var(--color-bronze-500) 45%, transparent);
+  -webkit-mask: radial-gradient(circle, transparent calc(50% * (1 - var(--ring-band))), #000 calc(50% * (1 - var(--ring-band)) + 1px));
+  mask: radial-gradient(circle, transparent calc(50% * (1 - var(--ring-band))), #000 calc(50% * (1 - var(--ring-band)) + 1px));
+}
+.ring-inner { position: absolute; border-radius: 50%; inset: calc(50% * var(--ring-band)); box-shadow: inset 0 0 0 1px color-mix(in oklab, var(--color-bronze-500) 35%, transparent); }
 .ring-enter { animation: ring-enter 900ms var(--ease-firm) both; }
-@keyframes ring-spin { from { transform: rotate(-90deg); } to { transform: rotate(270deg); } }
-@keyframes ring-dash {
-  0% { stroke-dasharray: 8 600; }
-  55% { stroke-dasharray: 360 600; }
-  100% { stroke-dasharray: 8 600; }
-}
-@keyframes ring-enter { from { opacity: 0; transform: scale(0.92); } to { opacity: 1; transform: scale(1); } }
+@keyframes ring-reveal { 0% { --ring-p: 0%; } 70% { --ring-p: 100%; } 100% { --ring-p: 100%; } }
+@property --ring-p { syntax: "<percentage>"; inherits: false; initial-value: 0%; }
+@keyframes ring-enter { from { opacity: 0; transform: scale(0.94); } to { opacity: 1; transform: none; } }
+
+/* Símbolo estático: aro bronce fino (logo) */
+.ring-mark { display: inline-block; border-radius: 50%; border: 1.5px solid transparent; background: linear-gradient(var(--color-bg), var(--color-bg)) padding-box, linear-gradient(135deg, var(--color-bronze-200), var(--color-bronze-500) 45%, var(--color-bronze-700)) border-box; }
+.ring-mark.on-dark { background: linear-gradient(var(--color-green-950), var(--color-green-950)) padding-box, linear-gradient(135deg, var(--color-bronze-200), var(--color-bronze-500) 45%, var(--color-bronze-700)) border-box; }
+
+/* Línea corta bajo mensajes de carga */
+.hairline-short { width: 56px; height: 1px; background: color-mix(in oklab, var(--color-text) 25%, transparent); }
+
+/* Control segmentado */
+.segmented { display: inline-flex; gap: 2px; padding: 3px; border-radius: var(--radius-pill); background: var(--color-surface-2); }
+.segmented > * { border-radius: var(--radius-pill); padding: 8px 14px; font-size: 13px; font-weight: 500; color: var(--color-text-2); min-height: 36px; display: inline-flex; align-items: center; transition: background var(--duration-micro) var(--ease-out), color var(--duration-micro) var(--ease-out); }
+.segmented > [aria-current="page"], .segmented > [data-active="true"] { background: var(--color-surface); color: var(--color-text); box-shadow: var(--shadow-card); }
 
 /* ---------- Entradas de página ---------- */
 .fade-up { animation: fade-up var(--duration-hero) var(--ease-firm) both; }
@@ -205,6 +221,6 @@
 
 @media (prefers-reduced-motion: reduce) {
   *, ::before, ::after { animation-duration: 0.01ms !important; animation-iteration-count: 1 !important; transition-duration: 0.01ms !important; }
-  .ring-arc { stroke-dasharray: 300 600; }
-  .ring-photo img { transition: none; transform: none; }
+  .ring-reveal { animation: none; --ring-p: 100%; }
+  .ring-band img { transition: none; transform: none; }
 }

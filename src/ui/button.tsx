@@ -5,9 +5,9 @@ type Variant = "primary" | "secondary" | "ghost" | "danger" | "light" | "ghost-l
 type Size = "md" | "lg" | "sm";
 
 const base =
-  "press inline-flex items-center justify-center gap-2 font-medium select-none rounded-[var(--radius-ctl)] transition-colors duration-[var(--duration-micro)] disabled:opacity-50 disabled:pointer-events-none min-h-11";
+  "press inline-flex items-center justify-center gap-2 font-medium select-none rounded-[var(--radius-pill)] transition-colors duration-[var(--duration-micro)] disabled:opacity-50 disabled:pointer-events-none min-h-11";
 const variants: Record<Variant, string> = {
-  primary: "bg-accent text-on-accent hover:bg-green-700 active:bg-green-950",
+  primary: "bg-green-950 text-ivory hover:bg-green-900 active:bg-green-950",
   secondary: "bg-surface text-text hairline hover:bg-surface-2",
   ghost: "text-text hover:bg-surface-2",
   danger: "bg-danger text-ivory hover:brightness-95",

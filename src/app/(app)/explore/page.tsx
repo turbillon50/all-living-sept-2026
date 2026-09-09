@@ -1,62 +1,33 @@
-import Link from "next/link";
 import { activeProperties } from "@/domains/properties/queries";
 import { Page, PageHeader, Section } from "@/ui/page";
-import { Photo } from "@/ui/photo";
 import { Chip } from "@/ui/chip";
+import { FilterPills, PhotoTile, SearchBar } from "@/ui/primitives";
 
 const FILTERS = ["Todos", "Playa", "Montaña", "Ciudad", "Wellness", "Gastronomía", "Aventura"];
 const DESTINATIONS = [
-  { slug: "tulum", name: "Tulum", tone: "Playa", photo: "/demo/tulum-sea.webp" },
-  { slug: "valle-de-bravo", name: "Valle de Bravo", tone: "Montaña", photo: "/demo/mountain.webp" },
-  { slug: "ciudad-de-mexico", name: "Ciudad de México", tone: "Ciudad", photo: "/demo/city.webp" },
+  { slug: "tulum", name: "Tulum", tone: "Playa", tags: "Casas · Experiencias", photo: "/demo/tulum-sea.webp" },
+  { slug: "los-cabos", name: "Los Cabos", tone: "Playa", tags: "Mar · Golf · Lujo", photo: "/demo/yacht.webp" },
+  { slug: "valle-de-bravo", name: "Valle de Bravo", tone: "Montaña", tags: "Naturaleza · Relax", photo: "/demo/mountain.webp" },
+  { slug: "ciudad-de-mexico", name: "Ciudad de México", tone: "Ciudad", tags: "Cultura · Gastronomía", photo: "/demo/city.webp" },
 ];
 
 export const dynamic = "force-dynamic";
 
-/** Pantalla 27: Explore. Destinos, experiencias, propiedades utilizables e inspiración. No es catálogo inmobiliario. */
-export default async function ExplorePage({ searchParams }: { searchParams: Promise<{ f?: string }> }) {
-  const { f = "Todos" } = await searchParams;
+/** Pantalla 27: Explorar. Buscador, filtros, destinos en grid de dos. No es catálogo inmobiliario. */
+export default async function ExplorePage({ searchParams }: { searchParams: Promise<{ f?: string; q?: string }> }) {
+  const { f = "Todos", q = "" } = await searchParams;
   const properties = await activeProperties();
-  const destinations = f === "Todos" ? DESTINATIONS : DESTINATIONS.filter((d) => d.tone === f);
+  const dests = DESTINATIONS.filter((d) => (f === "Todos" || d.tone === f) && (!q || d.name.toLowerCase().includes(q.toLowerCase())));
   return (
     <Page wide>
-      <PageHeader eyebrow="Explorar" title="¿A dónde te lleva la próxima?" />
-      <ul className="no-scrollbar -mx-5 flex gap-2 overflow-x-auto px-5 md:mx-0 md:px-0">
-        {FILTERS.map((x) => (
-          <li key={x} className="shrink-0">
-            <Link href={x === "Todos" ? "/explore" : `/explore?f=${encodeURIComponent(x)}`} className={`inline-flex min-h-10 items-center rounded-[var(--radius-pill)] px-4 text-sm hairline ${x === f ? "bg-accent text-on-accent border-accent" : "bg-surface"}`}>
-              {x}
-            </Link>
-          </li>
-        ))}
-      </ul>
-      <Section title="Destinos">
-        <ul className="grid gap-4 md:grid-cols-3">
-          {destinations.map((d) => (
-            <li key={d.slug}>
-              <Link href={`/explore/${d.slug}`} className="press block">
-                <Photo src={d.photo} alt={d.name} ratio="4/5" sizes="(max-width: 768px) 100vw, 33vw" />
-                <p className="mt-2 font-serif text-[20px]">{d.name}</p>
-                <p className="text-sm text-text-2">{d.tone}</p>
-              </Link>
-            </li>
-          ))}
-        </ul>
+      <PageHeader eyebrow="Explorar" title="Explorar" />
+      <SearchBar placeholder="¿A dónde te gustaría ir?" action="/explore" defaultValue={q} />
+      <FilterPills className="mt-4" current={f} items={FILTERS.map((x) => ({ key: x, label: x, href: x === "Todos" ? "/explore" : `/explore?f=${encodeURIComponent(x)}` }))} />
+      <Section>
+        <ul className="grid grid-cols-2 gap-4 md:grid-cols-4">{dests.map((d) => <li key={d.slug}><PhotoTile href={`/explore/${d.slug}`} src={d.photo} alt={d.name} title={d.name} subtitle={d.tags} /></li>)}</ul>
       </Section>
       <Section title="Propiedades para vivir">
-        <ul className="grid gap-4 md:grid-cols-2">
-          {properties.map((p) => (
-            <li key={p.id}>
-              <Link href={`/properties/${p.id}`} className="press block">
-                {p.cover ? <Photo src={p.cover.url} alt={p.cover.alt} sizes="(max-width: 768px) 100vw, 50vw" /> : null}
-                <div className="mt-2 flex items-center justify-between">
-                  <div><p className="font-serif text-[20px]">{p.name}</p><p className="text-sm text-text-2">{p.destination}{p.bedrooms ? ` · ${p.bedrooms} rec.` : ""}</p></div>
-                  {p.isDemo ? <Chip>Demo</Chip> : null}
-                </div>
-              </Link>
-            </li>
-          ))}
-        </ul>
+        <ul className="grid grid-cols-2 gap-4 md:grid-cols-4">{properties.map((p) => <li key={p.id}><PhotoTile href={`/properties/${p.id}`} src={p.cover?.url ?? null} alt={p.cover?.alt ?? p.name} title={p.name} subtitle={`${p.destination}${p.bedrooms ? ` · ${p.bedrooms} rec.` : ""}`} badge={p.isDemo ? <Chip>Demo</Chip> : undefined} /></li>)}</ul>
       </Section>
     </Page>
   );

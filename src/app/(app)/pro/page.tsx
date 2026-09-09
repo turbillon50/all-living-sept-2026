@@ -1,4 +1,3 @@
-import Link from "next/link";
 import { and, asc, eq, gte, lt } from "drizzle-orm";
 import { db, schema } from "@/db/client";
 import { requireRole } from "@/domains/identity/current-user";
@@ -6,6 +5,10 @@ import { money, firstName } from "@/core/format";
 import { Page } from "@/ui/page";
 import { Chip } from "@/ui/chip";
 import { EmptyState } from "@/ui/empty-state";
+import { BrandPanel, ListRow, RowGroup } from "@/ui/primitives";
+import { RingMark } from "@/ui/ring";
+import { ButtonLink } from "@/ui/button";
+import Image from "next/image";
 import { BOOKING_STATUS } from "@/domains/bookings/labels";
 
 export const dynamic = "force-dynamic";
@@ -38,33 +41,33 @@ export default async function ProHome() {
 
   return (
     <Page>
-      <header className="pt-10 md:pt-14 fade-up">
-        <p className="text-[11px] tracking-[0.28em] uppercase text-muted">{prov.businessName}{prov.status === "approved" ? " · Verified" : ` · ${prov.status}`}</p>
-        <h1 className="mt-2 text-[34px] leading-[1.06]">Hoy</h1>
-        <p className="mt-2 text-[17px] text-text-2">{today.length} {today.length === 1 ? "servicio" : "servicios"} · {money(total)}{prov.isDemo ? " · demo" : ""}</p>
+      <BrandPanel className="pb-7 md:mt-6">
+        <div className="flex flex-col items-center pt-8 text-center">
+          <RingMark size={30} onDark />
+          <p className="mt-3 font-serif text-[22px] tracking-[0.3em] uppercase leading-none">All Living</p>
+          <p className="mt-1.5 text-[9px] tracking-[0.4em] uppercase text-ivory/60">Provider</p>
+          <span className="relative mt-5 size-16 overflow-hidden rounded-full bg-ivory/10 ring-2 ring-ivory/30">{user.avatarUrl ? <Image src={user.avatarUrl} alt="" fill sizes="64px" className="object-cover" /> : prov.logoUrl ? <Image src={prov.logoUrl} alt="" fill sizes="64px" className="object-cover" /> : null}</span>
+          <p className="mt-3 font-medium">{prov.businessName}</p>
+          <p className="text-[12px] text-ivory/70">{prov.status === "approved" ? "All Living Verified" : prov.status}{prov.isDemo ? " · demo" : ""}</p>
+        </div>
+      </BrandPanel>
+      <header className="mt-7 fade-up">
+        <p className="text-[11px] tracking-[0.28em] uppercase text-muted">{new Intl.DateTimeFormat("es-MX", { weekday: "long", day: "numeric", month: "short" }).format(new Date())}</p>
+        <h1 className="mt-1 text-[28px] leading-[1.08]">Hoy</h1>
+        <p className="mt-1 text-[16px] text-text-2">{today.length} {today.length === 1 ? "servicio" : "servicios"} · {money(total)}</p>
       </header>
-      <section className="mt-8">
+      <section className="mt-5">
         {today.length === 0 ? (
           <EmptyState title="Sin servicios para hoy." cta={{ href: "/pro/jobs", label: "Ver agenda" }} />
         ) : (
-          <ul className="flex flex-col gap-2.5">
+          <RowGroup>
             {today.map(({ b, service, property, city }) => {
               const st = BOOKING_STATUS[b.status] ?? { label: b.status, tone: "neutral" as const };
-              return (
-                <li key={b.id}>
-                  <Link href={`/pro/jobs/${b.id}`} className="press flex items-center gap-4 rounded-[var(--radius-card)] bg-surface hairline p-4 hover:bg-surface-2">
-                    <span className="w-12 shrink-0 font-serif text-[18px]">{fmtTime.format(b.scheduledAt)}</span>
-                    <span className="min-w-0 flex-1">
-                      <span className="block font-medium truncate">{service}</span>
-                      <span className="block text-sm text-text-2 truncate">{property ? `${property} · ${city}` : "Sin propiedad"}</span>
-                    </span>
-                    <Chip tone={st.tone}>{st.label}</Chip>
-                  </Link>
-                </li>
-              );
+              return <ListRow key={b.id} href={`/pro/jobs/${b.id}`} title={`${fmtTime.format(b.scheduledAt)} · ${service}`} subtitle={property ? `${property} · ${city}` : "Sin propiedad"} right={<Chip tone={st.tone}>{st.label}</Chip>} />;
             })}
-          </ul>
+          </RowGroup>
         )}
+        <div className="mt-5"><ButtonLink href="/pro/jobs" size="lg">Ver agenda completa</ButtonLink></div>
       </section>
     </Page>
   );
