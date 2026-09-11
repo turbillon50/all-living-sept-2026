@@ -1,9 +1,12 @@
+"use client";
+
+import { useId } from "react";
 import { cn } from "./cn";
 
 /**
- * ALL LIVING MÖBIUS — símbolo maestro.
- * Superficie continua inspirada en una banda de Möbius: pertenencia, lugar,
- * movimiento y experiencia sin principio ni final.
+ * ALL LIVING MÖBIUS v2
+ * Cinta continua viva: no spinner, no aro, no icono tropical literal.
+ * El movimiento idle es permanente y responde de forma sutil al puntero/touch.
  */
 export function Mark({
   size = 28,
@@ -18,6 +21,16 @@ export function Mark({
   interactive?: boolean;
   motion?: boolean;
 }) {
+  const uid = useId().replace(/:/g, "");
+  const gradient = `mobius-main-${uid}`;
+  const glass = `mobius-glass-${uid}`;
+  const shadow = `mobius-shadow-${uid}`;
+
+  const resetTilt = (el: HTMLElement) => {
+    el.style.setProperty("--mobius-rx", "0deg");
+    el.style.setProperty("--mobius-ry", "0deg");
+  };
+
   return (
     <span
       className={cn(
@@ -29,52 +42,81 @@ export function Mark({
       )}
       style={{ width: size, height: size }}
       aria-hidden
+      onPointerMove={interactive ? (e) => {
+        const box = e.currentTarget.getBoundingClientRect();
+        const x = (e.clientX - box.left) / box.width - 0.5;
+        const y = (e.clientY - box.top) / box.height - 0.5;
+        e.currentTarget.style.setProperty("--mobius-rx", `${(-y * 10).toFixed(2)}deg`);
+        e.currentTarget.style.setProperty("--mobius-ry", `${(x * 12).toFixed(2)}deg`);
+      } : undefined}
+      onPointerLeave={interactive ? (e) => resetTilt(e.currentTarget) : undefined}
     >
-      <svg viewBox="0 0 64 48" width="100%" height="100%" focusable="false">
+      <svg className="al-mobius-svg" viewBox="0 0 116 86" width="100%" height="100%" focusable="false">
         <defs>
-          <linearGradient id="al-mobius-main" x1="8" y1="8" x2="58" y2="42" gradientUnits="userSpaceOnUse">
-            <stop offset="0" stopColor="#71E9EE" />
-            <stop offset="0.28" stopColor="#1CC6D4" />
-            <stop offset="0.58" stopColor="#0D7FA6" />
-            <stop offset="0.82" stopColor="#075C82" />
-            <stop offset="1" stopColor="#BCEFF1" />
+          <linearGradient id={gradient} x1="10" y1="18" x2="108" y2="67" gradientUnits="userSpaceOnUse">
+            <stop className="mobius-stop-a" offset="0" stopColor="#BDF9FB" />
+            <stop className="mobius-stop-b" offset="0.24" stopColor="#29D5E3" />
+            <stop className="mobius-stop-c" offset="0.55" stopColor="#079CC3" />
+            <stop className="mobius-stop-d" offset="0.79" stopColor="#075D8A" />
+            <stop className="mobius-stop-e" offset="1" stopColor="#85EEF2" />
           </linearGradient>
-          <linearGradient id="al-mobius-highlight" x1="16" y1="8" x2="50" y2="39" gradientUnits="userSpaceOnUse">
-            <stop offset="0" stopColor="#FFFFFF" stopOpacity="0.95" />
-            <stop offset="0.45" stopColor="#D8FAFA" stopOpacity="0.55" />
-            <stop offset="1" stopColor="#8FE6EA" stopOpacity="0" />
+          <linearGradient id={glass} x1="18" y1="9" x2="88" y2="72" gradientUnits="userSpaceOnUse">
+            <stop offset="0" stopColor="#FFFFFF" stopOpacity="0.9" />
+            <stop offset="0.35" stopColor="#E7FFFF" stopOpacity="0.54" />
+            <stop offset="0.72" stopColor="#89F2F4" stopOpacity="0.08" />
+            <stop offset="1" stopColor="#FFFFFF" stopOpacity="0" />
           </linearGradient>
-          <filter id="al-mobius-soft" x="-20%" y="-20%" width="140%" height="140%">
-            <feGaussianBlur stdDeviation="0.65" />
+          <filter id={shadow} x="-25%" y="-30%" width="150%" height="170%">
+            <feGaussianBlur in="SourceAlpha" stdDeviation="2.2" result="blur" />
+            <feOffset dy="3" result="offset" />
+            <feColorMatrix in="offset" type="matrix" values="0 0 0 0 0.02  0 0 0 0 0.34  0 0 0 0 0.47  0 0 0 .26 0" />
+            <feMerge><feMergeNode/><feMergeNode in="SourceGraphic"/></feMerge>
           </filter>
         </defs>
 
-        <g className="al-mobius-body">
+        <g className="al-mobius-body" filter={`url(#${shadow})`}>
+          {/* Cinta continua principal. El trazo ancho mantiene lectura limpia también a 16px. */}
           <path
-            className="al-mobius-shadow"
-            d="M7.5 29.5C7.5 17.2 16.4 8.6 27.2 11.7c8.7 2.5 12.9 12.8 18.8 17.1 3.8 2.8 8 2.1 9.9-1.1 1.8-3 1-7-2.3-9.4-5-3.7-10.7-.7-14.8 6.2-5.4 9.2-9.5 17.1-17.7 17.1-6.6 0-11.6-3.8-13.4-9.3-1.1-3.4-.4-6.4-.4-6.4Z"
-            fill="#063D5A"
-            opacity="0.22"
-            filter="url(#al-mobius-soft)"
-            transform="translate(0 1.6)"
-          />
-          <path
-            d="M7.5 29.5C7.5 17.2 16.4 8.6 27.2 11.7c8.7 2.5 12.9 12.8 18.8 17.1 3.8 2.8 8 2.1 9.9-1.1 1.8-3 1-7-2.3-9.4-5-3.7-10.7-.7-14.8 6.2-5.4 9.2-9.5 17.1-17.7 17.1-6.6 0-11.6-3.8-13.4-9.3-1.1-3.4-.4-6.4-.4-6.4Z"
-            fill="url(#al-mobius-main)"
-          />
-          <path
-            className="al-mobius-twist"
-            d="M23.2 14.1c5.2-2 10 .7 13.8 6.2 1.5 2.2 2.8 4.2 4.3 6.2-4-1.5-8.2-1.1-12.1 1.2-4.2 2.4-7.7 6-11.4 8.6 3-4.7 5.1-10.1 5.4-15.9.2-2.4.1-4.5 0-6.3Z"
-            fill="url(#al-mobius-highlight)"
-            opacity="0.88"
-          />
-          <path
-            d="M12 31.5c1.7 4.4 5.8 6.9 10.9 6.9 6.4 0 10.5-4.6 14.3-10.9"
+            className="al-mobius-ribbon"
+            d="M15 56 C10 38 18 19 34 15 C50 11 60 24 69 40 C78 56 90 65 100 56 C110 47 107 33 97 29 C84 24 74 34 64 51 C55 66 45 73 34 69 C24 66 18 62 15 56"
             fill="none"
-            stroke="#D9FAFA"
-            strokeOpacity="0.42"
-            strokeWidth="1.25"
+            stroke={`url(#${gradient})`}
+            strokeWidth="17"
             strokeLinecap="round"
+            strokeLinejoin="round"
+          />
+
+          {/* Cruce superior: da lectura de cinta y no de serpiente. */}
+          <path
+            className="al-mobius-over"
+            d="M38 15 C51 14 60 26 68 40"
+            fill="none"
+            stroke={`url(#${glass})`}
+            strokeWidth="13.2"
+            strokeLinecap="round"
+          />
+
+          {/* Cara inferior: profundidad física del giro. */}
+          <path
+            className="al-mobius-under"
+            d="M64 51 C57 63 48 70 39 70"
+            fill="none"
+            stroke="#054F78"
+            strokeOpacity="0.42"
+            strokeWidth="12.5"
+            strokeLinecap="round"
+          />
+
+          {/* Reflejo que recorre la superficie continuamente. */}
+          <path
+            className="al-mobius-sheen"
+            d="M15 56 C10 38 18 19 34 15 C50 11 60 24 69 40 C78 56 90 65 100 56 C110 47 107 33 97 29 C84 24 74 34 64 51 C55 66 45 73 34 69 C24 66 18 62 15 56"
+            fill="none"
+            stroke="#EFFFFF"
+            strokeOpacity="0.78"
+            strokeWidth="2.5"
+            strokeLinecap="round"
+            strokeDasharray="14 108"
           />
         </g>
       </svg>

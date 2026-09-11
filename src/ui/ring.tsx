@@ -11,11 +11,7 @@ export const RING_MESSAGES = [
   "Preparando algo extraordinario…",
 ];
 
-/**
- * Loader maestro. Conserva el API histórico `Ring`, pero ya no dibuja un aro:
- * usa el Möbius vivo de ALL LIVING. Así splash, loader e identidad hablan el
- * mismo idioma visual.
- */
+/** Compatibilidad histórica: Ring ahora es el símbolo Möbius vivo. */
 export function Ring({
   size = 176,
   message,
@@ -35,11 +31,12 @@ export function Ring({
       <div className="mobius-loader-stage" style={{ width: size, height: size }}>
         <div className="mobius-caustic mobius-caustic-a" aria-hidden />
         <div className="mobius-caustic mobius-caustic-b" aria-hidden />
-        <Mark size={size * 0.86} className="mobius-loader-mark" motion />
+        <div className="mobius-water-ripple" aria-hidden />
+        <Mark size={size * 0.9} className="mobius-loader-mark" motion interactive />
       </div>
       {message ? (
         <div className="flex flex-col items-center gap-3">
-          <p className="text-[14px] text-text-2 tracking-wide fade-in">{message}</p>
+          <p className="text-[14px] text-current/75 tracking-wide fade-in">{message}</p>
           <span className="hairline-short" aria-hidden />
         </div>
       ) : null}
