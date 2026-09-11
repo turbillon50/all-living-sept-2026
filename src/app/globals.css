@@ -1,0 +1,226 @@
+@import "tailwindcss";
+
+/* ============================================================
+   ALL LIVING · tokens. Una sola fuente de verdad visual.
+   Lujo por proporción, fotografía, tipografía y silencio.
+   ============================================================ */
+@theme {
+  /* Superficies cálidas */
+  --color-sand-50: #faf7f2;
+  --color-sand-100: #f5f0e8;
+  --color-sand-200: #ebe4d8;
+  --color-sand-300: #ddd3c3;
+  --color-ivory: #fffdf9;
+
+  /* Tinta */
+  --color-ink: #1f1f1d;
+  --color-ink-2: #55534d;
+  --color-muted: #8a877f;
+  --color-hairline: #e6dfd3;
+
+  /* Verde Caribe profundo: el acento de la casa */
+  --color-green-950: #0f2a24;
+  --color-green-900: #173a31;
+  --color-green-700: #22574a;
+  --color-green-500: #3a8a74;
+  --color-green-100: #dfece6;
+  --color-green-50: #eef5f1;
+
+  /* Bronce del anillo: solo en el símbolo, nunca dominante */
+  --color-bronze-700: #8c6b3f;
+  --color-bronze-500: #b08d57;
+  --color-bronze-200: #dcc9a6;
+
+  /* Estados (nunca solo por color: siempre con texto o icono) */
+  --color-success: #2e7d5b;
+  --color-warning: #b7791f;
+  --color-danger: #b3403a;
+  --color-focus: #2f8a80;
+
+  /* Semánticos (cambian en modo oscuro) */
+  --color-bg: var(--color-sand-50);
+  --color-surface: var(--color-ivory);
+  --color-surface-2: var(--color-sand-100);
+  --color-text: var(--color-ink);
+  --color-text-2: var(--color-ink-2);
+  --color-line: var(--color-hairline);
+  --color-accent: var(--color-green-900);
+  --color-accent-soft: var(--color-green-100);
+  --color-on-accent: var(--color-ivory);
+
+  /* Radios: solo cuatro formas */
+  --radius-ctl: 14px;
+  --radius-card: 20px;
+  --radius-panel: 26px;
+  --radius-pill: 999px;
+
+  /* Sombras: apenas presentes */
+  --shadow-card: 0 1px 2px rgb(31 31 29 / 0.04), 0 8px 24px -12px rgb(31 31 29 / 0.12);
+  --shadow-float: 0 12px 40px -16px rgb(31 31 29 / 0.28);
+
+  /* Tipografía */
+  --font-serif: var(--font-fraunces), "Iowan Old Style", Georgia, serif;
+  --font-sans: var(--font-inter), system-ui, -apple-system, "Segoe UI", sans-serif;
+
+  /* Movimiento */
+  --ease-out: cubic-bezier(0.22, 0.61, 0.36, 1);
+  --ease-firm: cubic-bezier(0.16, 1, 0.3, 1);
+  --ease-spring: cubic-bezier(0.34, 1.4, 0.64, 1);
+  --duration-micro: 150ms;
+  --duration-nav: 280ms;
+  --duration-hero: 480ms;
+}
+
+:root {
+  --tabbar-h: 64px;
+  --safe-b: env(safe-area-inset-bottom, 0px);
+  --safe-t: env(safe-area-inset-top, 0px);
+  color-scheme: light;
+}
+
+/* Modo oscuro preparado (la dirección inicial es clara). */
+[data-theme="dark"] {
+  --color-bg: #121412;
+  --color-surface: #191c1a;
+  --color-surface-2: #21251f;
+  --color-text: #f1ede6;
+  --color-text-2: #c4beb2;
+  --color-line: #2c312d;
+  --color-accent: #7fc4b7;
+  --color-accent-soft: #163d39;
+  --color-on-accent: #0a2c2a;
+  color-scheme: dark;
+}
+
+@layer base {
+  * {
+    -webkit-tap-highlight-color: transparent;
+  }
+  html {
+    background: var(--color-bg);
+    color: var(--color-text);
+    font-family: var(--font-sans);
+    -webkit-font-smoothing: antialiased;
+    text-rendering: optimizeLegibility;
+    overscroll-behavior-y: none;
+  }
+  body {
+    min-height: 100dvh;
+    font-size: 15px;
+    line-height: 1.5;
+  }
+  h1, h2, h3 {
+    font-family: var(--font-serif);
+    font-weight: 500;
+    letter-spacing: -0.02em;
+    text-wrap: balance;
+  }
+  :focus-visible {
+    outline: 2px solid var(--color-focus);
+    outline-offset: 3px;
+    border-radius: var(--radius-ctl);
+  }
+  ::selection {
+    background: var(--color-accent-soft);
+  }
+  img {
+    user-select: none;
+    -webkit-user-drag: none;
+  }
+}
+
+@layer utilities {
+  .font-serif { font-family: var(--font-serif); }
+  .pb-tabbar { padding-bottom: calc(var(--tabbar-h) + var(--safe-b) + 16px); }
+  .pt-safe { padding-top: var(--safe-t); }
+  .press {
+    transition: transform var(--duration-micro) var(--ease-out), opacity var(--duration-micro) var(--ease-out);
+  }
+  .press:active { transform: scale(0.97); }
+  .hairline { border: 1px solid var(--color-line); }
+  .no-scrollbar::-webkit-scrollbar { display: none; }
+  .no-scrollbar { scrollbar-width: none; }
+  .text-balance { text-wrap: balance; }
+}
+
+/* ---------- Skeleton: shimmer sutil ---------- */
+.skeleton {
+  position: relative;
+  overflow: hidden;
+  background: var(--color-sand-200);
+  border-radius: var(--radius-ctl);
+}
+.skeleton::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  transform: translateX(-100%);
+  background: linear-gradient(90deg, transparent, rgb(255 255 255 / 0.5), transparent);
+  animation: shimmer 1.6s var(--ease-out) infinite;
+}
+@keyframes shimmer { to { transform: translateX(100%); } }
+
+/* ---------- EL ANILLO ----------
+   La fotografía vive en la banda del anillo (una dona), no en el centro.
+   La banda se revela alrededor de la circunferencia y las fotos hacen crossfade. */
+.ring {
+  --ring-size: 176px;
+  --ring-band: 0.36;          /* grosor de la banda como fracción del radio */
+  --ring-p: 0%;               /* progreso del revelado (animado) */
+  position: relative;
+  width: var(--ring-size);
+  height: var(--ring-size);
+  border-radius: 50%;
+}
+.ring-band {
+  position: absolute; inset: 0; border-radius: 50%; overflow: hidden;
+  -webkit-mask: radial-gradient(circle at 50% 50%, transparent calc(50% * (1 - var(--ring-band)) - 0.5px), #000 calc(50% * (1 - var(--ring-band)) + 0.5px), #000 100%);
+  mask: radial-gradient(circle at 50% 50%, transparent calc(50% * (1 - var(--ring-band)) - 0.5px), #000 calc(50% * (1 - var(--ring-band)) + 0.5px), #000 100%);
+}
+.ring-band img {
+  position: absolute; inset: -6%; width: 112%; height: 112%; object-fit: cover;
+  opacity: 0; transform: scale(1.04);
+  transition: opacity 1600ms var(--ease-out), transform 7000ms linear;
+}
+.ring-band img.is-active { opacity: 1; transform: scale(1); }
+/* velo que va destapando la banda en sentido horario */
+.ring-reveal {
+  position: absolute; inset: -1px; border-radius: 50%;
+  background: conic-gradient(from -90deg, transparent var(--ring-p), var(--color-bg) var(--ring-p));
+  animation: ring-reveal 5.2s var(--ease-out) infinite;
+}
+.ring-track {
+  position: absolute; inset: 0; border-radius: 50%;
+  border: 1px solid color-mix(in oklab, var(--color-bronze-500) 45%, transparent);
+  -webkit-mask: radial-gradient(circle, transparent calc(50% * (1 - var(--ring-band))), #000 calc(50% * (1 - var(--ring-band)) + 1px));
+  mask: radial-gradient(circle, transparent calc(50% * (1 - var(--ring-band))), #000 calc(50% * (1 - var(--ring-band)) + 1px));
+}
+.ring-inner { position: absolute; border-radius: 50%; inset: calc(50% * var(--ring-band)); box-shadow: inset 0 0 0 1px color-mix(in oklab, var(--color-bronze-500) 35%, transparent); }
+.ring-enter { animation: ring-enter 900ms var(--ease-firm) both; }
+@keyframes ring-reveal { 0% { --ring-p: 0%; } 70% { --ring-p: 100%; } 100% { --ring-p: 100%; } }
+@property --ring-p { syntax: "<percentage>"; inherits: false; initial-value: 0%; }
+@keyframes ring-enter { from { opacity: 0; transform: scale(0.94); } to { opacity: 1; transform: none; } }
+
+/* Símbolo estático: aro bronce fino (logo) */
+.ring-mark { display: inline-block; border-radius: 50%; border: 1.5px solid transparent; background: linear-gradient(var(--color-bg), var(--color-bg)) padding-box, linear-gradient(135deg, var(--color-bronze-200), var(--color-bronze-500) 45%, var(--color-bronze-700)) border-box; }
+.ring-mark.on-dark { background: linear-gradient(var(--color-green-950), var(--color-green-950)) padding-box, linear-gradient(135deg, var(--color-bronze-200), var(--color-bronze-500) 45%, var(--color-bronze-700)) border-box; }
+
+/* Línea corta bajo mensajes de carga */
+.hairline-short { width: 56px; height: 1px; background: color-mix(in oklab, var(--color-text) 25%, transparent); }
+
+/* Control segmentado */
+.segmented { display: inline-flex; gap: 2px; padding: 3px; border-radius: var(--radius-pill); background: var(--color-surface-2); }
+.segmented > * { border-radius: var(--radius-pill); padding: 8px 14px; font-size: 13px; font-weight: 500; color: var(--color-text-2); min-height: 36px; display: inline-flex; align-items: center; transition: background var(--duration-micro) var(--ease-out), color var(--duration-micro) var(--ease-out); }
+.segmented > [aria-current="page"], .segmented > [data-active="true"] { background: var(--color-surface); color: var(--color-text); box-shadow: var(--shadow-card); }
+
+/* ---------- Entradas de página ---------- */
+.fade-up { animation: fade-up var(--duration-hero) var(--ease-firm) both; }
+@keyframes fade-up { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: none; } }
+.fade-in { animation: fade-in var(--duration-nav) var(--ease-out) both; }
+@keyframes fade-in { from { opacity: 0; } to { opacity: 1; } }
+
+@media (prefers-reduced-motion: reduce) {
+  *, ::before, ::after { animation-duration: 0.01ms !important; animation-iteration-count: 1 !important; transition-duration: 0.01ms !important; }
+  .ring-reveal { animation: none; --ring-p: 100%; }
+  .ring-band img { transition: none; transform: none; }
+}
