@@ -1,6 +1,6 @@
 import { notFound } from "next/navigation";
 import Link from "next/link";
-import { requireUser } from "@/domains/identity/current-user";
+import { getSessionUser } from "@/domains/identity/current-user";
 import { propertyById } from "@/domains/properties/queries";
 import { fractionCore, weeksForOwner } from "@/domains/fractions/local-fraction-core";
 import { nextStayFor } from "@/domains/stays/queries";
@@ -18,12 +18,16 @@ export const dynamic = "force-dynamic";
 /** Pantalla 13: detalle de propiedad. Experiencia primero; lo contractual, aparte y discreto. */
 export default async function PropertyDetail({ params }: { params: Promise<{ id: string }> }) {
   const { id } = await params;
-  const user = await requireUser();
+  // Visitante sin cuenta: ve la ficha. Nunca la dirección exacta ni titularidad ajena.
+  const user = await getSessionUser();
   const property = await propertyById(id);
   if (!property) notFound();
-  const ownerships = (await fractionCore().getUserOwnerships(user.id)).filter((o) => o.propertyId === property.id);
+  const ownerships = user ? (await fractionCore().getUserOwnerships(user.id)).filter((o) => o.propertyId === property.id) : [];
   const isOwner = ownerships.length > 0;
-  const [weeks, next] = await Promise.all([isOwner ? weeksForOwner(user.id) : Promise.resolve([]), nextStayFor(user.id)]);
+  const [weeks, next] = await Promise.all([
+    isOwner && user ? weeksForOwner(user.id) : Promise.resolve([]),
+    user ? nextStayFor(user.id) : Promise.resolve(null),
+  ]);
   const myWeeks = weeks.filter((w) => w.propertyId === property.id);
   const cover = property.media.find((m) => m.isCover) ?? property.media[0];
   const rest = property.media.filter((m) => m.id !== cover?.id).slice(0, 4);

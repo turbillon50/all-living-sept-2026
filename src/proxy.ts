@@ -2,9 +2,10 @@ import { clerkMiddleware, createRouteMatcher } from "@clerk/nextjs/server";
 import { NextResponse } from "next/server";
 
 /**
- * Explorar, propiedades, servicios y proveedores son PÚBLICOS: se navegan sin cuenta,
+ * Explorar, el detalle de una propiedad, servicios y proveedores son PÚBLICOS: se navegan sin cuenta,
  * como en cualquier marketplace de hospedaje. La sesión se pide al operar (reservar,
- * liberar semana, publicar), no al mirar. La dirección exacta y los datos del titular
+ * liberar semana, publicar), no al mirar. `/properties` a secas es "mis propiedades"
+ * y sigue siendo privada: lo público es el catálogo (/explore) y la ficha (/properties/:id). La dirección exacta y los datos del titular
  * nunca salen en la vista pública.
  *
  * Rutas que exigen sesión. Todo lo demás (marketing, auth, invitaciones, offline, health, 404) es público.
@@ -12,6 +13,7 @@ import { NextResponse } from "next/server";
  */
 const isProtected = createRouteMatcher([
   "/home(.*)",
+  "/properties",
   "/onboarding(.*)",
   "/stays(.*)",
   "/weeks(.*)",
