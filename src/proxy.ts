@@ -16,7 +16,7 @@ const isProtected = createRouteMatcher([
   "/stays(.*)",
   "/weeks(.*)",
   "/fractions(.*)",
-  "/book(.*)",
+  "/book/(.*)",
   "/bookings(.*)",
   "/pass(.*)",
   "/notifications(.*)",
@@ -24,7 +24,10 @@ const isProtected = createRouteMatcher([
   "/support(.*)",
   "/incidents(.*)",
   "/profile(.*)",
-  "/pro(.*)",
+  // OJO: "/pro(.*)" capturaba también /properties y /profile. Anclado a segmento.
+  "/pro",
+  "/pro/(.*)",
+  "/properties",
   "/ops(.*)",
   "/admin(.*)",
 ]);
