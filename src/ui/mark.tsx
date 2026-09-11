@@ -1,12 +1,14 @@
 import { cn } from "./cn";
 
 /**
- * EL ARCO — símbolo de ALL LIVING.
+ * LA PALMA — símbolo de ALL LIVING.
  *
- * Un arco de medio punto abierto al piso: la puerta por la que se entra a un lugar,
- * y al mismo tiempo la A de ALL sin travesaño. Dentro, el punto: quien lo habita.
- * Una sola forma, un solo trazo, legible a 16px y en monocromo.
- * Reemplaza al aro anterior, que leía como argolla y no decía nada.
+ * Dos hojas que nacen del mismo punto y se abren: el lugar y quien lo habita,
+ * la misma raíz. Leídas juntas forman la A de ALL. Entre ellas, en el hueco,
+ * el punto de bronce: el sol del Caribe.
+ *
+ * Forma llena, no contorno: se lee a 16px y en monocromo. Sustituye al arco
+ * anterior, que leía como candado.
  */
 export function Mark({
   size = 28,
@@ -25,19 +27,13 @@ export function Mark({
       style={{ width: size, height: size }}
       aria-hidden
     >
-      <svg viewBox="0 0 24 24" fill="none" width="100%" height="100%">
-        {/* El arco: piernas al piso, medio punto arriba. */}
-        <path
-          className="al-mark-arch"
-          d="M4.4 20.4V11.6a7.6 7.6 0 0 1 15.2 0v8.8"
-          stroke="currentColor"
-          strokeWidth="1.7"
-          strokeLinecap="round"
-        />
-        {/* El umbral: la línea del piso, más corta que el arco. Respira. */}
-        <path className="al-mark-sill" d="M7.6 20.4h8.8" stroke="currentColor" strokeWidth="1.7" strokeLinecap="round" opacity="0.35" />
-        {/* Quien lo habita. */}
-        <circle className="al-mark-dot" cx="12" cy="12.4" r="2.5" fill="currentColor" />
+      <svg viewBox="0 0 24 24" width="100%" height="100%">
+        <g className="al-mark-leaves" fill="currentColor">
+          <path d="M12 2.4c-3 3.8-5.8 8.8-6.8 14.8-.2 1.3.1 2.1.9 2.6 2-1.2 3.7-3.6 4.9-6.6.6-1.7 1-3.4 1.1-5.1z" />
+          <path d="M12 2.4c3 3.8 5.8 8.8 6.8 14.8.2 1.3-.1 2.1-.9 2.6-2-1.2-3.7-3.6-4.9-6.6-.6-1.7-1-3.4-1.1-5.1z" />
+        </g>
+        {/* El sol, en el hueco entre las dos hojas. */}
+        <circle className="al-mark-sun" cx="12" cy="16.6" r="2.1" fill="var(--color-bronze-500)" />
       </svg>
     </span>
   );

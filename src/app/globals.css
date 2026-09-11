@@ -178,19 +178,18 @@
 /* ---------- El Arco: símbolo de la casa ---------- */
 .al-mark { color: var(--color-green-950); }
 .al-mark.on-dark { color: var(--color-ivory); }
-.al-mark .al-mark-dot { fill: var(--color-bronze-500); transition: transform 300ms var(--ease-spring), opacity 200ms var(--ease-out); transform-origin: 12px 12.4px; }
-.al-mark .al-mark-arch { transition: stroke-width 200ms var(--ease-out); }
-/* Al tocarlo, quien habita entra: el punto sube al centro del arco. */
+.al-mark .al-mark-sun { transition: transform 320ms var(--ease-spring), opacity 200ms var(--ease-out); transform-origin: 12px 16.6px; }
+.al-mark .al-mark-leaves { transition: transform 320ms var(--ease-spring); transform-origin: 12px 12px; }
+/* Al tocarlo, el sol late y las hojas se abren un pelo. */
 .al-mark.is-interactive { cursor: pointer; }
-.al-mark.is-interactive:active .al-mark-dot { transform: translateY(-1.2px) scale(1.12); }
-@media (hover: hover) { .al-mark.is-interactive:hover .al-mark-dot { transform: translateY(-0.8px); } }
+.al-mark.is-interactive:active .al-mark-sun { transform: scale(1.18); }
+.al-mark.is-interactive:active .al-mark-leaves { transform: scale(1.04); }
+@media (hover: hover) { .al-mark.is-interactive:hover .al-mark-sun { transform: scale(1.08); } }
 
-/* Entrada del símbolo: el arco se dibuja, luego aparece el punto. */
-.al-mark-enter .al-mark-arch { stroke-dasharray: 40; stroke-dashoffset: 40; animation: al-draw 720ms var(--ease-firm) forwards; }
-.al-mark-enter .al-mark-sill { opacity: 0; animation: al-fade 300ms var(--ease-out) 560ms forwards; }
-.al-mark-enter .al-mark-dot { opacity: 0; transform: scale(0.4); animation: al-pop 420ms var(--ease-spring) 640ms forwards; }
-@keyframes al-draw { to { stroke-dashoffset: 0; } }
-@keyframes al-fade { to { opacity: 0.35; } }
+/* Entrada: las hojas crecen desde la raíz, luego sale el sol. */
+.al-mark-enter .al-mark-leaves { opacity: 0; transform: scaleY(0.5) translateY(4px); animation: al-grow 620ms var(--ease-firm) forwards; }
+.al-mark-enter .al-mark-sun { opacity: 0; transform: scale(0.3); animation: al-pop 420ms var(--ease-spring) 460ms forwards; }
+@keyframes al-grow { to { opacity: 1; transform: none; } }
 @keyframes al-pop { to { opacity: 1; transform: scale(1); } }
   .hairline { border: 1px solid var(--color-line); }
   .no-scrollbar::-webkit-scrollbar { display: none; }
@@ -281,7 +280,6 @@
   .tapable, .tapable-photo, .tapable-row, .tapable-icon, .tapable-pill { transition: none; }
   .tapable:hover, .tapable:active, .tapable-photo:active, .tapable-row:active, .tapable-icon:active, .tapable-pill:active { transform: none; }
   .tapable-photo:hover img, .tapable-photo:active img { transform: none; }
-  .al-mark-enter .al-mark-arch { animation: none; stroke-dashoffset: 0; }
-  .al-mark-enter .al-mark-sill { animation: none; opacity: 0.35; }
-  .al-mark-enter .al-mark-dot { animation: none; opacity: 1; transform: none; }
+  .al-mark-enter .al-mark-leaves { animation: none; opacity: 1; transform: none; }
+  .al-mark-enter .al-mark-sun { animation: none; opacity: 1; transform: none; }
 }
