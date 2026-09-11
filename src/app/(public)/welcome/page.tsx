@@ -1,4 +1,5 @@
 import Image from "next/image";
+import Link from "next/link";
 import { ButtonLink } from "@/ui/button";
 import { Wordmark } from "@/ui/wordmark";
 
@@ -19,7 +20,7 @@ export default function Welcome() {
             <ButtonLink href="/welcome/role" size="lg" variant="ghost-light" className="md:w-auto md:px-10">Crear cuenta</ButtonLink>
           </div>
           <p className="mt-5 text-center text-[13px] text-ivory/70 md:text-center">
-            <a href="/sign-in" className="underline underline-offset-4 hover:text-ivory">Ya tengo cuenta</a>
+            <Link href="/sign-in" className="underline underline-offset-4 hover:text-ivory">Ya tengo cuenta</Link>
           </p>
         </div>
       </div>
