@@ -18,7 +18,7 @@ export function IconAction({ href, label, Icon, tone = "soft", className }: { hr
         ? "bg-surface text-green-900 hairline"
         : "bg-accent-soft text-green-900";
   return (
-    <Link href={href} className={cn("press flex flex-col items-center gap-2 text-center", className)}>
+    <Link href={href} className={cn("tapable-icon flex flex-col items-center gap-2 text-center", className)}>
       <span className={cn("flex size-14 items-center justify-center rounded-full transition-colors", circle)}>
         <Icon size={22} aria-hidden />
       </span>
@@ -43,7 +43,7 @@ export function ListRow({ href, Icon, title, subtitle, right, className, onDark 
       {right ?? (href ? <ChevronRight size={18} className={onDark ? "text-ivory/60" : "text-muted"} aria-hidden /> : null)}
     </>
   );
-  const cls = cn("flex min-h-14 items-center gap-3.5 px-4 py-2.5", href && "press hover:bg-surface-2", className);
+  const cls = cn("flex min-h-14 items-center gap-3.5 px-4 py-2.5", href && "tapable-row hover:bg-surface-2", className);
   return href ? <Link href={href} className={cls}>{body}</Link> : <div className={cls}>{body}</div>;
 }
 
@@ -78,7 +78,7 @@ export function FilterPills({ items, current, className }: { items: Array<{ key:
         const active = it.key === current;
         return (
           <li key={it.key} className="shrink-0">
-            <Link href={it.href} aria-current={active ? "page" : undefined} className={cn("press inline-flex min-h-10 items-center rounded-[var(--radius-pill)] px-4 text-[13px] font-medium hairline transition-colors", active ? "bg-ink text-ivory border-ink" : "bg-surface text-text-2")}>
+            <Link href={it.href} aria-current={active ? "page" : undefined} className={cn("tapable-pill inline-flex min-h-10 items-center rounded-[var(--radius-pill)] px-4 text-[13px] font-medium hairline transition-colors", active ? "bg-ink text-ivory border-ink" : "bg-surface text-text-2")}>
               {it.label}
             </Link>
           </li>
@@ -101,7 +101,7 @@ export function SearchBar({ placeholder, name = "q", action, defaultValue, class
 /** Tile fotográfico: foto arriba, título y línea debajo. Grid de 2. */
 export function PhotoTile({ href, src, alt, title, subtitle, ratio = "4/3", badge, sizes = "(max-width: 768px) 50vw, 25vw", className }: { href: string; src: string | null; alt: string; title: string; subtitle?: string; ratio?: string; badge?: React.ReactNode; sizes?: string; className?: string }) {
   return (
-    <Link href={href} className={cn("press block", className)}>
+    <Link href={href} className={cn("tapable-photo block", className)}>
       <div className="relative overflow-hidden rounded-[var(--radius-card)] bg-sand-200" style={{ aspectRatio: ratio }}>
         {src ? <Image src={src} alt={alt} fill sizes={sizes} className="object-cover" /> : null}
         {badge ? <span className="absolute left-2.5 top-2.5">{badge}</span> : null}
@@ -115,7 +115,7 @@ export function PhotoTile({ href, src, alt, title, subtitle, ratio = "4/3", badg
 /** Icono en tile cuadrado (Destacados · Yates · Chefs · Niñeras). */
 export function IconTile({ href, label, Icon, active }: { href: string; label: string; Icon: LucideIcon; active?: boolean }) {
   return (
-    <Link href={href} aria-current={active ? "page" : undefined} className={cn("press flex flex-col items-center gap-2 rounded-[var(--radius-card)] px-2 py-3.5 hairline", active ? "bg-accent-soft border-green-100" : "bg-surface")}>
+    <Link href={href} aria-current={active ? "page" : undefined} className={cn("tapable flex flex-col items-center gap-2 rounded-[var(--radius-card)] px-2 py-3.5 hairline", active ? "bg-accent-soft border-green-100" : "bg-surface")}>
       <Icon size={22} className="text-green-900" aria-hidden />
       <span className="text-[12px] font-medium text-text-2">{label}</span>
     </Link>

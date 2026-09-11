@@ -137,6 +137,61 @@
     transition: transform var(--duration-micro) var(--ease-out), opacity var(--duration-micro) var(--ease-out);
   }
   .press:active { transform: scale(0.97); }
+
+/* ============================================================
+   MICROINTERACCIONES CRAFT
+   Todo lo que se toca responde. Nada rebota de más.
+   Curva de resorte corta, distancias pequeñas, siempre reversible.
+   ============================================================ */
+
+/* Superficies que se pueden tocar: hunden al presionar, se levantan al apuntar. */
+.tapable {
+  transition: transform 220ms var(--ease-spring), box-shadow 220ms var(--ease-out), border-color var(--duration-micro) var(--ease-out);
+  will-change: transform;
+}
+.tapable:active { transform: scale(0.978); }
+@media (hover: hover) {
+  .tapable:hover { transform: translateY(-2px); box-shadow: var(--shadow-float); }
+  .tapable:active { transform: scale(0.978) translateY(0); box-shadow: var(--shadow-card); }
+}
+
+/* Fichas fotográficas: la foto crece dentro del marco, el marco no se mueve. */
+.tapable-photo { transition: transform 260ms var(--ease-spring); will-change: transform; }
+.tapable-photo:active { transform: scale(0.985); }
+.tapable-photo img { transition: transform 620ms var(--ease-firm); }
+@media (hover: hover) { .tapable-photo:hover img { transform: scale(1.045); } }
+.tapable-photo:active img { transform: scale(1.015); }
+
+/* Filas de lista: se recorren un pelo hacia la derecha, como si cedieran. */
+.tapable-row { transition: background var(--duration-micro) var(--ease-out), transform 200ms var(--ease-spring); }
+.tapable-row:active { transform: translateX(2px) scale(0.995); }
+
+/* Íconos de acción: crecen al presionar en vez de encogerse. Son botones de intención. */
+.tapable-icon { transition: transform 240ms var(--ease-spring), background var(--duration-micro) var(--ease-out); }
+.tapable-icon:active { transform: scale(1.08); }
+@media (hover: hover) { .tapable-icon:hover { transform: scale(1.04); } }
+
+/* Pastillas y chips: acuse corto al elegir. */
+.tapable-pill { transition: transform 200ms var(--ease-spring), background var(--duration-micro) var(--ease-out), color var(--duration-micro) var(--ease-out); }
+.tapable-pill:active { transform: scale(0.94); }
+
+/* ---------- El Arco: símbolo de la casa ---------- */
+.al-mark { color: var(--color-green-950); }
+.al-mark.on-dark { color: var(--color-ivory); }
+.al-mark .al-mark-dot { fill: var(--color-bronze-500); transition: transform 300ms var(--ease-spring), opacity 200ms var(--ease-out); transform-origin: 12px 12.4px; }
+.al-mark .al-mark-arch { transition: stroke-width 200ms var(--ease-out); }
+/* Al tocarlo, quien habita entra: el punto sube al centro del arco. */
+.al-mark.is-interactive { cursor: pointer; }
+.al-mark.is-interactive:active .al-mark-dot { transform: translateY(-1.2px) scale(1.12); }
+@media (hover: hover) { .al-mark.is-interactive:hover .al-mark-dot { transform: translateY(-0.8px); } }
+
+/* Entrada del símbolo: el arco se dibuja, luego aparece el punto. */
+.al-mark-enter .al-mark-arch { stroke-dasharray: 40; stroke-dashoffset: 40; animation: al-draw 720ms var(--ease-firm) forwards; }
+.al-mark-enter .al-mark-sill { opacity: 0; animation: al-fade 300ms var(--ease-out) 560ms forwards; }
+.al-mark-enter .al-mark-dot { opacity: 0; transform: scale(0.4); animation: al-pop 420ms var(--ease-spring) 640ms forwards; }
+@keyframes al-draw { to { stroke-dashoffset: 0; } }
+@keyframes al-fade { to { opacity: 0.35; } }
+@keyframes al-pop { to { opacity: 1; transform: scale(1); } }
   .hairline { border: 1px solid var(--color-line); }
   .no-scrollbar::-webkit-scrollbar { display: none; }
   .no-scrollbar { scrollbar-width: none; }
@@ -223,4 +278,10 @@
   *, ::before, ::after { animation-duration: 0.01ms !important; animation-iteration-count: 1 !important; transition-duration: 0.01ms !important; }
   .ring-reveal { animation: none; --ring-p: 100%; }
   .ring-band img { transition: none; transform: none; }
+  .tapable, .tapable-photo, .tapable-row, .tapable-icon, .tapable-pill { transition: none; }
+  .tapable:hover, .tapable:active, .tapable-photo:active, .tapable-row:active, .tapable-icon:active, .tapable-pill:active { transform: none; }
+  .tapable-photo:hover img, .tapable-photo:active img { transform: none; }
+  .al-mark-enter .al-mark-arch { animation: none; stroke-dashoffset: 0; }
+  .al-mark-enter .al-mark-sill { animation: none; opacity: 0.35; }
+  .al-mark-enter .al-mark-dot { animation: none; opacity: 1; transform: none; }
 }

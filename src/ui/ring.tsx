@@ -65,8 +65,3 @@ export function Ring({
     </div>
   );
 }
-
-/** Símbolo estático de la marca: aro bronce. */
-export function RingMark({ size = 28, className, onDark = false }: { size?: number; className?: string; onDark?: boolean }) {
-  return <span className={cn("ring-mark shrink-0", onDark && "on-dark", className)} style={{ width: size, height: size }} aria-hidden />;
-}

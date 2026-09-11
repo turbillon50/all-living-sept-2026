@@ -2,6 +2,13 @@ import type { Role } from "@/core/roles";
 
 export type NavItem = { href: string; label: string; icon: "home" | "stays" | "explore" | "services" | "profile" | "earnings" | "jobs" | "tasks" | "properties" };
 
+/** Navegación del visitante sin cuenta: solo lo que se puede mirar. */
+export const GUEST_NAV: NavItem[] = [
+  { href: "/explore", label: "Explorar", icon: "explore" },
+  { href: "/properties", label: "Propiedades", icon: "properties" },
+  { href: "/services", label: "Servicios", icon: "services" },
+];
+
 /** Navegación por contexto activo (spec §28). Operator y admin tienen la suya; admin nunca en tabbar pública. */
 export function navFor(role: Role): NavItem[] {
   switch (role) {

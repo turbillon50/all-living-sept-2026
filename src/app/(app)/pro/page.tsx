@@ -6,7 +6,7 @@ import { Page } from "@/ui/page";
 import { Chip } from "@/ui/chip";
 import { EmptyState } from "@/ui/empty-state";
 import { BrandPanel, ListRow, RowGroup } from "@/ui/primitives";
-import { RingMark } from "@/ui/ring";
+import { Mark } from "@/ui/mark";
 import { ButtonLink } from "@/ui/button";
 import Image from "next/image";
 import { BOOKING_STATUS } from "@/domains/bookings/labels";
@@ -47,7 +47,7 @@ export default async function ProHome() {
     <Page>
       <BrandPanel className="pb-7 md:mt-6">
         <div className="flex flex-col items-center pt-8 text-center">
-          <RingMark size={30} onDark />
+          <Mark size={30} onDark />
           <p className="mt-3 font-serif text-[22px] tracking-[0.3em] uppercase leading-none">All Living</p>
           <p className="mt-1.5 text-[9px] tracking-[0.4em] uppercase text-ivory/60">Provider</p>
           <span className="relative mt-5 size-16 overflow-hidden rounded-full bg-ivory/10 ring-2 ring-ivory/30">{user.avatarUrl ? <Image src={user.avatarUrl} alt="" fill sizes="64px" className="object-cover" /> : prov.logoUrl ? <Image src={prov.logoUrl} alt="" fill sizes="64px" className="object-cover" /> : null}</span>

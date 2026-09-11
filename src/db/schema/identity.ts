@@ -14,6 +14,13 @@ export const users = pgTable(
     locale: text("locale").notNull().default("es-MX"),
     /** Contexto activo (modo) persistido: owner | guest | provider | operator | admin. */
     activeContext: roleEnum("active_context").notNull().default("owner"),
+    /**
+     * Vínculo opcional con la cuenta de V&LIVING. El registro es independiente
+     * (bases separadas, doble alta); esto solo guarda el puente cuando el miembro
+     * empareja las dos cuentas. Nunca se rellena solo por coincidencia de correo.
+     */
+    vlivingUserId: text("vliving_user_id"),
+    linkedAt: timestamp("linked_at", { withTimezone: true }),
   },
   (t) => [uniqueIndex("users_clerk_id_uq").on(t.clerkId), uniqueIndex("users_email_uq").on(t.email)],
 );

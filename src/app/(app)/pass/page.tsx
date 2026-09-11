@@ -8,7 +8,7 @@ import { formatRange } from "@/core/format";
 import { Page } from "@/ui/page";
 import { TopBar } from "@/ui/top-bar";
 import { Chip } from "@/ui/chip";
-import { RingMark } from "@/ui/ring";
+import { Mark } from "@/ui/mark";
 import { PhotoTile, Segmented } from "@/ui/primitives";
 
 export const dynamic = "force-dynamic";
@@ -26,7 +26,7 @@ export default async function PassPage({ searchParams }: { searchParams: Promise
       <TopBar back="/profile" title="Living Pass" />
       <section className="mt-3 rounded-[var(--radius-panel)] bg-green-950 p-6 text-ivory shadow-[var(--shadow-float)] fade-up">
         <div className="flex items-center justify-between">
-          <div className="flex items-center gap-3"><RingMark size={34} onDark /><div><p className="font-serif text-[18px] tracking-[0.26em] uppercase leading-none">All Living</p><p className="mt-1 text-[9px] tracking-[0.36em] uppercase text-ivory/60">Pass</p></div></div>
+          <div className="flex items-center gap-3"><Mark size={34} onDark /><div><p className="font-serif text-[18px] tracking-[0.26em] uppercase leading-none">All Living</p><p className="mt-1 text-[9px] tracking-[0.36em] uppercase text-ivory/60">Pass</p></div></div>
         </div>
         <div className="mt-6 flex items-center gap-5">
           <div className="min-w-0 flex-1">
