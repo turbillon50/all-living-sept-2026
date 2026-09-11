@@ -13,7 +13,6 @@ import { NextResponse } from "next/server";
  */
 const isProtected = createRouteMatcher([
   "/home(.*)",
-  "/properties",
   "/onboarding(.*)",
   "/stays(.*)",
   "/weeks(.*)",

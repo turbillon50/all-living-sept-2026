@@ -1,7 +1,8 @@
 import Image from "next/image";
 import Link from "next/link";
 import { ChevronRight } from "@/ui/icons";
-import { requireUser } from "@/domains/identity/current-user";
+import { redirect } from "next/navigation";
+import { getSessionUser } from "@/domains/identity/current-user";
 import { fractionCore } from "@/domains/fractions/local-fraction-core";
 import { coverFor } from "@/domains/properties/queries";
 import { Page, PageHeader } from "@/ui/page";
@@ -15,7 +16,8 @@ export const dynamic = "force-dynamic";
 /** Pantalla 12/14: mis propiedades. Control segmentado y filas con miniatura. */
 export default async function PropertiesPage({ searchParams }: { searchParams: Promise<{ tab?: string }> }) {
   const { tab = "properties" } = await searchParams;
-  const user = await requireUser();
+  const user = await getSessionUser();
+  if (!user) redirect("/sign-in");
   const ownerships = await fractionCore().getUserOwnerships(user.id);
   const covers = await coverFor([...new Set(ownerships.map((o) => o.propertyId))]);
   const byProperty = new Map<string, typeof ownerships>();
