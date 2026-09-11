@@ -375,3 +375,17 @@
 @media (prefers-reduced-motion: reduce) {
   .al-mobius.is-alive .al-mobius-body, .al-mobius .al-mobius-twist, .mobius-loader-mark, .mobius-caustic { animation: none !important; transform: none !important; }
 }
+
+/* === Premium living Möbius / WebGL identity === */
+.mobius3d{position:relative;min-width:0;min-height:0;touch-action:pan-y;filter:drop-shadow(0 18px 28px rgb(0 83 119/.10));}
+.mobius3d canvas{display:block;width:100%!important;height:100%!important;outline:none;}
+.mobius3d-fallback{position:absolute;inset:18%;border:14px solid #17bfd0;border-radius:50%;transform:rotate(-18deg) skewX(-12deg);opacity:.85}
+.premium-splash{position:relative;overflow:hidden;display:grid;grid-template-rows:auto 1fr auto;place-items:center;padding:calc(42px + var(--safe-t)) 24px calc(34px + var(--safe-b));background:linear-gradient(180deg,#eafafd 0%,#f6fbfa 43%,#faf7f2 100%);isolation:isolate}
+.ocean-depth{position:absolute;inset:0;z-index:-2;background:radial-gradient(ellipse at 50% 10%,rgb(255 255 255/.96),transparent 30%),linear-gradient(180deg,#c8f0f5 0%,#e9f8f8 44%,#faf7f2 86%);overflow:hidden}
+.ocean-depth:after{content:"";position:absolute;inset:-20%;background:radial-gradient(ellipse at 28% 20%,rgb(255 255 255/.72) 0 2%,transparent 12%),radial-gradient(ellipse at 72% 30%,rgb(64 209 220/.14),transparent 24%),radial-gradient(ellipse at 44% 58%,rgb(17 153 190/.08),transparent 28%);animation:ocean-breathe 9s ease-in-out infinite alternate;filter:blur(12px)}
+.ray{position:absolute;top:-12%;width:18%;height:74%;background:linear-gradient(180deg,rgb(255 255 255/.55),transparent);filter:blur(12px);transform-origin:top center;opacity:.38}.r1{left:18%;transform:rotate(13deg);animation:ray1 11s ease-in-out infinite alternate}.r2{left:48%;transform:rotate(-8deg);animation:ray2 14s ease-in-out infinite alternate}.r3{right:8%;transform:rotate(-18deg);animation:ray1 17s ease-in-out infinite alternate-reverse}
+.premium-brand{text-align:center;align-self:start}.premium-name{font-family:var(--font-serif),Georgia,serif;font-size:clamp(26px,8vw,38px);letter-spacing:.31em;text-indent:.31em;color:#063d52;white-space:nowrap}.premium-tag{margin-top:10px;font-size:9px;letter-spacing:.36em;color:rgb(6 61 82/.58)}
+.premium-loader{align-self:center}.premium-mobius-stage{position:relative;display:grid;place-items:center}.water-light{position:absolute;inset:7%;border-radius:50%;background:radial-gradient(circle,rgb(37 203 218/.13),transparent 62%);filter:blur(18px);animation:water-halo 5.5s ease-in-out infinite alternate}.premium-whisper{font-size:8px;letter-spacing:.34em;color:rgb(6 61 82/.42);align-self:end}
+@keyframes ocean-breathe{to{transform:translate3d(2%,-1%,0) scale(1.05)}}@keyframes ray1{to{transform:rotate(18deg) translateX(8%)}}@keyframes ray2{to{transform:rotate(-3deg) translateX(-7%)}}@keyframes water-halo{to{transform:scale(1.12);opacity:.65}}
+@media (max-width:430px){.premium-splash{padding-inline:18px}.premium-name{font-size:28px}.premium-mobius-stage{max-width:68vw;max-height:68vw}.premium-whisper{font-size:7px}}
+@media (prefers-reduced-motion:reduce){.ocean-depth:after,.ray,.water-light{animation:none!important}.mobius3d{filter:none}}
