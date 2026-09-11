@@ -1,5 +1,4 @@
 import { clerkMiddleware, createRouteMatcher } from "@clerk/nextjs/server";
-import { NextResponse } from "next/server";
 
 /**
  * Explorar, el detalle de una propiedad, servicios y proveedores son PÚBLICOS: se navegan sin cuenta,
@@ -32,10 +31,7 @@ const isProtected = createRouteMatcher([
 
 export default clerkMiddleware(async (auth, req) => {
   if (isProtected(req)) await auth.protect();
-  // La ruta viaja al layout para que decida cascarón de miembro o de visitante.
-  const headers = new Headers(req.headers);
-  headers.set("x-pathname", req.nextUrl.pathname);
-  return NextResponse.next({ request: { headers } });
+  // Nada más: devolver una respuesta propia aquí anula el handshake de Clerk.
 });
 
 export const config = {
