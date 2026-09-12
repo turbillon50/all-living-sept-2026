@@ -1,6 +1,6 @@
 "use client";
 import { cn } from "./cn";
-import { Mobius3D } from "./mobius-3d";
+/** Master mark derived from the approved cinematic Möbius, never synthetic geometry. */
 export function Mark({size=28,className,interactive=false,motion=true}:{size?:number;className?:string;onDark?:boolean;interactive?:boolean;motion?:boolean}){
- return <span className={cn("inline-grid shrink-0 place-items-center",className)} style={{width:size,height:size}} aria-hidden><Mobius3D compact={size<80} interactive={interactive&&motion} className="h-full w-full"/></span>;
+ return <span className={cn("master-mark inline-grid shrink-0 place-items-center overflow-hidden rounded-full",interactive&&"is-interactive",motion&&"is-alive",className)} style={{width:size,height:size}} aria-hidden><span className="master-mark-image" /></span>;
 }

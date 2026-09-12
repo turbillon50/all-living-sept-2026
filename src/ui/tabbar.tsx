@@ -5,6 +5,7 @@ import { usePathname } from "next/navigation";
 import { Home, CalendarDays, Compass, Sparkles, UserRound, Wallet, Briefcase, ListChecks, Building2 } from "@/ui/icons";
 import type { NavItem } from "./nav";
 import { cn } from "./cn";
+import { Mark } from "./mark";
 
 const ICONS = { home: Home, stays: CalendarDays, explore: Compass, services: Sparkles, profile: UserRound, earnings: Wallet, jobs: Briefcase, tasks: ListChecks, properties: Building2 } as const;
 
@@ -36,7 +37,7 @@ export function TabBar({ items }: { items: NavItem[] }) {
                   active ? "text-accent" : "text-muted",
                 )}
               >
-                <Icon size={22} strokeWidth={active ? 2.1 : 1.7} aria-hidden />
+                {it.icon === "explore" ? (<span className={cn("smart-orb", active && "is-active")}><Mark size={34} interactive /></span>) : (<Icon size={22} strokeWidth={active ? 2.1 : 1.7} aria-hidden />)}
                 <span>{it.label}</span>
               </Link>
             </li>
@@ -52,7 +53,8 @@ export function Sidebar({ items, name, contextLabel }: { items: NavItem[]; name:
   const pathname = usePathname();
   return (
     <aside className="hidden md:flex md:w-64 lg:w-72 shrink-0 flex-col border-r border-line bg-surface/60 px-5 py-8 sticky top-0 h-dvh">
-      <Link href={items[0]?.href ?? "/home"} className="px-2">
+      <Link href={items[0]?.href ?? "/home"} className="px-2 inline-flex items-center gap-3">
+        <Mark size={30} interactive />
         <span className="font-serif text-[18px] tracking-[0.3em] uppercase">All Living</span>
       </Link>
       <p className="px-2 mt-1 text-[10px] tracking-[0.3em] uppercase text-muted">Stay · Enjoy · Belong</p>
