@@ -47,7 +47,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
       }}
     >
       <html lang="es-MX" className={`${fraunces.variable} ${inter.variable}`} suppressHydrationWarning>
-        <body>
+        <body className="app-root-body">
           <Providers>{children}</Providers>
           <RegisterSW />
         </body>
