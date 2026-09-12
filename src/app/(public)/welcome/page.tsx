@@ -2,11 +2,12 @@ import Image from "next/image";
 import Link from "next/link";
 import { ButtonLink } from "@/ui/button";
 import { Wordmark } from "@/ui/wordmark";
+import { CinematicEntry } from "@/ui/cinematic-entry";
 
 /** Pantalla 02: brand moment. Fotografía completa, la marca arriba, una sola promesa. */
 export default function Welcome() {
   return (
-    <main className="welcome-seam relative min-h-dvh overflow-hidden bg-[#2b7f9d] text-ivory">
+    <><CinematicEntry/><main className="welcome-seam relative min-h-dvh overflow-hidden bg-[#2b7f9d] text-ivory">
       <Image src="/demo/tulum-sea.webp" alt="" fill priority sizes="100vw" className="object-cover welcome-seam-image" />
       <div className="absolute inset-0 bg-gradient-to-b from-green-950/45 via-transparent to-green-950/85" />
       <div className="relative flex min-h-dvh flex-col justify-between px-6 pt-safe" style={{ paddingBottom: "calc(36px + var(--safe-b))" }}>
@@ -24,6 +25,6 @@ export default function Welcome() {
           </p>
         </div>
       </div>
-    </main>
+    </main></>
   );
 }
