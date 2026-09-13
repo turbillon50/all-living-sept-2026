@@ -8,3 +8,5 @@ export * from "./bookings";
 export * from "./rentals";
 export * from "./finance";
 export * from "./operations";
+
+export * from "./time-inventory";

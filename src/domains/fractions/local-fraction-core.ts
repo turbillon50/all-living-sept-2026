@@ -184,6 +184,24 @@ export class LocalFractionCore implements FractionCoreClient {
         })
         .returning({ id: schema.rentalInventory.id });
       if (!inv) throw conflict("No se pudo crear el inventario.");
+      const fraction = await d.query.fractions.findFirst({ where: eq(schema.fractions.id, week.fractionId) });
+      if (!fraction) throw notFound("La fracción de esta semana no existe.");
+      await d.insert(schema.timeInventory).values({
+        propertyId: fraction.propertyId,
+        ownerUserId: input.ownerUserId,
+        fractionWeekId: week.id,
+        source: "fractional",
+        sourceRef: inv.id,
+        startDate: week.startDate,
+        endDate: week.endDate,
+        nightlyRate: input.nightlyRateEstimate != null ? String(input.nightlyRateEstimate) : null,
+        currency: input.currency ?? "MXN",
+        commissionPct: String(input.commissionPct ?? 0),
+        minNights: input.minNights ?? 7,
+        cancellationPolicy: input.cancellationPolicy ?? null,
+        status: "available",
+        isDemo: false,
+      }).onConflictDoNothing();
       await audit({
         actorUserId: input.ownerUserId,
         action: "week.release",

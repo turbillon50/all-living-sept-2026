@@ -8,9 +8,9 @@ import { TopBar } from "@/ui/top-bar";
 import { Photo } from "@/ui/photo";
 
 const DESTINATIONS: Record<string, { name: string; photo: string; intro: string; tags: string[] }> = {
+  cancun: { name: "Cancún", photo: "/demo/palms.webp", intro: "Caribe abierto, islas y ciudad. Tu estancia como punto de partida para vivir todo Quintana Roo.", tags: ["Playa", "Islas", "Gastronomía"] },
+  "playa-del-carmen": { name: "Playa del Carmen", photo: "/demo/villa-pool.webp", intro: "Riviera, mar y ciudad caminable. Estancias, restaurantes, experiencias y acceso a toda la costa.", tags: ["Playa", "Riviera", "Gastronomía"] },
   tulum: { name: "Tulum", photo: "/demo/tulum-sea.webp", intro: "Selva, mar y silencio. Cenotes por la mañana, yate por la tarde, chef por la noche.", tags: ["Playa", "Gastronomía", "Wellness"] },
-  "valle-de-bravo": { name: "Valle de Bravo", photo: "/demo/mountain.webp", intro: "Niebla, lago y chimenea. Para bajar el ritmo.", tags: ["Montaña", "Aventura"] },
-  "ciudad-de-mexico": { name: "Ciudad de México", photo: "/demo/city.webp", intro: "Cultura, mesas y noches largas.", tags: ["Ciudad", "Cultura", "Gastronomía"] },
 };
 
 export const dynamic = "force-dynamic";
