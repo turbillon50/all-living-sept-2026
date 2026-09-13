@@ -23,9 +23,9 @@ export function homeFor(role: Role): string {
     case "provider":
       return "/pro";
     case "operator":
-      return "/ops";
     case "admin":
-      return "/admin";
+      // Internal permissions never hijack the member-facing product.
+      return "/home";
     default:
       return "/home";
   }

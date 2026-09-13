@@ -20,15 +20,14 @@ export function navFor(role: Role): NavItem[] {
         { href: "/profile", label: "Perfil", icon: "profile" },
       ];
     case "operator":
-      return [
-        { href: "/ops", label: "Hoy", icon: "home" },
-        { href: "/ops/tasks", label: "Tareas", icon: "tasks" },
-        { href: "/ops/properties", label: "Propiedades", icon: "properties" },
-        { href: "/profile", label: "Perfil", icon: "profile" },
-      ];
     case "admin":
+      // Staff/admin are capabilities, not the consumer shell. The member experience stays intact;
+      // internal tools are entered explicitly from Profile and never replace All Living.
       return [
-        { href: "/admin", label: "Admin", icon: "home" },
+        { href: "/home", label: "Inicio", icon: "home" },
+        { href: "/stays", label: "Estancias", icon: "stays" },
+        { href: "/explore", label: "Explorar", icon: "explore" },
+        { href: "/services", label: "Servicios", icon: "services" },
         { href: "/profile", label: "Perfil", icon: "profile" },
       ];
     default:

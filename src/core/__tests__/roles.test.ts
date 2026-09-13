@@ -6,8 +6,8 @@ describe("roles", () => {
     expect(homeFor("owner")).toBe("/home");
     expect(homeFor("guest")).toBe("/home");
     expect(homeFor("provider")).toBe("/pro");
-    expect(homeFor("operator")).toBe("/ops");
-    expect(homeFor("admin")).toBe("/admin");
+    expect(homeFor("operator")).toBe("/home");
+    expect(homeFor("admin")).toBe("/home");
   });
   it("isRole rechaza basura", () => {
     expect(isRole("owner")).toBe(true);

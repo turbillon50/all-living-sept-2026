@@ -1,6 +1,6 @@
 import { Check, Home, Compass, Briefcase, Wrench, ShieldCheck } from "@/ui/icons";
 import { requireUser } from "@/domains/identity/current-user";
-import { ROLE_LABEL, ROLES, SELF_SERVICE_ROLES, type Role } from "@/core/roles";
+import { ROLE_LABEL, SELF_SERVICE_ROLES, type Role } from "@/core/roles";
 import { setMode } from "@/domains/identity/profile-actions";
 import { Page } from "@/ui/page";
 import { TopBar } from "@/ui/top-bar";
@@ -18,12 +18,13 @@ const META: Record<Role, { body: string; Icon: typeof Home }> = {
 /** Pantalla 50: cambiar de rol. Un solo toque; persiste; sin cerrar sesión. */
 export default async function ModePage() {
   const user = await requireUser();
-  const available = ROLES.filter((r) => user.roles.includes(r));
+  const available = SELF_SERVICE_ROLES.filter((r) => user.roles.includes(r));
   const addable = SELF_SERVICE_ROLES.filter((r) => !user.roles.includes(r));
   return (
     <Page>
       <TopBar back="/profile" title="Cambiar de rol" />
-      <h1 className="pt-4 text-[30px] leading-[1.06]">Cambiar de rol</h1>
+      <h1 className="pt-4 text-[30px] leading-[1.06]">¿Cómo quieres usar All Living?</h1>
+      <p className="mt-2 text-text-2">Tu cuenta es una sola. Cambia de modo cuando quieras; tus datos y reservas permanecen contigo.</p>
       <form className="mt-6 divide-y divide-line rounded-[var(--radius-card)] bg-surface hairline overflow-hidden">
         {available.map((r) => { const active = r === user.activeContext; const { body, Icon } = META[r]; return (
           <button key={r} formAction={setMode.bind(null, r)} aria-pressed={active} className={cn("press flex w-full items-center gap-4 px-4 py-3.5 text-left hover:bg-surface-2", active && "bg-accent-soft/60")}>

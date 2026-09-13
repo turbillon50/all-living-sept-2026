@@ -27,7 +27,10 @@ export default async function ProfilePage() {
         </div>
       </BrandPanel>
       <div className="mt-6 flex flex-col gap-6">
-        {GROUPS.map((g) => <RowGroup key={g.title} title={g.title}>{g.items.map((it) => <ListRow key={it.href + it.label} href={it.href} Icon={it.Icon} title={it.label} />)}</RowGroup>)}
+        {[...GROUPS, ...(user.roles.includes("operator") || user.roles.includes("admin") ? [{ title: "Equipo All Living", items: [
+          ...(user.roles.includes("operator") ? [{ href: "/ops", label: "Operación", Icon: Settings }] : []),
+          ...(user.roles.includes("admin") ? [{ href: "/admin", label: "Administración", Icon: ShieldCheck }] : []),
+        ] }] : [])].map((g) => <RowGroup key={g.title} title={g.title}>{g.items.map((it) => <ListRow key={it.href + it.label} href={it.href} Icon={it.Icon} title={it.label} />)}</RowGroup>)}
       </div>
       <div className="mt-10 text-center">
         <SignOutButton redirectUrl="/welcome"><button className="press min-h-11 px-4 text-sm text-text-2 underline-offset-4 hover:underline">Cerrar sesión</button></SignOutButton>

@@ -37,7 +37,7 @@ export function TabBar({ items }: { items: NavItem[] }) {
                   active ? "text-accent" : "text-muted",
                 )}
               >
-                {it.icon === "explore" ? (<span className={cn("smart-orb", active && "is-active")}><Mark size={34} interactive /></span>) : (<Icon size={22} strokeWidth={active ? 2.1 : 1.7} aria-hidden />)}
+                <Icon size={22} strokeWidth={active ? 2.1 : 1.7} aria-hidden />
                 <span>{it.label}</span>
               </Link>
             </li>
