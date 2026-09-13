@@ -94,7 +94,9 @@ export const getSessionUser = cache(async (): Promise<SessionUser | null> => {
   const jar = await cookies();
   const fromCookie = jar.get(CTX_COOKIE)?.value;
   let activeContext: Role = isRole(fromCookie) && roles.includes(fromCookie) ? fromCookie : row.activeContext;
-  if (!roles.includes(activeContext)) activeContext = roles.includes("owner") ? "owner" : (roles[0] ?? "guest");
+  // Viajar es el default de la casa: por cada administrador hay cien que quieren
+  // hospedaje, vuelo y experiencia. Hospedar/ofrecer/operar se encienden al reclamarlos.
+  if (!roles.includes(activeContext)) activeContext = roles.includes("guest") ? "guest" : (roles[0] ?? "guest");
 
   return {
     id: row.id,

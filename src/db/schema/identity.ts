@@ -13,7 +13,7 @@ export const users = pgTable(
     avatarUrl: text("avatar_url"),
     locale: text("locale").notNull().default("es-MX"),
     /** Contexto activo (modo) persistido: owner | guest | provider | operator | admin. */
-    activeContext: roleEnum("active_context").notNull().default("owner"),
+    activeContext: roleEnum("active_context").notNull().default("guest"),
     /**
      * Vínculo opcional con la cuenta de V&LIVING. El registro es independiente
      * (bases separadas, doble alta); esto solo guarda el puente cuando el miembro
