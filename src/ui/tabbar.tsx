@@ -2,12 +2,12 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { Home, CalendarDays, Compass, Sparkles, UserRound, Wallet, Briefcase, ListChecks, Building2 } from "@/ui/icons";
+import { Home, CalendarDays, Compass, Sparkles, UserRound, Wallet, Briefcase, ListChecks, Building2, Plane } from "@/ui/icons";
 import type { NavItem } from "./nav";
 import { cn } from "./cn";
 import { Mark } from "./mark";
 
-const ICONS = { home: Home, stays: CalendarDays, explore: Compass, services: Sparkles, profile: UserRound, earnings: Wallet, jobs: Briefcase, tasks: ListChecks, properties: Building2 } as const;
+const ICONS = { home: Home, stays: CalendarDays, explore: Compass, services: Sparkles, profile: UserRound, earnings: Wallet, jobs: Briefcase, tasks: ListChecks, properties: Building2, flights: Plane } as const;
 
 function isActive(pathname: string, href: string) {
   if (href === "/home" || href === "/pro" || href === "/ops" || href === "/admin") return pathname === href;
@@ -17,32 +17,26 @@ function isActive(pathname: string, href: string) {
 /** Tabbar fija en móvil: respeta safe-area, nunca tapa contenido (las páginas usan .pb-tabbar). */
 export function TabBar({ items }: { items: NavItem[] }) {
   const pathname = usePathname();
+  const left = items.slice(0, 2);
+  const right = items.slice(2, 4);
+  const renderItem = (it: NavItem) => {
+    const Icon = ICONS[it.icon];
+    const active = isActive(pathname, it.href);
+    return (
+      <li key={it.href} className="min-w-0">
+        <Link href={it.href} aria-current={active ? "page" : undefined} className={cn("craft-nav-item", active && "is-active")}>
+          <span className="craft-nav-icon"><Icon size={21} strokeWidth={active ? 2.15 : 1.65} aria-hidden /></span>
+          <span className="craft-nav-label">{it.label}</span>
+        </Link>
+      </li>
+    );
+  };
   return (
-    <nav
-      aria-label="Principal"
-      className="fixed inset-x-0 bottom-0 z-40 md:hidden bg-[color-mix(in_oklab,var(--color-surface)_88%,transparent)] backdrop-blur-xl border-t border-line"
-      style={{ paddingBottom: "var(--safe-b)" }}
-    >
-      <ul className="grid" style={{ gridTemplateColumns: `repeat(${items.length}, 1fr)`, height: "var(--tabbar-h)" }}>
-        {items.map((it) => {
-          const Icon = ICONS[it.icon];
-          const active = isActive(pathname, it.href);
-          return (
-            <li key={it.href}>
-              <Link
-                href={it.href}
-                aria-current={active ? "page" : undefined}
-                className={cn(
-                  "press flex h-full flex-col items-center justify-center gap-1 text-[11px] font-medium tracking-wide transition-colors",
-                  active ? "text-accent" : "text-muted",
-                )}
-              >
-                <Icon size={22} strokeWidth={active ? 2.1 : 1.7} aria-hidden />
-                <span>{it.label}</span>
-              </Link>
-            </li>
-          );
-        })}
+    <nav aria-label="Principal" className="craft-tabbar md:hidden">
+      <ul className="craft-tabbar-grid">
+        {left.map(renderItem)}
+        <li aria-hidden className="craft-tabbar-core" />
+        {right.map(renderItem)}
       </ul>
     </nav>
   );

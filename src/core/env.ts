@@ -10,6 +10,7 @@ const schema = z.object({
   STRIPE_WEBHOOK_SECRET: z.string().optional(),
   RESEND_API_KEY: z.string().optional(),
   MAPBOX_TOKEN: z.string().optional(),
+  DUFFEL_ACCESS_TOKEN: z.string().optional(),
   /** Correos que reciben admin+operator al primer acceso (separados por coma). */
   ADMIN_EMAILS: z.string().optional().transform((v) => (v ?? "").split(",").map((e) => e.trim().toLowerCase()).filter(Boolean)),
   SEED_DEMO: z

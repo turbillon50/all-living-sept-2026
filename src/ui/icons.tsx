@@ -47,6 +47,7 @@ export const MapPin = withWeight(P.MapPin);
 export const MessageCircle = withWeight(P.ChatCircle);
 export const MoreHorizontal = withWeight(P.DotsThree, "bold"); // glifo de navegación, no duotone
 export const PartyPopper = withWeight(P.Confetti);
+export const Plane = withWeight(P.AirplaneTilt);
 export const Phone = withWeight(P.Phone);
 export const Repeat = withWeight(P.Repeat);
 export const Settings = withWeight(P.GearSix);

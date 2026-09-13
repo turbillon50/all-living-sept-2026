@@ -1,0 +1,11 @@
+import "server-only";
+import { env } from "@/core/env";
+
+const BASE="https://api.duffel.com";
+function token(){const t=env().DUFFEL_ACCESS_TOKEN;if(!t)throw new Error("DUFFEL_ACCESS_TOKEN no configurado");return t}
+async function request<T>(path:string,init?:RequestInit):Promise<T>{const r=await fetch(`${BASE}${path}`,{...init,headers:{Accept:"application/json","Duffel-Version":"v2",Authorization:`Bearer ${token()}`,...(init?.body?{"Content-Type":"application/json"}:{}),...(init?.headers??{})},cache:"no-store"});if(!r.ok){const body=await r.text();throw new Error(`Flights API ${r.status}: ${body.slice(0,260)}`)}return r.json() as Promise<T>}
+export type Place={id:string;iata_code:string;name:string;city_name:string|null;iata_country_code:string;type:"airport"|"city"};
+export type FlightOffer={id:string;total_amount:string;total_currency:string;expires_at:string;owner:{name:string;iata_code:string|null};slices:Array<{duration:string;origin:{iata_code:string;name:string};destination:{iata_code:string;name:string};segments:Array<{id:string;departing_at:string;arriving_at:string;duration:string;origin:{iata_code:string};destination:{iata_code:string};marketing_carrier:{name:string;iata_code:string|null};operating_carrier:{name:string;iata_code:string|null}}>}>};
+export async function suggestPlaces(query:string){if(query.trim().length<2)return[];const r=await request<{data:Place[]}>(`/places/suggestions?query=${encodeURIComponent(query.trim())}`);return r.data.slice(0,8)}
+export async function searchFlights(input:{origin:string;destination:string;depart:string;returnDate?:string;adults:number;cabin?:"economy"|"premium_economy"|"business"|"first"}){const slices=[{origin:input.origin,destination:input.destination,departure_date:input.depart},...(input.returnDate?[{origin:input.destination,destination:input.origin,departure_date:input.returnDate}]:[])];const r=await request<{data:{id:string;live_mode:boolean;offers:FlightOffer[]}}>(`/air/offer_requests?return_offers=true&supplier_timeout=10000`,{method:"POST",body:JSON.stringify({data:{slices,passengers:Array.from({length:input.adults},()=>({type:"adult"})),cabin_class:input.cabin??"economy"}})});return r.data}
+export function flightsReady(){return Boolean(env().DUFFEL_ACCESS_TOKEN)}
