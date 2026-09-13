@@ -1,13 +1,13 @@
 /** Roles de la plataforma. Una cuenta puede tener varios; uno está activo como contexto. */
-export const ROLES = ["owner", "guest", "provider", "operator", "admin"] as const;
+export const ROLES = ["guest", "owner", "provider", "operator", "admin"] as const;
 export type Role = (typeof ROLES)[number];
 
 /** Roles que el usuario puede activar desde Perfil → Cambiar modo. Operator y admin solo si se le otorgaron. */
-export const SELF_SERVICE_ROLES: Role[] = ["owner", "guest", "provider"];
+export const SELF_SERVICE_ROLES: Role[] = ["guest", "owner", "provider"];
 
 export const ROLE_LABEL: Record<Role, string> = {
+  guest: "Viajero",
   owner: "Propietario",
-  guest: "Huésped",
   provider: "Proveedor",
   operator: "Operación",
   admin: "Administración",

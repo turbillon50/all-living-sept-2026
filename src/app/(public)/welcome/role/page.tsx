@@ -5,9 +5,9 @@ import { Page } from "@/ui/page";
 import { chooseIntent } from "@/domains/identity/onboarding-actions";
 
 const OPTIONS = [
-  { role: "owner", title: "Tengo una propiedad o fracción", body: "Gestiona semanas, estancias, renta y operación.", Icon: Home },
-  { role: "guest", title: "Quiero viajar", body: "Hospedaje, vuelos, experiencias y servicios.", Icon: Compass },
+  { role: "guest", title: "Quiero viajar", body: "Hospedaje, vuelos, experiencias y servicios en un solo lugar.", Icon: Compass },
   { role: "provider", title: "Quiero ofrecer servicios", body: "Yates, chefs, transporte, wellness y más.", Icon: Briefcase },
+  { role: "owner", title: "Tengo una propiedad o fracción", body: "Gestiona semanas, estancias, renta y operación.", Icon: Home },
 ] as const;
 
 /** Elección opcional de intención. Nunca bloquea explorar ni crear una cuenta. */
