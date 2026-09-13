@@ -33,7 +33,12 @@ const isProtected = createRouteMatcher([
 ]);
 
 export default clerkMiddleware(async (auth, req) => {
-  if (isProtected(req)) await auth.protect();
+  // auth.protect() sin opciones responde 404 a quien no trae sesión: un link compartido
+  // moría en "Este lugar no existe". Mandamos a /sign-in y Clerk regresa a la ruta pedida.
+  if (isProtected(req)) {
+    const signIn = new URL("/sign-in", req.url).toString();
+    await auth.protect({ unauthenticatedUrl: signIn, unauthorizedUrl: signIn });
+  }
   // Nada más: devolver una respuesta propia aquí anula el handshake de Clerk.
 });
 

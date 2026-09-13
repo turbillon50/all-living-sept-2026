@@ -58,7 +58,7 @@ export default async function PropertyDetail({ params }: { params: Promise<{ id:
       <header className="mt-6 flex items-start justify-between gap-4">
         <div>
           <h1 className="text-[32px] leading-[1.06] md:text-[40px]">{property.name}</h1>
-          <p className="mt-1 text-text-2">{property.destination} · {property.city}{property.bedrooms ? ` · ${property.bedrooms} recámaras` : ""}{property.maxGuests ? ` · hasta ${property.maxGuests} personas` : ""}</p>
+          <p className="mt-1 text-text-2">{[property.destination, property.city !== property.destination ? property.city : null].filter(Boolean).join(" · ")}{property.bedrooms ? ` · ${property.bedrooms} recámaras` : ""}{property.maxGuests ? ` · hasta ${property.maxGuests} personas` : ""}</p>
         </div>
         {property.isDemo ? <Chip>Demo</Chip> : null}
       </header>
@@ -106,7 +106,7 @@ export default async function PropertyDetail({ params }: { params: Promise<{ id:
       <Section title="Ubicación">
         {mapUrl ? <Photo src={mapUrl} alt={`Mapa de ${property.name}`} ratio="16/9" sizes="(max-width: 768px) 100vw, 672px" /> : (
           <div className="rounded-[var(--radius-card)] bg-surface hairline p-4 text-sm text-text-2">
-            {property.destination}, {property.city}. La dirección exacta se comparte con la estancia confirmada.
+            {[property.destination, property.city !== property.destination ? property.city : null].filter(Boolean).join(", ")}. La dirección exacta se comparte con la estancia confirmada.
             {property.lat && property.lng ? <a className="ml-2 text-green-900 underline underline-offset-4" href={maps().directionsUrl(Number(property.lat), Number(property.lng))} target="_blank" rel="noreferrer">Abrir en mapas</a> : null}
           </div>
         )}

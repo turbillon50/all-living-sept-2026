@@ -100,24 +100,24 @@ async function main() {
   await db
     .insert(schema.properties)
     .values({
-      slug: "casa-niebla-valle",
-      name: "Casa Niebla",
-      destination: "Valle de Bravo",
-      city: "Valle de Bravo",
-      description: "Casa de montaña con chimenea y vista al lago. Silencio, niebla y café de la región.",
-      amenities: ["Chimenea", "Vista al lago", "Terraza", "Wi-Fi"],
+      slug: "casa-cenote-playa",
+      name: "Casa Cenote",
+      destination: "Playa del Carmen",
+      city: "Playa del Carmen",
+      description: "Casa de selva con cenote privado a diez minutos de la Quinta Avenida. Sombra, agua dulce y silencio.",
+      amenities: ["Cenote privado", "Terraza", "Cocina de chef", "Wi-Fi"],
       bedrooms: 4,
       bathrooms: 3,
       maxGuests: 8,
       isDemo: true,
     })
     .onConflictDoNothing();
-  const casaNiebla = await db.query.properties.findFirst({ where: eq(schema.properties.slug, "casa-niebla-valle") });
+  const casaNiebla = await db.query.properties.findFirst({ where: eq(schema.properties.slug, "casa-cenote-playa") });
   if (casaNiebla) {
     const m = await db.query.propertyMedia.findMany({ where: eq(schema.propertyMedia.propertyId, casaNiebla.id) });
     if (m.length === 0) {
       await db.insert(schema.propertyMedia).values([
-        { propertyId: casaNiebla.id, url: "/demo/mountain.webp", alt: "Montañas con niebla al amanecer", isCover: true, sortOrder: 0, width: 1600, height: 1067 },
+        { propertyId: casaNiebla.id, url: "/demo/cenote.webp", alt: "Cenote de agua turquesa entre la selva", isCover: true, sortOrder: 0, width: 1600, height: 1067 },
       ]);
     }
   }

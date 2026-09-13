@@ -39,6 +39,7 @@ export function GuestShell({ children }: { children: React.ReactNode }) {
         {children}
       </div>
       <TabBar items={GUEST_NAV} />
+      <LivingButton role="guest" roles={["guest"]} guest />
     </div>
   );
 }
