@@ -12,12 +12,12 @@ const WORLDS:World[]=[
  {role:"provider",verb:"OFRECER",sub:"Servicios · agenda · negocio",Icon:Briefcase},
  {role:"operator",verb:"OPERAR",sub:"Estancias · incidencias · equipo",Icon:Wrench},
 ];
-export function LivingButton({role,roles}:{role:Role;roles:Role[]}){
+export function LivingButton({role,roles,guest=false}:{role:Role;roles:Role[];guest?:boolean}){
  const router=useRouter(), timer=useRef<ReturnType<typeof setTimeout>|null>(null); const [open,setOpen]=useState(false); const [busy,setBusy]=useState(false);
  useEffect(()=>()=>{if(timer.current)clearTimeout(timer.current)},[]);
  const start=()=>{timer.current=setTimeout(()=>setOpen(true),420)}; const cancel=()=>{if(timer.current)clearTimeout(timer.current)};
- const tap=()=>{cancel();if(!open)router.push("/support")};
- async function choose(next:Role){if(busy)return;setBusy(true);try{const r=await fetch("/api/mode",{method:"POST",headers:{"content-type":"application/json"},body:JSON.stringify({mode:next})});if(r.ok){setOpen(false);router.push(next==="provider"?"/pro":next==="operator"?"/ops":"/home");router.refresh()}else if(r.status===403){router.push(next==="provider"?"/pro/onboarding":"/profile/mode")}}finally{setBusy(false)}}
+ const tap=()=>{cancel();if(!open)router.push(guest?"/sign-in":"/support")};
+ async function choose(next:Role){if(guest){setOpen(false);router.push("/sign-in");return}if(busy)return;setBusy(true);try{const r=await fetch("/api/mode",{method:"POST",headers:{"content-type":"application/json"},body:JSON.stringify({mode:next})});if(r.ok){setOpen(false);router.push(next==="provider"?"/pro":next==="operator"?"/ops":"/home");router.refresh()}else if(r.status===403){router.push(next==="provider"?"/pro/onboarding":"/profile/mode")}}finally{setBusy(false)}}
  const visible=WORLDS.filter(w=>w.role!=="operator"||roles.includes("operator"));
  return <>
   {open?<div className="world-backdrop" onClick={()=>setOpen(false)} aria-hidden/>:null}

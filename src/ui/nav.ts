@@ -3,9 +3,11 @@ import type { Role } from "@/core/roles";
 export type NavIcon = "home" | "stays" | "explore" | "services" | "profile" | "earnings" | "jobs" | "tasks" | "properties" | "flights";
 export type NavItem = { href: string; label: string; icon: NavIcon };
 
+/** Cuatro acciones + el Möbius al centro. Con tres items la rejilla queda coja. */
 export const GUEST_NAV: NavItem[] = [
   { href: "/explore", label: "Explorar", icon: "explore" },
   { href: "/services", label: "Vivir", icon: "services" },
+  { href: "/flights", label: "Vuelos", icon: "flights" },
   { href: "/sign-in", label: "Entrar", icon: "profile" },
 ];
 

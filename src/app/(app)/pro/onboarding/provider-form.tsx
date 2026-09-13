@@ -6,7 +6,8 @@ import { SERVICE_CATEGORIES } from "@/domains/services/categories";
 import { Button } from "@/ui/button";
 import { Field } from "@/ui/field";
 
-const ZONES = ["Tulum", "Playa del Carmen", "Cancún", "Valle de Bravo", "Ciudad de México", "Los Cabos"];
+// Etapa 1: solo Quintana Roo. No ofrecer zonas donde todavia no operamos.
+const ZONES = ["Cancún", "Playa del Carmen", "Tulum"];
 
 export function ProviderForm({ defaults }: { defaults: { kind: string; businessName: string; primaryCategory: string; description: string; contactPhone: string; contactEmail: string } }) {
   const [state, action, pending] = useActionState<ProviderActionState, FormData>(submitProvider, null);
