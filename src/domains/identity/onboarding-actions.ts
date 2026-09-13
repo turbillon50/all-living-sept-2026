@@ -17,14 +17,11 @@ export async function chooseIntent(role: "owner" | "guest" | "provider") {
   jar.set(INTENT_COOKIE, role, { httpOnly: true, sameSite: "lax", path: "/", maxAge: 60 * 60 * 24 });
   const user = await getSessionUser();
   if (!user) redirect("/sign-up");
-  if (user.onboardingDone) {
-    await grantSelfServiceRole(user.id, role);
-    const roles = user.roles.includes(role) ? user.roles : [...user.roles, role];
-    await switchContext(user.id, roles, role);
-    jar.delete(INTENT_COOKIE);
-    redirect(role === "provider" ? "/pro" : "/home");
-  }
-  redirect("/onboarding/profile");
+  await grantSelfServiceRole(user.id, role);
+  const roles = user.roles.includes(role) ? user.roles : [...user.roles, role];
+  await switchContext(user.id, roles, role);
+  jar.delete(INTENT_COOKIE);
+  redirect(role === "provider" ? "/pro" : "/home");
 }
 
 const profileSchema = z.object({

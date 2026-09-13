@@ -6,12 +6,11 @@ export const dynamic = "force-dynamic";
 
 /**
  * Único punto de salida de Clerk/OAuth.
- * Evita loops entre SignIn/SignUp, raíz y onboarding cuando Google/X
- * resuelven una cuenta existente o una cuenta nueva de forma distinta.
+ * Una cuenta nueva entra inmediatamente como huésped. El onboarding deja de ser
+ * una barrera de acceso: perfil, gustos y permisos se completan después, cuando aporten valor.
  */
 export default async function AuthCompletePage() {
   const user = await getSessionUser();
   if (!user) redirect("/sign-in");
-  if (!user.onboardingDone) redirect("/onboarding/profile");
   redirect(homeFor(user.activeContext));
 }

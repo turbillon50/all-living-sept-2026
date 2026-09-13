@@ -4,9 +4,9 @@ import { Splash } from "./splash";
 
 export const dynamic = "force-dynamic";
 
-/** Pantalla 01: el anillo. Con sesión → home del contexto; sin sesión → brand moment. */
+/** Entrada de marca. Con sesión va al contexto; sin sesión al brand moment. */
 export default async function Root() {
   const user = await getSessionUser();
-  const target = !user ? "/welcome" : !user.onboardingDone ? "/onboarding/profile" : homeFor(user.activeContext);
+  const target = user ? homeFor(user.activeContext) : "/welcome";
   return <Splash target={target} />;
 }

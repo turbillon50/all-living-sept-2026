@@ -18,7 +18,7 @@ export default function Welcome() {
           {/* Explorar va primero y no pide cuenta: se mira antes de pertenecer. */}
           <div className="mt-9 flex flex-col gap-2.5 md:flex-row md:justify-center">
             <ButtonLink href="/explore" size="lg" variant="light" className="md:w-auto md:px-10">Explorar</ButtonLink>
-            <ButtonLink href="/welcome/role" size="lg" variant="ghost-light" className="md:w-auto md:px-10">Crear cuenta</ButtonLink>
+            <ButtonLink href="/sign-up" size="lg" variant="ghost-light" className="md:w-auto md:px-10">Crear cuenta</ButtonLink>
           </div>
           <p className="mt-5 text-center text-[13px] text-ivory/70 md:text-center">
             <Link href="/sign-in" className="underline underline-offset-4 hover:text-ivory">Ya tengo cuenta</Link>
