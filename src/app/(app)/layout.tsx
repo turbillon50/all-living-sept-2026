@@ -10,5 +10,5 @@ export const dynamic = "force-dynamic";
 export default async function AppLayout({ children }: { children: React.ReactNode }) {
   const user = await getSessionUser();
   if (!user) return <GuestShell>{children}</GuestShell>;
-  return <AppShell role={user.activeContext} name={user.name}>{children}</AppShell>;
+  return <AppShell role={user.activeContext} roles={user.roles} name={user.name}>{children}</AppShell>;
 }

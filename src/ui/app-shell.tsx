@@ -6,14 +6,14 @@ import { Mark } from "./mark";
 import { LivingButton } from "./living-button";
 
 /** Cascarón de la app autenticada: sidebar en escritorio, tabbar en móvil. */
-export function AppShell({ role, name, children }: { role: Role; name: string; children: React.ReactNode }) {
+export function AppShell({ role, roles, name, children }: { role: Role; roles: Role[]; name: string; children: React.ReactNode }) {
   const items = navFor(role);
   return (
     <div className="flex min-h-dvh">
       <Sidebar items={items} name={name} contextLabel={ROLE_LABEL[role]} />
       <div className="min-w-0 flex-1">{children}</div>
       <TabBar items={items} />
-      <LivingButton />
+      <LivingButton role={role} roles={roles} />
     </div>
   );
 }
