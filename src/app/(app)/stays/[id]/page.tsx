@@ -1,6 +1,6 @@
 import { notFound } from "next/navigation";
 import Link from "next/link";
-import { KeyRound, Users, Sparkles, LifeBuoy, Info, Car, ShoppingBasket, ChefHat, Baby, PartyPopper, CalendarCheck } from "@/ui/icons";
+import { KeyRound, Users, Sparkles, LifeBuoy, Info, Car, ShoppingBasket, ChefHat, Baby, PartyPopper, CalendarCheck, ShieldCheck } from "@/ui/icons";
 import { requireUser } from "@/domains/identity/current-user";
 import { stayById } from "@/domains/stays/queries";
 import { checkIn, checkOut } from "@/domains/stays/actions";
@@ -50,6 +50,12 @@ export default async function StayDetail({ params }: { params: Promise<{ id: str
       </div>
 
       <ul className="mt-6 grid grid-cols-4 gap-2">{actions.map((a) => <li key={a.label}><IconAction href={a.href} label={a.label} Icon={a.Icon} tone="outline" /></li>)}</ul>
+
+      <Link href="/garantia-all-living" className="mt-6 flex items-center gap-4 rounded-[22px] bg-[#dff5f7] px-5 py-4 text-[#07394b] transition-transform active:scale-[.99]">
+        <span className="flex size-11 shrink-0 items-center justify-center rounded-full bg-white/70"><ShieldCheck size={21} /></span>
+        <span className="min-w-0 flex-1"><span className="block text-[15px] font-medium">Garantía All Living</span><span className="mt-0.5 block text-[12px] leading-5 text-[#356875]">Esta estancia cuenta con respaldo operativo sujeto a sus términos de reserva.</span></span>
+        <span aria-hidden className="text-[#0b789a]">→</span>
+      </Link>
 
       {isHost && stay.status === "upcoming" && days <= 1 ? <form action={checkIn} className="mt-6"><input type="hidden" name="stayId" value={stay.id} /><Button type="submit" size="lg">Ya llegué · Check-in</Button></form> : null}
       {isHost && inStay ? <form action={checkOut} className="mt-6"><input type="hidden" name="stayId" value={stay.id} /><Button type="submit" size="lg" variant="secondary">Terminar estancia · Check-out</Button></form> : null}

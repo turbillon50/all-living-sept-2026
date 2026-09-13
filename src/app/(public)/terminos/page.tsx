@@ -12,13 +12,26 @@ export default function Terminos() {
     <LegalShell titulo="Términos del servicio" actualizado="12 de septiembre de 2026">
       <p>
         Al crear una cuenta o usar All Living aceptas estos términos. La plataforma es operada por{" "}
-        <b>All Global Holding LLC</b>.
+        <b>Colectivo Más, S.A. de C.V.</b>, entidad operadora actual de la plataforma en México. La estructura corporativa podrá actualizarse y se informará en estos términos antes de que el cambio produzca efectos para los usuarios.
       </p>
 
       <H2>Qué es All Living</H2>
       <p>
         Una plataforma para descubrir, organizar y compartir propiedades y experiencias de vida. Te
         damos las herramientas y la información; las decisiones sobre cualquier propiedad las tomas tú.
+      </p>
+
+      <H2>Pagos y reservas</H2>
+      <p>
+        All Living puede facilitar reservas y cobros mediante proveedores de pago autorizados. Cuando la arquitectura aplicable lo permita, el cargo de alojamiento se atribuye a la cuenta conectada del propietario y All Living cobra separadamente su comisión de plataforma. Antes de confirmar una reserva se muestran el precio total, impuestos, comisiones y política de cancelación aplicable.
+      </p>
+
+      <H2>Garantía All Living</H2>
+      <p>
+        Algunas reservas elegibles pueden mostrar el sello Garantía All Living. Si un alojamiento confirmado queda indisponible por una incidencia operativa cubierta, All Living activará su protocolo de reubicación y buscará una alternativa de categoría equivalente o superior, priorizando la zona originalmente reservada y sujeto a disponibilidad, límites y condiciones de la reserva.
+      </p>
+      <p>
+        La garantía no es un seguro y puede excluir eventos generales de fuerza mayor, evacuaciones por huracán, cierres de destino, actos de autoridad, conflictos y otros eventos inevitables. En esos casos All Living mantendrá asistencia operativa y gestionará las alternativas, cambios o devoluciones que correspondan conforme a la reserva y a la ley.
       </p>
 
       <H2>Tu cuenta</H2>

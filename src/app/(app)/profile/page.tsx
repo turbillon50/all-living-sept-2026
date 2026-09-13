@@ -1,6 +1,6 @@
 import Image from "next/image";
 import Link from "next/link";
-import { Settings, Home, CalendarDays, Sparkles, Users, Wallet, Gift, LifeBuoy, Bell, ShieldCheck, Repeat, SlidersHorizontal, IdCard } from "@/ui/icons";
+import { Settings, Home, CalendarDays, Sparkles, Users, Wallet, Gift, LifeBuoy, Bell, ShieldCheck, Repeat, SlidersHorizontal, IdCard, BadgeCheck } from "@/ui/icons";
 import { SignOutButton } from "@clerk/nextjs";
 import { requireUser } from "@/domains/identity/current-user";
 import { ROLE_LABEL } from "@/core/roles";
@@ -10,7 +10,7 @@ import { BrandPanel, ListRow, RowGroup } from "@/ui/primitives";
 const GROUPS = [
   { title: "Mi mundo", items: [{ href: "/properties", label: "Mis propiedades", Icon: Home }, { href: "/stays", label: "Mis estancias", Icon: CalendarDays }, { href: "/bookings", label: "Mis servicios", Icon: Sparkles }, { href: "/stays", label: "Mis invitados", Icon: Users }, { href: "/pass", label: "Living Pass", Icon: IdCard }] },
   { title: "Dinero y beneficios", items: [{ href: "/income", label: "Mis pagos e ingresos", Icon: Wallet }, { href: "/profile/benefits", label: "Beneficios All Living", Icon: Gift }] },
-  { title: "Cuenta", items: [{ href: "/support", label: "Soporte", Icon: LifeBuoy }, { href: "/notifications", label: "Notificaciones", Icon: Bell }, { href: "/profile/preferences", label: "Preferencias", Icon: SlidersHorizontal }, { href: "/profile/security", label: "Seguridad", Icon: ShieldCheck }, { href: "/profile/mode", label: "Cambiar de rol", Icon: Repeat }] },
+  { title: "Cuenta", items: [{ href: "/confianza", label: "Centro de confianza", Icon: BadgeCheck }, { href: "/support", label: "Soporte", Icon: LifeBuoy }, { href: "/notifications", label: "Notificaciones", Icon: Bell }, { href: "/profile/preferences", label: "Preferencias", Icon: SlidersHorizontal }, { href: "/profile/security", label: "Seguridad", Icon: ShieldCheck }, { href: "/profile/mode", label: "Cambiar de rol", Icon: Repeat }] },
 ];
 
 /** Pantalla 46: perfil. Cabecera en panel verde, listas agrupadas con icono y chevron. */
