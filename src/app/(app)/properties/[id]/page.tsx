@@ -12,6 +12,7 @@ import { TopBar } from "@/ui/top-bar";
 import { Photo } from "@/ui/photo";
 import { Chip } from "@/ui/chip";
 import { ButtonLink } from "@/ui/button";
+import { ShieldCheck } from "@/ui/icons";
 
 export const dynamic = "force-dynamic";
 
@@ -48,6 +49,11 @@ export default async function PropertyDetail({ params }: { params: Promise<{ id:
           {rest.map((m) => <li key={m.id} className="w-28 shrink-0"><Photo src={m.url} alt={m.alt} sizes="112px" ratio="1/1" /></li>)}
         </ul>
       ) : null}
+
+      <Link href="/garantia-all-living" className="mt-5 flex items-center gap-3 rounded-[18px] bg-[#dff5f7] px-4 py-3.5 text-[#07394b] transition-transform active:scale-[.99] md:max-w-xl">
+        <span className="flex size-9 shrink-0 items-center justify-center rounded-full bg-white/75"><ShieldCheck size={18} /></span>
+        <span className="min-w-0 flex-1"><span className="block text-[14px] font-medium">Conoce la Garantía All Living</span><span className="block text-[12px] text-[#356875]">Las reservas elegibles muestran su protección antes de confirmar.</span></span><span aria-hidden>→</span>
+      </Link>
 
       <header className="mt-6 flex items-start justify-between gap-4">
         <div>

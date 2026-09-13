@@ -1,7 +1,7 @@
 import Link from "next/link";
 import Image from "next/image";
 import { redirect } from "next/navigation";
-import { ArrowRight, CalendarCheck, KeyRound, Repeat } from "@/ui/icons";
+import { ArrowRight, CalendarCheck, KeyRound, Repeat, ShieldCheck } from "@/ui/icons";
 import { requireUser } from "@/domains/identity/current-user";
 import { homeFor } from "@/core/roles";
 import { fractionCore, weeksForOwner } from "@/domains/fractions/local-fraction-core";
@@ -77,6 +77,12 @@ export default async function HomePage() {
       <Section title="Acciones rápidas">
         <QuickActions stayId={next?.id} />
       </Section>
+
+      <Link href="/garantia-all-living" className="mt-7 flex items-center gap-4 rounded-[22px] bg-[#dff5f7] px-5 py-4 text-[#07394b] transition-[transform,box-shadow] duration-200 active:scale-[.99] md:max-w-2xl md:hover:-translate-y-0.5 md:hover:shadow-[0_12px_32px_rgb(3_119_151_/_0.10)]">
+        <span className="flex size-11 shrink-0 items-center justify-center rounded-full bg-white/75 shadow-sm"><ShieldCheck size={21} /></span>
+        <span className="min-w-0 flex-1"><span className="block text-[15px] font-medium">Garantía All Living</span><span className="mt-0.5 block text-[12px] leading-5 text-[#356875]">Si una estancia protegida falla por una incidencia cubierta, activamos reubicación equivalente o superior según disponibilidad y términos.</span></span>
+        <span aria-hidden className="text-[#0b789a]">→</span>
+      </Link>
 
       {!isOwner && !next && canClaim ? (
         <Section>
