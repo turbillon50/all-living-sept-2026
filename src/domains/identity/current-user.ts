@@ -1,7 +1,7 @@
 import { cache } from "react";
 import { cookies } from "next/headers";
 import { auth, currentUser } from "@clerk/nextjs/server";
-import { eq } from "drizzle-orm";
+import { eq, sql } from "drizzle-orm";
 import { db, schema } from "@/db/client";
 import { env, hasDb, hasClerk } from "@/core/env";
 import { isRole, type Role, SELF_SERVICE_ROLES } from "@/core/roles";
@@ -42,14 +42,36 @@ export const getSessionUser = cache(async (): Promise<SessionUser | null> => {
   if (!row) {
     const cu = await currentUser();
     if (!cu) return null;
-    const email = cu.primaryEmailAddress?.emailAddress ?? cu.emailAddresses[0]?.emailAddress ?? `${clerkId}@sin-correo.local`;
+    const primary = cu.primaryEmailAddress ?? cu.emailAddresses[0] ?? null;
+    const email = primary?.emailAddress ?? `${clerkId}@sin-correo.local`;
+    const emailVerified = primary?.verification?.status === "verified";
     const name = [cu.firstName, cu.lastName].filter(Boolean).join(" ") || cu.username || email.split("@")[0] || "Miembro";
-    const inserted = await d
-      .insert(schema.users)
-      .values({ clerkId, email, name, avatarUrl: cu.imageUrl ?? null })
-      .onConflictDoNothing()
-      .returning();
-    row = inserted[0] ?? (await d.query.users.findFirst({ where: eq(schema.users.clerkId, clerkId) }));
+
+    // OAuth puede devolver un clerkId distinto para una persona que ya existe en All Living.
+    // Si el correo está VERIFICADO por Clerk, enlazamos esa identidad a la cuenta existente
+    // en vez de intentar crear un duplicado que chocaría con users_email_uq y causaría un loop.
+    if (emailVerified) {
+      const existingByEmail = await d.query.users.findFirst({
+        where: sql`lower(${schema.users.email}) = ${email.toLowerCase()}`,
+      });
+      if (existingByEmail) {
+        const updated = await d
+          .update(schema.users)
+          .set({ clerkId, name: name || existingByEmail.name, avatarUrl: cu.imageUrl ?? existingByEmail.avatarUrl })
+          .where(eq(schema.users.id, existingByEmail.id))
+          .returning();
+        row = updated[0] ?? existingByEmail;
+      }
+    }
+
+    if (!row) {
+      const inserted = await d
+        .insert(schema.users)
+        .values({ clerkId, email, name, avatarUrl: cu.imageUrl ?? null })
+        .onConflictDoNothing()
+        .returning();
+      row = inserted[0] ?? (await d.query.users.findFirst({ where: eq(schema.users.clerkId, clerkId) }));
+    }
     if (!row) return null;
     await d
       .insert(schema.userProfiles)
