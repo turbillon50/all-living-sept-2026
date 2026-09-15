@@ -1,9 +1,8 @@
 import { ROLE_LABEL, type Role } from "@/core/roles";
 import { GUEST_NAV, navFor } from "./nav";
 import { Sidebar, TabBar } from "./tabbar";
-import { ButtonLink } from "./button";
-import { Mark } from "./mark";
 import { LivingButton } from "./living-button";
+import { AppHeader } from "./app-header";
 
 /** Cascarón de la app autenticada: sidebar en escritorio, tabbar en móvil. */
 export function AppShell({ role, roles, name, children }: { role: Role; roles: Role[]; name: string; children: React.ReactNode }) {
@@ -11,7 +10,7 @@ export function AppShell({ role, roles, name, children }: { role: Role; roles: R
   return (
     <div className="flex min-h-dvh">
       <Sidebar items={items} name={name} contextLabel={ROLE_LABEL[role]} />
-      <div className="min-w-0 flex-1">{children}</div>
+      <div className="min-w-0 flex-1"><AppHeader name={name} role={role} />{children}</div>
       <TabBar items={items} />
       <LivingButton role={role} roles={roles} />
     </div>
@@ -26,18 +25,7 @@ export function GuestShell({ children }: { children: React.ReactNode }) {
   return (
     <div className="flex min-h-dvh">
       <Sidebar items={GUEST_NAV} name="Visitante" contextLabel="Explorando" />
-      <div className="min-w-0 flex-1">
-        <div className="sticky top-0 z-30 flex items-center justify-between gap-3 border-b border-line bg-surface/85 px-4 py-2.5 backdrop-blur-md">
-          <span className="inline-flex items-center gap-2.5">
-            <Mark size={22} />
-            <span className="font-serif text-[13px] uppercase tracking-[0.28em] text-text">All Living</span>
-          </span>
-          <ButtonLink href="/sign-in" size="sm" variant="primary">
-            Entrar
-          </ButtonLink>
-        </div>
-        {children}
-      </div>
+      <div className="min-w-0 flex-1"><AppHeader name="Visitante" role="guest" guest />{children}</div>
       <TabBar items={GUEST_NAV} />
       <LivingButton role="guest" roles={["guest"]} guest />
     </div>
