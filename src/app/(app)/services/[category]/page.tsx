@@ -5,8 +5,10 @@ import { ProviderCard } from "@/domains/services/provider-card";
 import { Page } from "@/ui/page";
 import { TopBar } from "@/ui/top-bar";
 import { EmptyState } from "@/ui/empty-state";
+import { HeroHeader } from "@/ui/primitives";
 
 export const dynamic = "force-dynamic";
+const CATEGORY_HERO: Record<string,string> = { yachts:"/demo/yacht.webp", chefs:"/demo/chef.webp", wellness:"/demo/wellness.webp", transport:"/demo/city.webp", childcare:"/demo/villa-interior.webp", concierge:"/demo/villa-pool.webp" };
 
 /** Pantalla 30: categoría de servicio. Proveedores verificados, sin ratings inventados. */
 export default async function CategoryPage({ params, searchParams }: { params: Promise<{ category: string }>; searchParams: Promise<{ stay?: string; d?: string }> }) {
@@ -18,7 +20,7 @@ export default async function CategoryPage({ params, searchParams }: { params: P
   return (
     <Page wide>
       <TopBar back="/services" title={cat.label} />
-      <header className="pt-4 fade-up"><h1 className="text-[32px] leading-[1.06]">{cat.label}</h1><p className="mt-2 text-text-2">Proveedores con el sello All Living Verified. Reservas con confirmación del proveedor.</p></header>
+      <HeroHeader src={CATEGORY_HERO[cat.slug] ?? "/demo/tulum-sea.webp"} alt={cat.label} eyebrow="VIVIR" title={cat.label} subtitle="Suma lo que necesitas a tu estancia." height="min-h-[330px] md:min-h-[430px]" />
       <section className="mt-6">
         {providers.length === 0 ? (
           <EmptyState title={`Todavía no hay proveedores de ${cat.label.toLowerCase()} verificados.`} body="Concierge puede conseguirlo por ti mientras tanto." cta={{ href: "/support", label: "Pedir a concierge" }} />
