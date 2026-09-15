@@ -55,14 +55,17 @@ export default async function PropertyDetail({ params }: { params: Promise<{ id:
         <span className="min-w-0 flex-1"><span className="block text-[14px] font-medium">Conoce la Garantía All Living</span><span className="block text-[12px] text-[#356875]">Las reservas elegibles muestran su protección antes de confirmar.</span></span><span aria-hidden>→</span>
       </Link>
 
-      <header className="mt-6 flex items-start justify-between gap-4">
+      <div className="property-master-grid mt-6"><div>
+      <header className="flex items-start justify-between gap-4">
         <div>
-          <h1 className="text-[32px] leading-[1.06] md:text-[40px]">{property.name}</h1>
-          <p className="mt-1 text-text-2">{[property.destination, property.city !== property.destination ? property.city : null].filter(Boolean).join(" · ")}{property.bedrooms ? ` · ${property.bedrooms} recámaras` : ""}{property.maxGuests ? ` · hasta ${property.maxGuests} personas` : ""}</p>
+          <p className="text-[10px] tracking-[.26em] text-[#087d94] uppercase">{property.destination}</p>
+          <h1 className="mt-2 text-[36px] leading-[1.01] md:text-[52px]">{property.name}</h1>
+          <p className="mt-2 text-text-2">{[property.city !== property.destination ? property.city : null, property.bedrooms ? `${property.bedrooms} recámaras` : null, property.maxGuests ? `hasta ${property.maxGuests} personas` : null].filter(Boolean).join(" · ")}</p>
         </div>
         {property.isDemo ? <Chip>Demo</Chip> : null}
       </header>
-      {property.description ? <p className="mt-4 max-w-prose text-[16px] leading-relaxed">{property.description}</p> : null}
+      {property.description ? <p className="mt-5 max-w-2xl text-[16px] leading-7 text-text-2">{property.description}</p> : null}
+      </div><aside className="property-booking-panel"><p className="eyebrow">VIVE ESTE LUGAR</p><h3>Elige cuándo quieres estar aquí.</h3><p>Consulta tiempo disponible real para {property.destination}. Sólo mostramos inventario que puede reservarse.</p><ButtonLink href={`/explore?destination=${encodeURIComponent(property.destination)}`} className="mt-5 w-full">Ver disponibilidad</ButtonLink></aside></div>
 
       {isOwner ? (
         <Section title="Mis fracciones">
