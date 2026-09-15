@@ -5,6 +5,7 @@ import { formatRange } from "@/core/format";
 import { Page, PageHeader } from "@/ui/page";
 import { Photo } from "@/ui/photo";
 import { Chip } from "@/ui/chip";
+import { Plane, Car, Sparkles } from "@/ui/icons";
 import { EmptyState } from "@/ui/empty-state";
 
 export const dynamic = "force-dynamic";
