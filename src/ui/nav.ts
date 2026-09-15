@@ -39,7 +39,7 @@ export function navFor(role: Role): NavItem[] {
       return [
         { href: "/explore", label: "Explorar", icon: "explore" },
         { href: "/stays", label: "Viajes", icon: "stays" },
-        { href: "/flights", label: "Vuelos", icon: "flights" },
+        { href: "/services", label: "Vivir", icon: "services" },
         { href: "/profile", label: "Perfil", icon: "profile" },
       ];
   }

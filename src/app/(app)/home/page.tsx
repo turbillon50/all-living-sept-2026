@@ -7,16 +7,13 @@ import { homeFor } from "@/core/roles";
 import { fractionCore, weeksForOwner } from "@/domains/fractions/local-fraction-core";
 import { nextStayFor, staysForUser, recentNotifications } from "@/domains/stays/queries";
 import { coverFor } from "@/domains/properties/queries";
-import { demoAvailable } from "@/domains/identity/demo";
-import { claimDemo } from "@/domains/home/actions";
 import { QuickActions } from "@/domains/home/quick-actions";
 import { daysUntil, firstName, formatRange } from "@/core/format";
 import { SEASON_LABEL } from "@/domains/fractions/labels";
 import { Page, Section } from "@/ui/page";
-import { Button } from "@/ui/button";
 import { EmptyState } from "@/ui/empty-state";
 import { Chip } from "@/ui/chip";
-import { Card, HeroHeader, IconAction, ListRow, RowGroup } from "@/ui/primitives";
+import { HeroHeader, IconAction, ListRow, RowGroup } from "@/ui/primitives";
 
 export const dynamic = "force-dynamic";
 
@@ -25,12 +22,11 @@ export default async function HomePage() {
   const user = await requireUser();
   if (user.activeContext !== "owner" && user.activeContext !== "guest") redirect(homeFor(user.activeContext));
 
-  const [ownerships, next, stays, notes, canClaim] = await Promise.all([
+  const [ownerships, next, stays, notes] = await Promise.all([
     fractionCore().getUserOwnerships(user.id),
     nextStayFor(user.id),
     staysForUser(user.id),
     recentNotifications(user.id, 3),
-    demoAvailable(),
   ]);
   const main = ownerships[0] ?? null;
   const covers = await coverFor([...(main ? [main.propertyId] : []), ...(next ? [next.propertyId] : [])]);
@@ -49,7 +45,7 @@ export default async function HomePage() {
       : "Cuando te inviten a una estancia, la verás aquí.";
 
   return (
-    <Page>
+    <Page wide>
       <HeroHeader src={hero.url} alt={hero.alt} title={`Hola, ${firstName(user.name)}.`} subtitle={subtitle} height="min-h-[420px] md:min-h-[440px]">
         {next || main ? (
           <Link href={next ? `/stays/${next.id}` : `/properties/${main!.propertyId}`} className="press flex items-center gap-3 rounded-[var(--radius-card)] bg-surface p-3 text-text shadow-[var(--shadow-float)]">
@@ -74,6 +70,23 @@ export default async function HomePage() {
         </ul>
       ) : null}
 
+      <Section title="El Caribe, a tu manera" action={<Link href="/explore" className="text-sm text-[#087c98]">Explorar</Link>}>
+        <div className="home-destination-grid">
+          <Link href="/explore?destination=Canc%C3%BAn" className="home-editorial-card home-editorial-card--wide"><Image src="/demo/palms.webp" alt="Cancún" fill sizes="(max-width:768px) 100vw,50vw"/><span className="home-editorial-shade"/><span className="home-editorial-copy"><small>EXPLORA</small><strong>Cancún</strong><em>Mar, islas y ciudad</em></span></Link>
+          <Link href="/explore?destination=Playa%20del%20Carmen" className="home-editorial-card"><Image src="/demo/villa-pool.webp" alt="Playa del Carmen" fill sizes="(max-width:768px) 50vw,25vw"/><span className="home-editorial-shade"/><span className="home-editorial-copy"><small>EXPLORA</small><strong>Playa del Carmen</strong><em>Riviera y vida a pie</em></span></Link>
+          <Link href="/explore?destination=Tulum" className="home-editorial-card"><Image src="/demo/tulum-sea.webp" alt="Tulum" fill sizes="(max-width:768px) 50vw,25vw"/><span className="home-editorial-shade"/><span className="home-editorial-copy"><small>EXPLORA</small><strong>Tulum</strong><em>Mar, selva y calma</em></span></Link>
+        </div>
+      </Section>
+
+      <Section title="Todo alrededor de tu viaje">
+        <div className="journey-editorial-grid">
+          <Link href="/flights" className="journey-editorial-card"><Image src="/demo/sunset.webp" alt="Vuelos" fill sizes="(max-width:768px) 50vw,25vw"/><span/><strong>Vuelos</strong></Link>
+          <Link href="/services/yachts" className="journey-editorial-card"><Image src="/demo/yacht.webp" alt="Yates" fill sizes="(max-width:768px) 50vw,25vw"/><span/><strong>Yates</strong></Link>
+          <Link href="/services/chefs" className="journey-editorial-card"><Image src="/demo/chef.webp" alt="Chefs" fill sizes="(max-width:768px) 50vw,25vw"/><span/><strong>Chefs</strong></Link>
+          <Link href="/services/transport" className="journey-editorial-card"><Image src="/demo/city.webp" alt="Transporte" fill sizes="(max-width:768px) 50vw,25vw"/><span/><strong>Transporte</strong></Link>
+        </div>
+      </Section>
+
       <Section title="Acciones rápidas">
         <QuickActions stayId={next?.id} />
       </Section>
@@ -83,17 +96,6 @@ export default async function HomePage() {
         <span className="min-w-0 flex-1"><span className="block text-[15px] font-medium">Garantía All Living</span><span className="mt-0.5 block text-[12px] leading-5 text-[#356875]">Si una estancia protegida falla por una incidencia cubierta, activamos reubicación equivalente o superior según disponibilidad y términos.</span></span>
         <span aria-hidden className="text-[#0b789a]">→</span>
       </Link>
-
-      {!isOwner && !next && canClaim ? (
-        <Section>
-          <Card className="p-5">
-            <Chip>Demo</Chip>
-            <p className="mt-3 font-serif text-[20px]">Ver All Living con datos de demostración</p>
-            <p className="mt-1 text-sm text-text-2">Casa Mar · Tulum, la fracción F07 y una estancia en diciembre. Todo marcado como demo.</p>
-            <form action={claimDemo} className="mt-4"><Button type="submit" variant="secondary" size="sm">Activar demo</Button></form>
-          </Card>
-        </Section>
-      ) : null}
 
       <Section title="Próximas estancias" action={stays.length > 1 ? <Link href="/stays" className="text-sm text-green-900">Ver todas</Link> : null}>
         {stays.length === 0 ? (

@@ -101,9 +101,9 @@ export function SearchBar({ placeholder, name = "q", action, defaultValue, class
 /** Tile fotográfico: foto arriba, título y línea debajo. Grid de 2. */
 export function PhotoTile({ href, src, alt, title, subtitle, ratio = "4/3", badge, sizes = "(max-width: 768px) 50vw, 25vw", className }: { href: string; src: string | null; alt: string; title: string; subtitle?: string; ratio?: string; badge?: React.ReactNode; sizes?: string; className?: string }) {
   return (
-    <Link href={href} className={cn("tapable-photo block", className)}>
+    <Link href={href} className={cn("tapable-photo group block", className)}>
       <div className="relative overflow-hidden rounded-[var(--radius-card)] bg-sand-200" style={{ aspectRatio: ratio }}>
-        {src ? <Image src={src} alt={alt} fill sizes={sizes} className="object-cover" /> : null}
+        {src ? <Image src={src} alt={alt} fill sizes={sizes} className="object-cover transition-transform duration-700 ease-out group-hover:scale-[1.035]" /> : null}
         {badge ? <span className="absolute left-2.5 top-2.5">{badge}</span> : null}
       </div>
       <p className="mt-2 text-[15px] font-medium leading-tight">{title}</p>
@@ -115,7 +115,7 @@ export function PhotoTile({ href, src, alt, title, subtitle, ratio = "4/3", badg
 /** Icono en tile cuadrado (Destacados · Yates · Chefs · Niñeras). */
 export function IconTile({ href, label, Icon, active }: { href: string; label: string; Icon: LucideIcon; active?: boolean }) {
   return (
-    <Link href={href} aria-current={active ? "page" : undefined} className={cn("tapable flex flex-col items-center gap-2 rounded-[var(--radius-card)] px-2 py-3.5 hairline", active ? "bg-accent-soft border-green-100" : "bg-surface")}>
+    <Link href={href} aria-current={active ? "page" : undefined} className={cn("tapable craft-icon-tile flex flex-col items-center gap-2 rounded-[22px] px-2 py-3.5 hairline", active ? "bg-accent-soft border-green-100" : "bg-surface")}>
       <Icon size={22} className="text-green-900" aria-hidden />
       <span className="text-[12px] font-medium text-text-2">{label}</span>
     </Link>

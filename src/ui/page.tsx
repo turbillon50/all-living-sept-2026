@@ -3,7 +3,7 @@ import { cn } from "./cn";
 /** Contenedor de página: ancho legible en escritorio, respiro en móvil, espacio para la tabbar. */
 export function Page({ children, className, wide = false }: { children: React.ReactNode; className?: string; wide?: boolean }) {
   return (
-    <main className={cn("mx-auto w-full px-5 pt-safe pb-tabbar md:px-8 md:pb-12", wide ? "max-w-6xl" : "max-w-2xl", className)}>
+    <main className={cn("mx-auto w-full px-5 pt-safe pb-tabbar md:px-8 md:pb-12", wide ? "max-w-[1440px]" : "max-w-5xl", className)}>
       {children}
     </main>
   );
