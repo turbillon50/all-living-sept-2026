@@ -17,7 +17,7 @@ export default async function OpsToday() {
   return (
     <Page wide>
       <PageHeader eyebrow="Operación" title="Hoy" description={new Intl.DateTimeFormat("es-MX", { weekday: "long", day: "numeric", month: "long" }).format(new Date())} />
-      <ul className="grid grid-cols-2 gap-3 md:grid-cols-4">{tiles.map(([k, v]) => <li key={k} className="rounded-[var(--radius-card)] bg-surface hairline p-4"><p className="text-[12px] text-muted">{k}</p><p className="mt-1 font-serif text-[28px]">{v}</p></li>)}</ul>
+      <div className="ops-pulse" aria-label="Resumen de hoy">{tiles.map(([k,v])=><div key={k}><strong>{v}</strong><span>{k}</span></div>)}</div>
       <div className="grid gap-8 md:grid-cols-2">
         <Section title="Llegadas">
           {t.checkIns.length === 0 ? <p className="text-sm text-text-2">Sin llegadas hoy.</p> : <ul className="divide-y divide-line rounded-[var(--radius-card)] bg-surface hairline text-sm">{t.checkIns.map(({ stay, property, host }) => <li key={stay.id} className="flex justify-between px-4 py-3"><span><span className="block font-medium">{property.name}</span><span className="text-text-2">{host.name} · {stay.guestsCount} pax · {stay.arrivalTime?.slice(0, 5) ?? "hora por confirmar"}</span></span><Link href={`/ops/properties/${property.id}`} className="text-green-900">Ver</Link></li>)}</ul>}
