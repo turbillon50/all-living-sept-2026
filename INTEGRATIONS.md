@@ -18,7 +18,7 @@ Regla (spec §36, §53): ninguna integración falsa. Cada capacidad externa vive
 
 Duffel está disponible en `/flights`, con `/api/flights/places` y `/api/flights/search`. Preview usa una clave de pruebas y producción una clave live. Se verificó una búsqueda MEX–CUN para el 20 de octubre de 2026, un adulto, con ofertas reales en producción. Todavía no se implementan reserva, cobro ni emisión de boletos.
 
-Reloadly se consulta desde `/recargas`, accesible desde `/services`. `GET /api/reloadly/catalog` acepta `kind=topups|giftcards`, `country=MX` y `page=1`. La pantalla permite elegir país, cambiar categoría, expandir detalles y paginar tarjetas. OAuth se gestiona exclusivamente en el servidor, por audiencia; el catálogo se guarda en caché cinco minutos y la autenticación se renueva antes de expirar. Preview y producción usan el catálogo live, sin operaciones de compra.
+Reloadly se consulta desde `/tarjetas`, con entrada principal en la navegación de viaje. `/recargas` conserva enlaces anteriores y abre la categoría de tiempo aire. `GET /api/reloadly/catalog` acepta `kind=topups|giftcards`, `country=MX` y `page=1`. La pantalla abre primero tarjetas de regalo, destaca marcas reales como Airbnb, Amazon y Google Play cuando aparecen en la consulta, y permite elegir país, cambiar a tiempo aire, expandir detalles y paginar. OAuth se gestiona exclusivamente en el servidor, por audiencia; el catálogo se guarda en caché cinco minutos y la autenticación se renueva antes de expirar. Preview y producción usan el catálogo live, sin operaciones de compra.
 
 Solo se publican campos de catálogo permitidos. Los montos de las tarjetas son valores nominales en la moneda del destinatario; los costos mayoristas de las recargas no se presentan como saldo local. Se conservan país, moneda y condiciones del producto, incluso en productos globales. Las credenciales, comisiones y costos del proveedor no se devuelven al navegador. Una consulta inicial para México devolvió 10 operadores y 31 tarjetas; las cantidades dependen del catálogo vigente. Compras, entrega y envío de recargas requieren una fase posterior con pagos, cotización, idempotencia y conciliación.
 
@@ -29,3 +29,13 @@ Se escriben en la misma transacción que el cambio. Un publicador (fase 7) los e
 
 ## Lo que devuelve ALL LIVING hacia Fraction Core (fase 7)
 ocupación · ADR · renta real · costos · servicios consumidos · satisfacción · incidencias · rendimiento, agregados por fracción y propiedad, solo con cifras realizadas (status `paid`/`confirmed`).
+
+## Experiencia de vuelos y tarjetas — revisión de septiembre de 2026
+
+La mejora en preview pone Hospedaje, Vuelos, Tarjetas y Experiencias al mismo nivel. Se conserva el Master visual, el símbolo Möbius y los modos operativos. El acceso a cuenta permanece en el encabezado.
+
+El buscador de vuelos incorpora sugerencias de ciudades/aeropuertos, ida y vuelta, intercambio de origen/destino, fechas visibles, viajeros adultos y cabina. La carga tiene animación y skeletons que respetan movimiento reducido. Los resultados muestran logos reales de los campos Duffel, ida y regreso, duración, escalas, tarifa total para todos los adultos, moneda y detalles de itinerario/equipaje por pasajero y segmento. Los logos identifican las ofertas; no se afirma un convenio comercial directo con la aerolínea.
+
+Se comparan todas las ofertas recibidas (con presentación progresiva de 12), sin mezclar monedas, y se filtran aerolíneas/escalas. Se conserva la hora local del aeropuerto sin convertirla a la zona del navegador. Las ofertas vencidas se retiran; una consulta nueva actualiza la disponibilidad. La API valida fechas reales, orden ida/regreso, origen distinto al destino y 1–9 adultos, limita la espera y devuelve errores sin respuestas internas del proveedor. Sólo publica los campos usados por la experiencia.
+
+La búsqueda Duffel anterior sigue activa en producción. Esta mejora visual y el catálogo Reloadly requieren aprobación de publicación y verificación posterior del dominio. No habilitan cobro, emisión, compra ni entrega.

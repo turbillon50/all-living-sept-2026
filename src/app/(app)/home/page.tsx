@@ -14,6 +14,7 @@ import { Page, Section } from "@/ui/page";
 import { EmptyState } from "@/ui/empty-state";
 import { Chip } from "@/ui/chip";
 import { HeroHeader, IconAction, ListRow, RowGroup } from "@/ui/primitives";
+import { TravelTabs } from "@/ui/travel-tabs";
 
 export const dynamic = "force-dynamic";
 
@@ -46,6 +47,7 @@ export default async function HomePage() {
 
   return (
     <Page wide>
+      <TravelTabs />
       <HeroHeader src={hero.url} alt={hero.alt} title={`Hola, ${firstName(user.name)}.`} subtitle={subtitle} height="min-h-[420px] md:min-h-[440px]">
         {next || main ? (
           <Link href={next ? `/stays/${next.id}` : `/properties/${main!.propertyId}`} className="press flex items-center gap-3 rounded-[var(--radius-card)] bg-surface p-3 text-text shadow-[var(--shadow-float)]">

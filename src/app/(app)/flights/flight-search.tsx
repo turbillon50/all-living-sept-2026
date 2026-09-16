@@ -1,7 +1,73 @@
 "use client";
-import { useState } from "react";
-import { Plane, ArrowRight } from "@/ui/icons";
-import { money } from "@/core/format";
-type Offer={id:string;total_amount:string;total_currency:string;expires_at:string;owner:{name:string};slices:Array<{duration:string;origin:{iata_code:string;name:string};destination:{iata_code:string;name:string};segments:Array<{id:string;departing_at:string;arriving_at:string;origin:{iata_code:string};destination:{iata_code:string};marketing_carrier:{name:string}}>}>};
-const fmt=(iso:string)=>new Intl.DateTimeFormat("es-MX",{hour:"2-digit",minute:"2-digit",day:"numeric",month:"short"}).format(new Date(iso));
-export function FlightSearch({ready}:{ready:boolean}){const [loading,setLoading]=useState(false),[offers,setOffers]=useState<Offer[]>([]),[error,setError]=useState("");async function submit(e:React.FormEvent<HTMLFormElement>){e.preventDefault();setLoading(true);setError("");const f=new FormData(e.currentTarget);const body={origin:String(f.get("origin")||"").toUpperCase(),destination:String(f.get("destination")||"").toUpperCase(),depart:String(f.get("depart")||""),returnDate:String(f.get("returnDate")||"")||undefined,adults:Number(f.get("adults")||1),cabin:String(f.get("cabin")||"economy")};const r=await fetch("/api/flights/search",{method:"POST",headers:{"content-type":"application/json"},body:JSON.stringify(body)});const j=await r.json();if(!r.ok){setError(j.error??"No pudimos buscar vuelos");setOffers([])}else setOffers((j.offers??[]).slice(0,24));setLoading(false)}return <div className="space-y-8"><form onSubmit={submit} className="flight-search-shell"><div className="flight-search-head"><span><Plane size={20}/></span><div><p>Tu vuelo</p><small>Conecta tu estancia con el mundo</small></div></div><div className="flight-grid"><label><span>Origen</span><input name="origin" placeholder="MEX" maxLength={3} required autoCapitalize="characters"/></label><label><span>Destino</span><input name="destination" placeholder="CUN" maxLength={3} required defaultValue="CUN" autoCapitalize="characters"/></label><label><span>Ida</span><input name="depart" type="date" required/></label><label><span>Regreso</span><input name="returnDate" type="date"/></label><label><span>Viajeros</span><input name="adults" type="number" min="1" max="9" defaultValue="1"/></label><label><span>Cabina</span><select name="cabin" defaultValue="economy"><option value="economy">Economy</option><option value="premium_economy">Premium</option><option value="business">Business</option><option value="first">First</option></select></label></div><button disabled={!ready||loading} className="flight-search-cta">{!ready?"Activando vuelos":loading?"Buscando…":"Buscar vuelos"}<ArrowRight size={18}/></button>{!ready?<p className="flight-note">La experiencia ya está integrada. Falta conectar la credencial de producción para consultar inventario real.</p>:null}</form>{error?<div className="rounded-[20px] bg-[#f8e9e6] px-5 py-4 text-sm text-danger">{error}</div>:null}{offers.length>0?<section><div className="mb-4"><p className="text-[11px] tracking-[.24em] uppercase text-muted">Opciones disponibles</p><h2 className="mt-1 text-[28px]">Elige cómo llegar</h2></div><div className="grid gap-3">{offers.map(o=>{const s=o.slices[0]; if(!s||s.segments.length===0)return null; return <article key={o.id} className="flight-offer"><div className="min-w-0"><p className="text-[12px] text-muted">{o.owner.name} · {s.segments.length===1?"Directo":`${s.segments.length-1} escala${s.segments.length>2?"s":""}`}</p><div className="mt-2 flex items-center gap-3"><strong>{fmt(s.segments[0]!.departing_at)}</strong><span className="h-px flex-1 bg-line"/><strong>{fmt(s.segments.at(-1)!.arriving_at)}</strong></div><p className="mt-1 text-[13px] text-text-2">{s.origin.iata_code} → {s.destination.iata_code}</p></div><div className="text-right"><p className="text-[20px] font-medium">{money(Number(o.total_amount),o.total_currency)}</p><small className="text-muted">total</small></div></article>})}</div></section>:null}</div>}
+import { useEffect, useMemo, useRef, useState } from "react";
+import { ArrowRight, CalendarDays, Plane, Repeat, Users } from "@/ui/icons";
+import type { FlightOffer, Carrier } from "@/integrations/flights/types";
+import { airlineNames, durationLabel, localDateLabel, priceLabel, selectOffers, totalDuration, type OfferFilters } from "@/integrations/flights/offer-utils";
+import { AirportField, type AirportChoice } from "./airport-field";
+import { AirlineMark, FlightCard } from "./flight-results";
+
+type SearchRecord = { origin: string; destination: string; depart: string; returnDate?: string; adults: number; cabin: string };
+type SearchResult = { offers: FlightOffer[]; live: boolean; request: SearchRecord };
+
+export function FlightSearch({ ready, today }: { ready: boolean; today: string }) {
+  const [origin, setOrigin] = useState<AirportChoice>({ code: "", label: "" });
+  const [destination, setDestination] = useState<AirportChoice>({ code: "CUN", label: "Cancún · CUN" });
+  const [roundTrip, setRoundTrip] = useState(true), [depart, setDepart] = useState(""), [returnDate, setReturnDate] = useState("");
+  const [loading, setLoading] = useState(false), [error, setError] = useState("");
+  const [result, setResult] = useState<SearchResult | null>(null), [now, setNow] = useState(0), [limit, setLimit] = useState(12);
+  const [stops, setStops] = useState<OfferFilters["stops"]>("any"), [airline, setAirline] = useState(""), [sort, setSort] = useState<OfferFilters["sort"]>("price"), [currency, setCurrency] = useState("");
+  const controller = useRef<AbortController | null>(null), resultsRef = useRef<HTMLElement>(null);
+  useEffect(() => () => controller.current?.abort(), []);
+  useEffect(() => { if (!result) return; const timer = setInterval(() => setNow(Date.now()), 30000); return () => clearInterval(timer); }, [result]);
+  const filtered = useMemo(() => selectOffers(result?.offers ?? [], { currency, stops, airline, sort, now }), [result, currency, stops, airline, sort, now]);
+  const airlines = useMemo(() => [...new Set(result?.offers.flatMap(airlineNames) ?? [])].sort(), [result]);
+  const logos = useMemo(() => { const map = new Map<string, Carrier>(); for (const offer of result?.offers ?? []) for (const slice of offer.slices) for (const segment of slice.segments) map.set(segment.marketing_carrier.name, segment.marketing_carrier); return [...map.values()]; }, [result]);
+  const currencies = [...new Set(result?.offers.map(offer => offer.total_currency) ?? [])];
+  const cheapest = filtered.length ? Math.min(...filtered.map(offer => Number(offer.total_amount))) : null;
+  const quickest = filtered.length ? Math.min(...filtered.map(totalDuration)) : null;
+
+  async function submit(event: React.FormEvent<HTMLFormElement>) {
+    event.preventDefault();
+    if (!origin.code || !destination.code) { setError("Elige el origen y el destino en las sugerencias, o escribe sus códigos de aeropuerto."); return; }
+    const form = new FormData(event.currentTarget);
+    const request = { origin: origin.code, destination: destination.code, depart, returnDate: roundTrip ? returnDate : undefined, adults: Number(form.get("adults")), cabin: String(form.get("cabin")) };
+    controller.current?.abort();
+    const active = new AbortController(); controller.current = active;
+    const timeout = setTimeout(() => active.abort(), 35000);
+    setLoading(true); setError(""); setResult(null);
+    try {
+      const response = await fetch("/api/flights/search", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(request), signal: active.signal });
+      const data = await response.json();
+      if (!response.ok) throw new Error(data.error || "No pudimos buscar vuelos.");
+      const offers: FlightOffer[] = data.offers ?? [];
+      setResult({ offers, live: data.live_mode === true, request }); setNow(Date.now()); setCurrency(offers[0]?.total_currency ?? ""); setAirline(""); setStops("any"); setSort("price"); setLimit(12);
+      requestAnimationFrame(() => resultsRef.current?.scrollIntoView({ behavior: window.matchMedia("(prefers-reduced-motion: reduce)").matches ? "instant" : "smooth", block: "start" }));
+    } catch (cause) { if (controller.current === active) setError(active.signal.aborted ? "La búsqueda tardó más de lo esperado. Intenta de nuevo." : cause instanceof Error ? cause.message : "No pudimos conectar. Revisa tu conexión e intenta de nuevo."); }
+    finally { clearTimeout(timeout); if (controller.current === active) setLoading(false); }
+  }
+  return <div className="flight-discovery">
+    <form onSubmit={submit} className="journey-search" aria-label="Buscar vuelos">
+      <div className="journey-search-top"><div className="journey-trip-type" role="group" aria-label="Tipo de viaje"><button type="button" aria-pressed={roundTrip} onClick={() => setRoundTrip(true)} disabled={loading}>Ida y vuelta</button><button type="button" aria-pressed={!roundTrip} onClick={() => setRoundTrip(false)} disabled={loading}>Solo ida</button></div><span className="journey-search-label"><Plane size={16} aria-hidden />Tu viaje empieza aquí</span></div>
+      <div className="journey-locations"><AirportField label="Origen" value={origin} onChange={setOrigin} disabled={loading} /><button type="button" className="journey-swap" aria-label="Intercambiar origen y destino" disabled={loading} onClick={() => { setOrigin(destination); setDestination(origin); }}><Repeat size={20} aria-hidden /></button><AirportField label="Destino" value={destination} onChange={setDestination} disabled={loading} /></div>
+      <div className="journey-options"><label><span><CalendarDays size={16} aria-hidden />Salida</span><input type="date" aria-label="Fecha de salida" min={today} required value={depart} disabled={loading} onChange={event => { setDepart(event.target.value); if (returnDate < event.target.value) setReturnDate(""); }} /></label>
+        <label className={!roundTrip ? "is-disabled" : undefined}><span><CalendarDays size={16} aria-hidden />Regreso</span>{roundTrip ? <input type="date" aria-label="Fecha de regreso" min={depart || today} required value={returnDate} disabled={loading} onChange={event => setReturnDate(event.target.value)} /> : <span className="journey-oneway">Viaje de una sola ida</span>}</label>
+        <label><span><Users size={16} aria-hidden />Viajeros</span><select name="adults" aria-label="Adultos" defaultValue="1" disabled={loading}>{Array.from({ length: 9 }, (_, index) => <option key={index} value={index + 1}>{index + 1} adulto{index ? "s" : ""}</option>)}</select></label>
+        <label><span>Cabina</span><select name="cabin" aria-label="Cabina" defaultValue="economy" disabled={loading}><option value="economy">Económica</option><option value="premium_economy">Económica premium</option><option value="business">Ejecutiva</option><option value="first">Primera clase</option></select></label>
+      </div>
+      <div className="journey-search-bottom"><p>{ready ? "Consulta y compara. La compra de boletos estará disponible próximamente." : "Estamos preparando la búsqueda de vuelos."}</p><button className="journey-search-button" disabled={!ready || loading}>{loading ? "Buscando vuelos…" : "Buscar vuelos"}<ArrowRight size={19} aria-hidden /></button></div>
+      {error ? <p role="alert" className="journey-error">{error}</p> : null}
+    </form>
+    <section ref={resultsRef} className="journey-results" aria-label="Resultados de vuelos" aria-busy={loading}>
+      {loading ? <div className="journey-loading" role="status"><div className="journey-flight-loader" aria-hidden><span /><Plane size={28} /></div><h2>Tu próximo viaje está tomando forma.</h2><p>Consultando horarios y tarifas de las aerolíneas…</p><div className="journey-skeletons" aria-hidden>{[0, 1, 2].map(index => <div key={index}><i /><span /><b /></div>)}</div></div> : null}
+      {result && !loading ? <>
+        <div className="journey-result-heading"><div><p className="journey-eyebrow">{result.live ? "VUELOS PARA TU VIAJE" : "RESULTADOS DE PRUEBA"}</p><h2>{result.request.origin}<ArrowRight size={23} aria-hidden />{result.request.destination}</h2><p>{localDateLabel(result.request.depart)}{result.request.returnDate ? ` — ${localDateLabel(result.request.returnDate)}` : " · Solo ida"} · {result.request.adults} adulto{result.request.adults > 1 ? "s" : ""}</p></div><span className="journey-result-count" role="status">{filtered.length} opciones</span></div>
+        {logos.length ? <div className="journey-airlines" aria-label="Aerolíneas en tus resultados">{logos.map(item => <span key={item.name}><AirlineMark airline={item} /><span>{item.name}</span></span>)}</div> : null}
+        {result.offers.length ? <>
+          <div className="journey-sort" role="group" aria-label="Ordenar vuelos"><button aria-pressed={sort === "price"} onClick={() => { setSort("price"); setLimit(12); }}><span>Menor precio</span><strong>{cheapest !== null ? priceLabel(cheapest, currency) : "—"}</strong></button><button aria-pressed={sort === "duration"} onClick={() => { setSort("duration"); setLimit(12); }}><span>Menos tiempo de viaje</span><strong>{quickest !== null ? durationLabel(quickest) : "—"}</strong></button><button aria-pressed={sort === "departure"} onClick={() => { setSort("departure"); setLimit(12); }}><span>Salida más temprano</span><strong>Organiza tu día</strong></button></div>
+          <div className="journey-filters"><label>Escalas<select value={stops} onChange={event => { setStops(event.target.value as OfferFilters["stops"]); setLimit(12); }}><option value="any">Todas las opciones</option><option value="0">Sólo sin escalas</option><option value="1">Máximo una escala</option></select></label><label>Aerolínea<select value={airline} onChange={event => { setAirline(event.target.value); setLimit(12); }}><option value="">Todas las aerolíneas</option>{airlines.map(name => <option key={name}>{name}</option>)}</select></label>{currencies.length > 1 ? <label>Moneda<select value={currency} onChange={event => { setCurrency(event.target.value); setLimit(12); }}>{currencies.map(code => <option key={code}>{code}</option>)}</select></label> : <p>Precios en {currency} · total para todos los adultos</p>}</div>
+        </> : null}
+        {filtered.length ? <><div className="journey-offers">{filtered.slice(0, limit).map(offer => <FlightCard key={offer.id} offer={offer} adults={result.request.adults} bestPrice={Number(offer.total_amount) === cheapest} />)}</div>{filtered.length > limit ? <button className="journey-more" onClick={() => setLimit(value => value + 12)}>Ver más vuelos · {filtered.length - limit} por explorar<ArrowRight size={17} aria-hidden /></button> : null}</> : <div className="journey-empty"><Plane size={30} aria-hidden /><h3>No hay vuelos para esta selección.</h3><p>{result.offers.length ? "Prueba otros filtros. Si pasó un rato desde tu consulta, vuelve a buscar para actualizar las tarifas." : "Prueba con otras fechas o un aeropuerto cercano."}</p>{stops !== "any" || airline ? <button onClick={() => { setStops("any"); setAirline(""); }}>Quitar filtros</button> : null}</div>}
+      </> : null}
+    </section>
+  </div>;
+}
