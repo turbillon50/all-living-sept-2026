@@ -10,10 +10,10 @@ Para desarrollo: `npm run dev`. La única variable propia del proyecto es `TICKE
 ## Aislamiento permanente
 
 - Paquete, lockfile, dependencias, tipografías compiladas, íconos, imágenes, estilos, service worker y despliegue propios.
-- Sin imports fuera de esta carpeta, symlinks al padre, Clerk, autenticación, Neon ni otra base de datos.
+- Sin imports fuera de esta carpeta, symlinks al padre, Clerk, autenticación del padre, Neon ni otra base de datos.
 - Vercel: proyecto `all-living-events`, raíz `apps/events`, Node `20.x`, `sourceFilesOutsideRootDirectory: false`; `npm ci --no-audit --no-fund` y `npm run build`.
 - La navegación y la búsqueda nunca requieren cuenta. Este subdominio es exclusivamente de eventos: no agregar otros servicios, paquetes, precios combinados o carrito compartido.
-- Los enlaces de boletos sólo llevan a dominios oficiales de Ticketmaster. No existe checkout local ni seguimiento de afiliados en esta versión.
+- Los enlaces de boletos sólo llevan a dominios oficiales de Ticketmaster. El checkout local es exclusivamente una simulación, claramente identificada, sin datos bancarios ni llamadas de pago. No hay seguimiento de afiliados.
 - Publicación directa a producción por instrucción de Luis; previews desactivados. No ejecutar ninguna verificación de Impact sin su reauditoría.
 
 ## Discovery API
@@ -28,7 +28,7 @@ Las consultas se serializan con separación mínima de 275 ms por proceso. El ca
 
 ## PWA y privacidad
 
-Manifest con nombre, identidad, íconos 192/512/maskable, inicio `/eventos`, alcance `/` y display standalone. El service worker sólo precachea recursos básicos y la pantalla sin conexión; nunca almacena búsquedas, respuestas de API ni inventario. No analytics, login o cookies de identificación propias. La instalación depende del navegador y sus condiciones de elegibilidad.
+Manifest con nombre, identidad, íconos 192/512/maskable, inicio `/app` (conserva la identidad `id: /eventos` para instalaciones existentes), alcance `/` y display standalone. El service worker sólo precachea recursos básicos y la pantalla sin conexión; nunca almacena búsquedas, respuestas de API ni inventario. No analytics, autenticación real ni cookies de identificación propias. Perfil y sesión de demo en almacenamiento local aislado. La instalación depende del navegador y sus condiciones de elegibilidad.
 
 Páginas `/privacidad`, `/terminos`, `/responsable`, enlazadas desde el footer. Responsable proporcionado por Luis: Colectivo Mass S.A. de C.V., `luisdelator@vmomentums.info`.
 
@@ -42,3 +42,21 @@ Páginas `/privacidad`, `/terminos`, `/responsable`, enlazadas desde el footer. 
 - Verificar dominio, manifest, búsqueda, páginas legales y scripts de red después de cada publicación.
 
 Fuentes oficiales: [Discovery](https://developer.ticketmaster.com/products-and-docs/apis/discovery-api/v2/), [términos API](https://developer.ticketmaster.com/support/terms-of-use/), [LFPDPPP](https://www.diputados.gob.mx/LeyesBiblio/pdf/LFPDPPP.pdf).
+
+## Interior de la app y demo independiente
+
+La portada `/eventos` se conserva; su botón “Abrir la app” lleva a `/acceso`. El acceso demo permite un apodo y no solicita contraseña, OAuth ni credenciales de la aplicación principal. **No es autenticación real:** no tiene servidor de identidades, sesiones seguras, recuperación de cuentas ni sincronización. Descubrir eventos permanece libre.
+
+Rutas: `/app`, `/app/mapa`, `/app/evento/[id]`, `/app/musica`, `/app/guardados`, `/app/carrito`, `/app/pago`, `/app/planes`, `/app/perfil`, `/app/ajustes`. Navegación móvil con cinco pestañas, menú lateral, actividad de la sesión y acceso de instalación.
+
+- Demo: seis fichas de muestra con artistas/fechas/recintos/precios explícitamente ficticios. No son anuncios de artistas, disponibilidad ni inventario. Carrito sólo acepta IDs y fechas de la demo, zonas permitidas y cantidades de 1–6.
+- Pago: métodos de prueba precargados, sin PAN/CVV/CLABE ni transmisión financiera. Confirmación `DEMO-…`, sin validez de acceso. Fechas descargables ICS marcadas DEMO, sin presentación confirmada.
+- Real: el selector de cartelera usa `/api/events` con los filtros enviados a Ticketmaster. No mezcla fichas de muestra. La compra real sigue exclusivamente por el enlace oficial.
+- Preferencias locales versionadas en `all-living-events-demo-v1`, validadas al restaurar; exportables/borrables en Ajustes. No se hereda almacenamiento de All Living.
+- Música: reproductor oficial de Spotify sólo después de pulsar escuchar. IDs de Jungle, RÜFÜS DU SOL y Mon Laferte comprobados con oEmbed oficial; sin OAuth ni nuevas variables.
+- Mapa: Leaflet se importa al abrirlo. OpenStreetMap carga mapas sólo tras la acción del visitante, con atribución, Referer normal y sin precache ni descarga masiva. Los pines demo son ilustrativos. La cartelera real usa coordenadas publicadas.
+- PWA: instalación desde menú/Ajustes; si no hay prompt nativo, instrucciones específicas de navegador. El service worker no conserva API, mapas ni reproductores.
+
+Fuentes de implementación: [Spotify Embeds](https://developer.spotify.com/documentation/embeds), [Leaflet](https://leafletjs.com/reference.html), [política de mapas OpenStreetMap](https://operations.osmfoundation.org/policies/tiles/).
+
+Validación del interior: compilación de producción con Node 20 y 11 pruebas aprobadas (contrato Discovery, coordenadas/Spotify, límites del carrito, separación de inventario real y confirmación simulada). Las pruebas de interfaz y producción se registran al terminar el despliegue.

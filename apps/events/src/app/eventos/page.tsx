@@ -83,7 +83,7 @@ export default async function EventsPage({ searchParams }: EventsPageProps) {
     <header className={styles.header}>
       <Link href="/eventos" className={styles.brand} aria-label="All Living Eventos, inicio"><Mark size={39} /><span><strong>All Living</strong><small>EVENTOS</small></span></Link>
       <nav aria-label="Navegación principal"><a href="#cartelera">Cartelera</a><a href="#ciudades">Por ciudad</a><a href="#como-funciona">Cómo funciona</a></nav>
-      <a href="#cartelera" className={styles.headerCta}><Ticket size={18} weight="duotone" aria-hidden /> Encuentra tu plan <ArrowUpRight size={16} aria-hidden /></a>
+      <Link href="/acceso" className={styles.headerCta}><Ticket size={18} weight="duotone" aria-hidden /> Abrir la app <ArrowUpRight size={16} aria-hidden /></Link>
     </header>
     <main>
       <section className={styles.hero} aria-labelledby="events-title">

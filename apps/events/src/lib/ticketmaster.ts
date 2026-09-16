@@ -12,6 +12,7 @@ export type TicketmasterEvent = {
   imageUrl: string | null; ticketUrl: string;
   price: { min: number; max: number; currency: string } | null;
   segment: string | null;
+  artist?: string | null; spotifyId?: string | null; coordinates?: [number, number] | null;
 };
 export type PlaceEvents = {
   place: EventsPlace; label: string; events: TicketmasterEvent[];
@@ -43,7 +44,7 @@ type RawEvent = {
   dates?: { start?: { localDate?: string; localTime?: string }; status?: { code?: string } };
   priceRanges?: Array<{ min?: number; max?: number; currency?: string }>;
   classifications?: Array<{ segment?: { name?: string } }>;
-  _embedded?: { venues?: Array<{ name?: string; city?: { name?: string }; country?: { countryCode?: string }; state?: { name?: string; stateCode?: string } }> };
+  _embedded?: { venues?: Array<{ name?: string; city?: { name?: string }; country?: { countryCode?: string }; state?: { name?: string; stateCode?: string }; location?: { latitude?: string; longitude?: string } }>; attractions?: Array<{ name?: string; externalLinks?: { spotify?: Array<{ url?: string }> } }> };
 };
 type DiscoveryResponse = { page: { totalElements: number }; _embedded?: { events?: RawEvent[] } };
 function safeUrl(value: string | undefined, images = false): string | null {
@@ -64,11 +65,18 @@ export function normalizeTicketmasterEvent(raw: RawEvent): TicketmasterEvent | n
   const landscape = images.filter(image => image.ratio === "16_9");
   const image = (landscape.length ? landscape : images).sort((a, b) => (b.width ?? 0) - (a.width ?? 0))[0];
   const range = raw.priceRanges?.find(price => Number.isFinite(price.min) && (price.min ?? -1) >= 0 && /^[A-Z]{3}$/.test(price.currency ?? ""));
+  const attraction = raw._embedded?.attractions?.[0];
+  const spotifyUrl = attraction?.externalLinks?.spotify?.[0]?.url;
+  const spotifyId = spotifyUrl?.match(/^https:\/\/open\.spotify\.com\/(?:intl-[a-z]+\/)?artist\/([a-zA-Z0-9]{22})(?:\?.*)?$/)?.[1] ?? null;
+  const lat = venue?.location?.latitude ? Number(venue.location.latitude) : NaN;
+  const lng = venue?.location?.longitude ? Number(venue.location.longitude) : NaN;
   return {
     id: raw.id, title: raw.name, ticketUrl, date,
     time: /^\d{2}:\d{2}(:\d{2})?$/.test(raw.dates?.start?.localTime ?? "") ? raw.dates!.start!.localTime! : null,
     venue: venue?.name ?? "Recinto por confirmar", city: venue?.city?.name ?? "Quintana Roo",
     imageUrl: safeUrl(image?.url, true), segment: raw.classifications?.[0]?.segment?.name ?? null,
+    artist: attraction?.name ?? null, spotifyId,
+    coordinates: Number.isFinite(lat) && Number.isFinite(lng) && Math.abs(lat) <= 90 && Math.abs(lng) <= 180 ? [lat, lng] : null,
     price: range ? { min: range.min!, max: Number.isFinite(range.max) && range.max! >= range.min! ? range.max! : range.min!, currency: range.currency! } : null,
   };
 }

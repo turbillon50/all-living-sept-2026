@@ -14,6 +14,11 @@ describe("Discovery contract", () => {
     expect(normalizeTicketmasterEvent({ ...raw, url: "https://ticketmaster.com.mx.evil.example/pay" })).toBeNull();
     expect(normalizeTicketmasterEvent({ ...raw, dates: { start: { localDate: "2026-02-30" } } })).toBeNull();
   });
+  it("maps valid venue coordinates and only official Spotify artist links", () => {
+    const raw = { id: "event-map", name: "Music", url: "https://www.ticketmaster.com.mx/event/e1", dates: { start: { localDate: "2026-10-20" } }, _embedded: { venues: [{ location: { latitude: "21.1617", longitude: "-86.8517" } }], attractions: [{ name: "Jungle", externalLinks: { spotify: [{ url: "https://open.spotify.com/artist/59oA5WbbQvomJz2BuRG071" }] } }] } };
+    expect(normalizeTicketmasterEvent(raw)).toMatchObject({ coordinates: [21.1617, -86.8517], artist: "Jungle", spotifyId: "59oA5WbbQvomJz2BuRG071" });
+    expect(normalizeTicketmasterEvent({ ...raw, _embedded: { venues: [{ location: { latitude: "999", longitude: "-86.8517" } }], attractions: [{ externalLinks: { spotify: [{ url: "https://open.spotify.com.evil.example/artist/59oA5WbbQvomJz2BuRG071" }] } }] } })).toMatchObject({ coordinates: null, spotifyId: null });
+  });
   it("returns a genuine empty result only after successful geographic and city queries", async () => {
     vi.resetModules(); vi.stubEnv("TICKETMASTER_API_KEY", "test-key");
     const fetcher = vi.fn().mockImplementation(async () => Response.json({ page: { totalElements: 0 } })); vi.stubGlobal("fetch", fetcher);

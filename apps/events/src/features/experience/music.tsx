@@ -1,0 +1,8 @@
+"use client";
+import Link from "next/link";
+import Image from "next/image";
+import { ArrowUpRight, Headphones, SpotifyLogo } from "@phosphor-icons/react";
+import { DEMO_EVENTS } from "./catalog";
+import { PageTitle, SpotifyPlayer } from "./primitives";
+import s from "./experience.module.css";
+export function MusicPage() { return <><PageTitle eyebrow="PONLE PLAY A LO QUE VIENE" title="La noche empieza en tus audífonos."><span className={s.spotifyLabel}><SpotifyLogo size={23} weight="fill" />Spotify</span></PageTitle><section className={s.musicBanner}><Headphones size={67} weight="thin" /><div><h2>Primero la canción.<br /><em>Después, el recuerdo.</em></h2><p>Descubre el sonido de los artistas que usamos para recorrer la demo.</p></div><span>LA PREVIA<br /><b>VOL. 01</b></span></section><p className={s.demoNotice}>Selección musical de demostración. La presencia de estos artistas no anuncia conciertos ni confirma fechas en Quintana Roo.</p><div className={s.musicGrid}>{DEMO_EVENTS.slice(0, 3).map(event => <article className={s.artistCard} key={event.id}><div className={s.artistImage}><Image src={event.image} alt="Fotografía ambiental de música en vivo" fill sizes="(max-width: 700px) 100vw, 33vw" /><span>{event.genre}</span><h2>{event.artist}</h2></div><div><SpotifyPlayer event={event} /><Link href={`/app/evento/${event.id}`} className={s.artistLink}>Explorar ficha de muestra <ArrowUpRight size={18} /></Link></div></article>)}</div><p className={s.microcopy}>Spotify se carga sólo al pulsar reproducir. Su disponibilidad, contenido y duración de escucha dependen de Spotify. Consulta nuestro <Link href="/privacidad">Aviso de Privacidad</Link>.</p></>; }
