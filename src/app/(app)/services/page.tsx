@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { Star, Ship, ChefHat, Baby, Car, HeartPulse, ConciergeBell } from "@/ui/icons";
+import { Star, Ship, ChefHat, Baby, Car, HeartPulse, ConciergeBell, Gift, ArrowRight } from "@/ui/icons";
 import { SERVICE_CATEGORIES } from "@/domains/services/categories";
 import { providersByCategory } from "@/domains/services/queries";
 import { Page, Section } from "@/ui/page";
@@ -30,6 +30,11 @@ export default async function ServicesPage({ searchParams }: { searchParams: Pro
         {TOP.map((t) => <li key={t.slug}><IconTile href={`${t.href}${suffix}`} label={t.label} Icon={t.Icon} active={t.slug === "featured" && !q} /></li>)}
         {MORE.map((m) => <li key={m.slug} className="hidden md:block"><IconTile href={`/services/${m.slug}${suffix}`} label={labelOf(m.slug)} Icon={m.Icon} /></li>)}
       </ul>
+      <Link href="/recargas" className="tapable mt-5 flex items-center gap-4 rounded-2xl bg-surface p-4 hairline">
+        <Gift size={26} className="shrink-0" />
+        <span className="min-w-0 flex-1"><strong className="block text-[15px] font-medium">Recargas y tarjetas de regalo</strong><span className="text-[13px] text-text-2">Explora operadores y marcas para tu viaje.</span></span>
+        <ArrowRight size={18} className="shrink-0" />
+      </Link>
       <Section title="Para vivir el Caribe" action={<Link href="/services/all" className="text-sm text-green-900">Ver todos</Link>}>
         <ul className="grid grid-cols-2 gap-4 md:grid-cols-3">
           {featured.map((p) => <li key={p.id}><PhotoTile href={`/providers/${p.slug}${suffix}`} src={p.cover} alt={p.name} title={p.name} subtitle={`${labelOf(p.category)}${p.areas[0] ? ` en ${p.areas[0]}` : ""}`} /></li>)}

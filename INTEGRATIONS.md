@@ -1,16 +1,26 @@
 # INTEGRATIONS — interfaces y adaptadores
 
-Regla (spec §36, §53): ninguna integración falsa. Cada capacidad externa tiene una interfaz en `src/integrations/<nombre>/` y al menos un adaptador **local** claramente marcado. El adaptador real se activa solo cuando existe la credencial en entorno.
+Regla (spec §36, §53): ninguna integración falsa. Cada capacidad externa vive en `src/integrations/<nombre>/`. Los adaptadores **locales** se identifican como tales; los catálogos externos no se sustituyen por resultados inventados. El adaptador real requiere credenciales y una implementación completa para cada operación habilitada.
 
 | Interfaz | Adaptadores | Estado | Se activa con |
 |---|---|---|---|
 | `FractionCoreClient` | `LocalFractionCore` (Neon) | MVP | siempre |
-| `PaymentProvider` | `LocalPaymentProvider` (registra pago DEMO, nunca cobra) · `StripePaymentProvider` (pendiente) | local | `STRIPE_SECRET_KEY` |
+| `PaymentProvider` | `LocalPaymentProvider` (registra pago DEMO, nunca cobra) · `StripePaymentProvider` (pendiente) | local | implementar Stripe; la clave sola no habilita cobros |
 | `ChannelManagerProvider` | `LocalChannelManager` (guarda inventario, no publica) · Airbnb/Booking/Expedia (pendientes, sin API autorizada) | local | credenciales de PMS |
 | `NotificationProvider` | `InAppNotificationProvider` (tabla `notifications`) · Web Push (fase 8) · Resend correo (pendiente) | local | `RESEND_API_KEY`, VAPID |
 | `MessagingProvider` | `LocalMessagingProvider` (hilos en DB) · WhatsApp/Twilio (pendiente) | local | credenciales Twilio |
 | `AccessControlProvider` | `LocalAccessControl` (tokens firmados, sin cerradura física) · smart lock (pendiente) | local | credenciales del fabricante |
 | `MapsProvider` | `StaticMapsProvider` (coordenadas, sin tiles) · Mapbox (pendiente) | local | `MAPBOX_TOKEN` |
+| Duffel | sugerencias de aeropuertos y búsqueda de ofertas | búsqueda real activa | `DUFFEL_ACCESS_TOKEN` |
+| Reloadly | catálogo de operadores de recargas y tarjetas de regalo | catálogo real activo | `RELOADLY_CLIENT_ID`, `RELOADLY_CLIENT_SECRET`; `RELOADLY_ENV=live` o `sandbox` |
+
+## Vuelos, recargas y regalos — 16 de septiembre de 2026
+
+Duffel está disponible en `/flights`, con `/api/flights/places` y `/api/flights/search`. Preview usa una clave de pruebas y producción una clave live. Se verificó una búsqueda MEX–CUN para el 20 de octubre de 2026, un adulto, con ofertas reales en producción. Todavía no se implementan reserva, cobro ni emisión de boletos.
+
+Reloadly se consulta desde `/recargas`, accesible desde `/services`. `GET /api/reloadly/catalog` acepta `kind=topups|giftcards`, `country=MX` y `page=1`. La pantalla permite elegir país, cambiar categoría, expandir detalles y paginar tarjetas. OAuth se gestiona exclusivamente en el servidor, por audiencia; el catálogo se guarda en caché cinco minutos y la autenticación se renueva antes de expirar. Preview y producción usan el catálogo live, sin operaciones de compra.
+
+Solo se publican campos de catálogo permitidos. Los montos de las tarjetas son valores nominales en la moneda del destinatario; los costos mayoristas de las recargas no se presentan como saldo local. Se conservan país, moneda y condiciones del producto, incluso en productos globales. Las credenciales, comisiones y costos del proveedor no se devuelven al navegador. Una consulta inicial para México devolvió 10 operadores y 31 tarjetas; las cantidades dependen del catálogo vigente. Compras, entrega y envío de recargas requieren una fase posterior con pagos, cotización, idempotencia y conciliación.
 
 ## Eventos de dominio (outbox `domain_events`)
 `fraction.created`, `fraction.sold`, `ownership.transferred`, `week.claimed`, `week.released`, `stay.created`, `stay.started`, `stay.completed`, `guest.invited`, `inventory.released`, `rental.booked`, `service.requested`, `service.confirmed`, `service.completed`, `payment.completed`, `provider.approved`, `incident.created`, `incident.resolved`.
