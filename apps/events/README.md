@@ -32,7 +32,7 @@ Manifest con nombre, identidad, íconos 192/512/maskable, inicio `/eventos`, alc
 
 Páginas `/privacidad`, `/terminos`, `/responsable`, enlazadas desde el footer. Responsable proporcionado por Luis: Colectivo Mass S.A. de C.V., `luisdelator@vmomentums.info`.
 
-**Pendiente documental antes de considerar cerrada la revisión legal:** incorporar el domicilio fiscal verificado de Colectivo Mass. No fue localizado en la documentación disponible. No inventarlo ni usar un domicilio personal o de otra entidad. El artículo 15 de la LFPDPPP requiere domicilio del responsable. No afirmar cumplimiento legal completo ni que Impact/Ticketmaster ya aprobó este sitio.
+**Domicilio fiscal incorporado:** Avenida Paseo de la Reforma 389, piso 19, colonia Juárez, alcaldía Cuauhtémoc, C.P. 06600, Ciudad de México, México. Fuente: constancia de situación fiscal de Colectivo Mass expedida el 27 de septiembre de 2021, proporcionada por Luis el 16 de septiembre de 2026 en los adjuntos `fiscal.jpg` y `situacionfiscal.jpg`. Transcripción contrastada con el documento, sin consulta de vigencia ante el SAT. El domicilio está en `/privacidad` y `/responsable`. No se publica la constancia, su QR, identificadores ni contactos distintos del correo autorizado. Se cierra el pendiente documental señalado en la entrega inicial; la reauditoría de Luis y cualquier aprobación de Impact/Ticketmaster siguen siendo pasos separados.
 
 ## Evidencia inicial del 16 de septiembre de 2026
 
