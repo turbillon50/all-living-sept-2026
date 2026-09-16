@@ -31,7 +31,7 @@ export default async function RechargePage({ searchParams }: { searchParams: Pro
     else error = true;
   }
   if (!countries.some(c => c.code === input.country)) countries = [{ code: input.country, name: countryName(input.country) }, ...countries];
-  return <Page wide>
+  return <Page wide className="md:pb-28">
     <Link href="/services" className="mt-6 inline-flex items-center gap-1 text-sm text-text-2"><ChevronLeft size={16} />Vivir</Link>
     <PageHeader eyebrow="CONTIGO, DONDE VAYAS" title="Recargas y regalos." description="Encuentra tu operador o una tarjeta de tus marcas favoritas." />
     <div className="grid gap-6 lg:grid-cols-[240px_minmax(0,1fr)] lg:gap-10">
@@ -73,10 +73,10 @@ export default async function RechargePage({ searchParams }: { searchParams: Pro
               </details>
             </li>)}
           </ul>}
-        {catalog && catalog.pages > 1 ? <nav aria-label="Páginas del catálogo" className="mt-6 flex items-center justify-between gap-4 text-sm">
-          {input.page > 1 ? <Link href={href(input.kind,input.page-1)} className="underline">Anterior</Link> : <span />}
+        {catalog && catalog.pages > 1 ? <nav aria-label="Páginas del catálogo" className="mt-6 flex items-center justify-center gap-4 text-sm">
+          {input.page > 1 ? <Link href={href(input.kind,input.page-1)} className="inline-flex min-h-11 min-w-20 items-center justify-center rounded-full bg-surface underline">Anterior</Link> : <span className="min-w-20" />}
           <span>Página {input.page} de {catalog.pages}</span>
-          {input.page < catalog.pages ? <Link href={href(input.kind,input.page+1)} className="underline">Siguiente</Link> : <span />}
+          {input.page < catalog.pages ? <Link href={href(input.kind,input.page+1)} className="inline-flex min-h-11 min-w-20 items-center justify-center rounded-full bg-surface underline">Siguiente</Link> : <span className="min-w-20" />}
         </nav> : null}
       </section>
     </div>
