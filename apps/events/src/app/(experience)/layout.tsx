@@ -1,2 +1,3 @@
 import { ExperienceProvider } from "@/features/experience/provider";
-export default function ExperienceLayout({ children }: { children: React.ReactNode }) { return <ExperienceProvider>{children}</ExperienceProvider>; }
+import { EventsAuthBoundary } from "@/features/experience/auth-boundary";
+export default function ExperienceLayout({ children }: { children: React.ReactNode }) { return <EventsAuthBoundary><ExperienceProvider>{children}</ExperienceProvider></EventsAuthBoundary>; }

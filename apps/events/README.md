@@ -5,12 +5,12 @@ Aplicación independiente para `events.alliving.live`. Esta carpeta se puede cop
 ## Ejecutar
 
 Node 20. `npm ci`, `npm test`, `npm run build` y `npm start`.
-Para desarrollo: `npm run dev`. La única variable propia del proyecto es `TICKETMASTER_API_KEY` (servidor). Usar `.env.local` únicamente fuera de Git; la llave no debe imprimirse ni enviarse al navegador.
+Para desarrollo: `npm run dev`. Variables propias: `TICKETMASTER_API_KEY` y `CLERK_SECRET_KEY` sólo en servidor, más `NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY` para el SDK. Usar únicamente las llaves de Eventos. `.env.local` queda fuera de Git; nunca imprimir llaves ni enviar secretos al navegador.
 
 ## Aislamiento permanente
 
 - Paquete, lockfile, dependencias, tipografías compiladas, íconos, imágenes, estilos, service worker y despliegue propios.
-- Sin imports fuera de esta carpeta, symlinks al padre, Clerk, autenticación del padre, Neon ni otra base de datos.
+- Sin imports fuera de esta carpeta, symlinks al padre, autenticación del padre, Neon ni otra base de datos. Clerk pertenece a una aplicación propia de Eventos.
 - Vercel: proyecto `all-living-events`, raíz `apps/events`, Node `20.x`, `sourceFilesOutsideRootDirectory: false`; `npm ci --no-audit --no-fund` y `npm run build`.
 - La navegación y la búsqueda nunca requieren cuenta. Este subdominio es exclusivamente de eventos: no agregar otros servicios, paquetes, precios combinados o carrito compartido.
 - Los enlaces de boletos sólo llevan a dominios oficiales de Ticketmaster. El checkout local es exclusivamente una simulación, claramente identificada, sin datos bancarios ni llamadas de pago. No hay seguimiento de afiliados.
@@ -28,7 +28,7 @@ Las consultas se serializan con separación mínima de 275 ms por proceso. El ca
 
 ## PWA y privacidad
 
-Manifest con nombre, identidad, íconos 192/512/maskable, inicio `/app` (conserva la identidad `id: /eventos` para instalaciones existentes), alcance `/` y display standalone. El service worker sólo precachea recursos básicos y la pantalla sin conexión; nunca almacena búsquedas, respuestas de API ni inventario. No analytics, autenticación real ni cookies de identificación propias. Perfil y sesión de demo en almacenamiento local aislado. La instalación depende del navegador y sus condiciones de elegibilidad.
+Manifest con nombre, identidad, íconos 192/512/maskable, inicio `/app` (conserva la identidad `id: /eventos` para instalaciones existentes), alcance `/` y display standalone. El service worker sólo precachea recursos básicos y la pantalla sin conexión; nunca almacena búsquedas, respuestas de API ni inventario. Sin analytics. Clerk utiliza cookies de autenticación cuando está configurada su instancia de producción propia. La identidad real se administra en Clerk; el perfil de muestra permanece en almacenamiento local aislado. La instalación depende del navegador y sus condiciones de elegibilidad.
 
 Páginas `/privacidad`, `/terminos`, `/responsable`, enlazadas desde el footer. Responsable proporcionado por Luis: Colectivo Mass S.A. de C.V., `luisdelator@vmomentums.info`.
 
@@ -38,21 +38,21 @@ Páginas `/privacidad`, `/terminos`, `/responsable`, enlazadas desde el footer. 
 
 - Compilación y seis pruebas con Node 20; segunda instalación y compilación copiando sólo esta carpeta a `/tmp`, sin dependencias del padre.
 - Discovery real: seis consultas geográficas/ciudad, HTTP 200 y cero resultados para las tres plazas. Diagnóstico separado a México: HTTP 200, 2,732 eventos. Ese inventario nacional no se publica en esta aplicación.
-- La copia aislada no tiene dependencias Clerk, Neon o Drizzle. El proyecto Vercel sólo tiene la variable de Discovery.
+- La copia aislada no tiene Neon o Drizzle. El proyecto Vercel tiene Discovery y las dos llaves propias de Clerk; no importa recursos de la app principal.
 - Verificar dominio, manifest, búsqueda, páginas legales y scripts de red después de cada publicación.
 
 Fuentes oficiales: [Discovery](https://developer.ticketmaster.com/products-and-docs/apis/discovery-api/v2/), [términos API](https://developer.ticketmaster.com/support/terms-of-use/), [LFPDPPP](https://www.diputados.gob.mx/LeyesBiblio/pdf/LFPDPPP.pdf).
 
 ## Interior de la app y demo independiente
 
-La portada `/eventos` se conserva; su botón “Abrir la app” lleva a `/acceso`. El acceso demo permite un apodo y no solicita contraseña, OAuth ni credenciales de la aplicación principal. **No es autenticación real:** no tiene servidor de identidades, sesiones seguras, recuperación de cuentas ni sincronización. Descubrir eventos permanece libre.
+La portada `/eventos` se conserva; su botón “Abrir la app” lleva a `/acceso`. El acceso muestra registro e inicio de sesión de la instancia propia de Clerk. El recorrido demo sigue disponible mediante un apodo y no requiere una cuenta. **La sesión de demo no autentica una identidad.** Descubrir eventos permanece libre. Los perfiles, correos y sesiones reales se administran con los componentes oficiales de Clerk.
 
 Rutas: `/app`, `/app/mapa`, `/app/evento/[id]`, `/app/musica`, `/app/guardados`, `/app/carrito`, `/app/pago`, `/app/planes`, `/app/perfil`, `/app/ajustes`. Navegación móvil con cinco pestañas, menú lateral, actividad de la sesión y acceso de instalación.
 
 - Demo: seis fichas de muestra con artistas/fechas/recintos/precios explícitamente ficticios. No son anuncios de artistas, disponibilidad ni inventario. Carrito sólo acepta IDs y fechas de la demo, zonas permitidas y cantidades de 1–6.
 - Pago: métodos de prueba precargados, sin PAN/CVV/CLABE ni transmisión financiera. Confirmación `DEMO-…`, sin validez de acceso. Fechas descargables ICS marcadas DEMO, sin presentación confirmada.
 - Real: el selector de cartelera usa `/api/events` con los filtros enviados a Ticketmaster. No mezcla fichas de muestra. La compra real sigue exclusivamente por el enlace oficial.
-- Preferencias locales versionadas en `all-living-events-demo-v1`, validadas al restaurar; exportables/borrables en Ajustes. No se hereda almacenamiento de All Living.
+- Preferencias locales versionadas en `all-living-events-demo-v1` para visitantes y en un espacio separado por ID para cada cuenta, validadas al restaurar; exportables/borrables en Ajustes. No se hereda almacenamiento de All Living.
 - Música: reproductor oficial de Spotify sólo después de pulsar escuchar. IDs de Jungle, RÜFÜS DU SOL y Mon Laferte comprobados con oEmbed oficial; sin OAuth ni nuevas variables.
 - Mapa: Leaflet se importa al abrirlo. OpenStreetMap carga mapas sólo tras la acción del visitante, con atribución, Referer normal y sin precache ni descarga masiva. Los pines demo son ilustrativos. La cartelera real usa coordenadas publicadas.
 - PWA: instalación desde menú/Ajustes; si no hay prompt nativo, instrucciones específicas de navegador. El service worker no conserva API, mapas ni reproductores.
@@ -60,3 +60,15 @@ Rutas: `/app`, `/app/mapa`, `/app/evento/[id]`, `/app/musica`, `/app/guardados`,
 Fuentes de implementación: [Spotify Embeds](https://developer.spotify.com/documentation/embeds), [Leaflet](https://leafletjs.com/reference.html), [política de mapas OpenStreetMap](https://operations.osmfoundation.org/policies/tiles/).
 
 Validación del interior: compilación de producción con Node 20 y 11 pruebas aprobadas (contrato Discovery, coordenadas/Spotify, límites del carrito, separación de inventario real y confirmación simulada). Las pruebas de interfaz y producción se registran al terminar el despliegue.
+
+## Registro independiente de Eventos
+
+- SDK propio: `@clerk/nextjs` 7.9.4 y localización `es-MX` 4.17.1. Next 16 usa `src/proxy.ts`.
+- Rutas: `/registro/[[...registro]]`, `/iniciar-sesion/[[...ingreso]]` y `/app/cuenta/[[...cuenta]]`. Registro, verificación, recuperación y administración de seguridad usan componentes oficiales.
+- El proveedor sólo envuelve el grupo `(experience)`. La portada `/eventos`, Discovery API y las páginas legales no cargan Clerk. Todas las rutas de descubrimiento permanecen públicas.
+- El código sólo habilita autenticación en producción con llaves `live` de `clerk.events.alliving.live`. Rechaza el dominio de la app principal y llaves de desarrollo en producción. `authorizedParties` está restringido al origen de Eventos; no se configuran satélites ni sesiones compartidas.
+- El recurso Marketplace `all-living-events` fue creado el 16-sep-2026: `app_3JQcXgVV07ge2JmrVaUFguj8stP`, Vercel `ir_GGjxgr6lNe5adfYj`, plan Hobby. Está conectado únicamente a Vercel `all-living-events`.
+- **Activación pendiente:** Marketplace entregó una instancia de desarrollo. Falta crear/configurar Production con el dominio `events.alliving.live`, agregar sus DNS y certificados, sustituir las llaves vinculadas por las live y comprobar el flujo real antes de desplegar este cambio. No publicar llaves test como autenticación de producción.
+- La cuenta real no sincroniza la demo: favoritos, intereses, carrito y recibos de muestra continúan sólo en el navegador y se separan al cambiar de usuario. No se persisten correos, nombres ni tokens de Clerk en el estado de la demo.
+- El pago sigue siendo exclusivamente simulado. Una cuenta de Eventos no crea una cuenta de Ticketmaster ni aparta boletos.
+- Validación: 13 pruebas (Discovery, demo y aislamiento de auth) y build de Node 20. Pendiente QA con instancia live activada.
