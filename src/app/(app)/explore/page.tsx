@@ -7,6 +7,7 @@ import { EmptyState } from "@/ui/empty-state";
 import { PhotoTile } from "@/ui/primitives";
 import { Photo } from "@/ui/photo";
 import { money, formatRange } from "@/core/format";
+import { TravelTabs } from "@/ui/travel-tabs";
 
 const DESTINATIONS = [
   { slug: "cancun", name: "Cancún", tags: "Mar · Islas · Gastronomía", photo: "/demo/palms.webp" },
@@ -27,6 +28,7 @@ export default async function ExplorePage({ searchParams }: { searchParams: Prom
   const today = new Date().toISOString().slice(0, 10);
   return (
     <Page wide>
+      <TravelTabs current="stays" />
       <section className="travel-hero">
         <div className="travel-hero-copy"><p className="travel-kicker">CARIBE MEXICANO</p><h1>Tu próxima historia empieza aquí.</h1><p>Quédate, muévete, come, navega y descubre. Cancún, Playa del Carmen y Tulum en una sola experiencia.</p></div>
         <div className="travel-hero-glow" aria-hidden />

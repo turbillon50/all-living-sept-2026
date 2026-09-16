@@ -2,12 +2,12 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { Home, CalendarDays, Compass, Sparkles, UserRound, Wallet, Briefcase, ListChecks, Building2, Plane } from "@/ui/icons";
+import { Home, CalendarDays, Compass, Sparkles, UserRound, Wallet, Briefcase, ListChecks, Building2, Plane, Gift } from "@/ui/icons";
 import type { NavItem } from "./nav";
 import { cn } from "./cn";
 import { Mark } from "./mark";
 
-const ICONS = { home: Home, stays: CalendarDays, explore: Compass, services: Sparkles, profile: UserRound, earnings: Wallet, jobs: Briefcase, tasks: ListChecks, properties: Building2, flights: Plane } as const;
+const ICONS = { home: Home, stays: CalendarDays, explore: Compass, services: Sparkles, profile: UserRound, earnings: Wallet, jobs: Briefcase, tasks: ListChecks, properties: Building2, flights: Plane, gifts: Gift } as const;
 
 function isActive(pathname: string, href: string) {
   if (href === "/home" || href === "/pro" || href === "/ops" || href === "/admin") return pathname === href;

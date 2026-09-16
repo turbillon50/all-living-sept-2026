@@ -1,14 +1,14 @@
 import type { Role } from "@/core/roles";
 
-export type NavIcon = "home" | "stays" | "explore" | "services" | "profile" | "earnings" | "jobs" | "tasks" | "properties" | "flights";
+export type NavIcon = "home" | "stays" | "explore" | "services" | "profile" | "earnings" | "jobs" | "tasks" | "properties" | "flights" | "gifts";
 export type NavItem = { href: string; label: string; icon: NavIcon };
 
 /** Cuatro acciones + el Möbius al centro. Con tres items la rejilla queda coja. */
 export const GUEST_NAV: NavItem[] = [
-  { href: "/explore", label: "Explorar", icon: "explore" },
-  { href: "/services", label: "Vivir", icon: "services" },
+  { href: "/explore", label: "Hospedaje", icon: "explore" },
   { href: "/flights", label: "Vuelos", icon: "flights" },
-  { href: "/sign-in", label: "Entrar", icon: "profile" },
+  { href: "/tarjetas", label: "Tarjetas", icon: "gifts" },
+  { href: "/services", label: "Vivir", icon: "services" },
 ];
 
 /** Cuatro acciones por mundo. El quinto lugar móvil siempre pertenece al Möbius. */
@@ -37,10 +37,10 @@ export function navFor(role: Role): NavItem[] {
       ];
     default:
       return [
-        { href: "/explore", label: "Explorar", icon: "explore" },
+        { href: "/explore", label: "Hospedaje", icon: "explore" },
+        { href: "/flights", label: "Vuelos", icon: "flights" },
+        { href: "/tarjetas", label: "Tarjetas", icon: "gifts" },
         { href: "/stays", label: "Viajes", icon: "stays" },
-        { href: "/services", label: "Vivir", icon: "services" },
-        { href: "/profile", label: "Perfil", icon: "profile" },
       ];
   }
 }
