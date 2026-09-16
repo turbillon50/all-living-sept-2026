@@ -8,6 +8,8 @@ const date = z.string().regex(/^\d{4}-\d{2}-\d{2}$/).refine(value => {
 export const flightSearchSchema = z.object({
   origin: z.string().trim().toUpperCase().regex(/^[A-Z]{3}$/),
   destination: z.string().trim().toUpperCase().regex(/^[A-Z]{3}$/),
+  originType: z.enum(["airport", "city"]).default("city"),
+  destinationType: z.enum(["airport", "city"]).default("city"),
   depart: date,
   returnDate: date.optional(),
   adults: z.number().int().min(1).max(9),

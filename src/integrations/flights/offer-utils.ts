@@ -15,6 +15,15 @@ export const totalDuration = (offer: FlightOffer) => offer.slices.reduce((sum, s
 export const stopCount = (slice: FlightSlice) => Math.max(0, slice.segments.length - 1) + slice.segments.reduce((sum, segment) => sum + (segment.stops?.length ?? 0), 0);
 export const airlineNames = (offer: FlightOffer) => [...new Set(offer.slices.flatMap(slice => slice.segments.map(segment => segment.marketing_carrier.name)))];
 
+/** Cities may cover several airports; an explicit airport selection must match in both directions. */
+export function matchesAirports(offer: FlightOffer, input: { origin: string; destination: string; originType?: string; destinationType?: string }): boolean {
+  return offer.slices.every((slice, index) => {
+    const from = index === 0 ? input.origin : input.destination, to = index === 0 ? input.destination : input.origin;
+    const fromType = index === 0 ? input.originType : input.destinationType, toType = index === 0 ? input.destinationType : input.originType;
+    return (fromType !== "airport" || slice.segments[0]?.origin.iata_code === from) && (toType !== "airport" || slice.segments.at(-1)?.destination.iata_code === to);
+  });
+}
+
 /** Duffel timestamps are airport-local wall times; never convert them to the viewer's zone. */
 export const localTime = (value: string) => /^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}/.test(value) ? value.slice(11, 16) : "—";
 export function localDateLabel(value: string): string {

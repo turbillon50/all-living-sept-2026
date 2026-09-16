@@ -1,6 +1,6 @@
 import { afterEach, describe, expect, it, vi } from "vitest";
 import type { FlightOffer, FlightSlice } from "../types";
-import { durationMinutes, localTime, publicOffer, selectOffers, stopCount, totalDuration } from "../offer-utils";
+import { durationMinutes, localTime, matchesAirports, publicOffer, selectOffers, stopCount, totalDuration } from "../offer-utils";
 import { flightSearchSchema } from "../search-schema";
 
 const segment = { id: "segment", departing_at: "2030-10-20T23:10:00", arriving_at: "2030-10-21T02:20:00", duration: "PT2H10M", origin: { iata_code: "MEX" }, destination: { iata_code: "CUN" }, marketing_carrier: { name: "Carrier", iata_code: "XX" }, operating_carrier: { name: "Carrier", iata_code: "XX" } };
@@ -21,6 +21,11 @@ describe("flight search correctness", () => {
   });
   it("counts a technical stop even when the airline keeps one flight segment", () => {
     expect(stopCount({ ...slice, segments: [{ ...segment, stops: [{ airport: { iata_code: "MTY" }, duration: "PT30M" }] }] })).toBe(1);
+  });
+  it("respects a selected airport on the return instead of silently substituting a nearby airport", () => {
+    const otherAirport = { ...offer, slices: [slice, { ...slice, segments: [{ ...segment, origin: { iata_code: "CUN" }, destination: { iata_code: "NLU" } }] }] };
+    expect(matchesAirports(otherAirport, { origin: "MEX", destination: "CUN", originType: "airport" })).toBe(false);
+    expect(matchesAirports(otherAirport, { origin: "MEX", destination: "CUN", originType: "city" })).toBe(true);
   });
   it("uses complete trip durations and keeps airport local times across midnight", () => {
     expect(durationMinutes("P1DT2H30M")).toBe(1590);

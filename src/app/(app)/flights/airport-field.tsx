@@ -2,7 +2,7 @@
 import { useEffect, useId, useState } from "react";
 import { Building2, Plane } from "@/ui/icons";
 import type { Place } from "@/integrations/flights/types";
-export type AirportChoice = { code: string; label: string };
+export type AirportChoice = { code: string; label: string; type?: "airport" | "city" };
 
 export function AirportField({ label, value, onChange, disabled }: { label: string; value: AirportChoice; onChange: (value: AirportChoice) => void; disabled: boolean }) {
   const id = useId();
@@ -23,7 +23,7 @@ export function AirportField({ label, value, onChange, disabled }: { label: stri
     return () => { clearTimeout(timer); controller.abort(); };
   }, [open, value.label, value.code]);
   function choose(place: Place) {
-    onChange({ code: place.iata_code, label: `${place.city_name || place.name} · ${place.iata_code}` });
+    onChange({ code: place.iata_code, label: `${place.type === "city" ? place.city_name || place.name : place.name} · ${place.iata_code}`, type: place.type });
     setOpen(false); setOptions([]); setActive(-1); setBusy(false);
   }
   const expanded = open && value.label.trim().length >= 2;

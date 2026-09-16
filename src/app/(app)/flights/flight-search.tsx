@@ -12,7 +12,7 @@ type SearchResult = { offers: FlightOffer[]; live: boolean; request: SearchRecor
 export function FlightSearch({ ready, today }: { ready: boolean; today: string }) {
   const [origin, setOrigin] = useState<AirportChoice>({ code: "", label: "" });
   const [destination, setDestination] = useState<AirportChoice>({ code: "CUN", label: "Cancún · CUN" });
-  const [roundTrip, setRoundTrip] = useState(true), [depart, setDepart] = useState(""), [returnDate, setReturnDate] = useState("");
+  const [roundTrip, setRoundTrip] = useState(true), [depart, setDepart] = useState("");
   const [loading, setLoading] = useState(false), [error, setError] = useState("");
   const [result, setResult] = useState<SearchResult | null>(null), [now, setNow] = useState(0), [limit, setLimit] = useState(12);
   const [stops, setStops] = useState<OfferFilters["stops"]>("any"), [airline, setAirline] = useState(""), [sort, setSort] = useState<OfferFilters["sort"]>("price"), [currency, setCurrency] = useState("");
@@ -30,7 +30,7 @@ export function FlightSearch({ ready, today }: { ready: boolean; today: string }
     event.preventDefault();
     if (!origin.code || !destination.code) { setError("Elige el origen y el destino en las sugerencias, o escribe sus códigos de aeropuerto."); return; }
     const form = new FormData(event.currentTarget);
-    const request = { origin: origin.code, destination: destination.code, depart, returnDate: roundTrip ? returnDate : undefined, adults: Number(form.get("adults")), cabin: String(form.get("cabin")) };
+    const request = { origin: origin.code, destination: destination.code, originType: origin.type, destinationType: destination.type, depart: String(form.get("depart") || ""), returnDate: roundTrip ? String(form.get("returnDate") || "") : undefined, adults: Number(form.get("adults")), cabin: String(form.get("cabin")) };
     controller.current?.abort();
     const active = new AbortController(); controller.current = active;
     const timeout = setTimeout(() => active.abort(), 35000);
@@ -49,8 +49,8 @@ export function FlightSearch({ ready, today }: { ready: boolean; today: string }
     <form onSubmit={submit} className="journey-search" aria-label="Buscar vuelos">
       <div className="journey-search-top"><div className="journey-trip-type" role="group" aria-label="Tipo de viaje"><button type="button" aria-pressed={roundTrip} onClick={() => setRoundTrip(true)} disabled={loading}>Ida y vuelta</button><button type="button" aria-pressed={!roundTrip} onClick={() => setRoundTrip(false)} disabled={loading}>Solo ida</button></div><span className="journey-search-label"><Plane size={16} aria-hidden />Tu viaje empieza aquí</span></div>
       <div className="journey-locations"><AirportField label="Origen" value={origin} onChange={setOrigin} disabled={loading} /><button type="button" className="journey-swap" aria-label="Intercambiar origen y destino" disabled={loading} onClick={() => { setOrigin(destination); setDestination(origin); }}><Repeat size={20} aria-hidden /></button><AirportField label="Destino" value={destination} onChange={setDestination} disabled={loading} /></div>
-      <div className="journey-options"><label><span><CalendarDays size={16} aria-hidden />Salida</span><input type="date" aria-label="Fecha de salida" min={today} required value={depart} disabled={loading} onChange={event => { setDepart(event.target.value); if (returnDate < event.target.value) setReturnDate(""); }} /></label>
-        <label className={!roundTrip ? "is-disabled" : undefined}><span><CalendarDays size={16} aria-hidden />Regreso</span>{roundTrip ? <input type="date" aria-label="Fecha de regreso" min={depart || today} required value={returnDate} disabled={loading} onChange={event => setReturnDate(event.target.value)} /> : <span className="journey-oneway">Viaje de una sola ida</span>}</label>
+      <div className="journey-options"><label><span><CalendarDays size={16} aria-hidden />Salida</span><input type="date" name="depart" aria-label="Fecha de salida" min={today} required disabled={loading} onInput={event => setDepart(event.currentTarget.value)} /></label>
+        <label className={!roundTrip ? "is-disabled" : undefined}><span><CalendarDays size={16} aria-hidden />Regreso</span>{roundTrip ? <input type="date" name="returnDate" aria-label="Fecha de regreso" min={depart || today} required disabled={loading} /> : <span className="journey-oneway">Viaje de una sola ida</span>}</label>
         <label><span><Users size={16} aria-hidden />Viajeros</span><select name="adults" aria-label="Adultos" defaultValue="1" disabled={loading}>{Array.from({ length: 9 }, (_, index) => <option key={index} value={index + 1}>{index + 1} adulto{index ? "s" : ""}</option>)}</select></label>
         <label><span>Cabina</span><select name="cabin" aria-label="Cabina" defaultValue="economy" disabled={loading}><option value="economy">Económica</option><option value="premium_economy">Económica premium</option><option value="business">Ejecutiva</option><option value="first">Primera clase</option></select></label>
       </div>
