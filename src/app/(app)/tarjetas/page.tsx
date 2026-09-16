@@ -39,7 +39,7 @@ export default async function GiftCardsPage({ searchParams }: { searchParams: Pr
   return <Page wide className="md:pb-28">
     <TravelTabs current="gifts" />
     <header className="gift-hero"><div><p className="gift-eyebrow">ALL LIVING · TARJETAS Y REGALOS</p><h1>{input.kind === "giftcards" ? <>Un regalo.<br />Mil formas de vivirlo.</> : <>Tiempo aire,<br />a donde vayas.</>}</h1><p>{input.kind === "giftcards" ? "Viajes, compras y entretenimiento. Descubre tarjetas de tus marcas favoritas para ti o para regalar." : "Encuentra tu operador y explora las opciones de tiempo aire y datos."}</p></div>
-      {input.kind === "giftcards" && brands.length ? <div className="gift-brand-fan" aria-label="Marcas en el catálogo">{brands.map(item => <a href={`#gift-${item.id}`} key={item.id}><Image src={item.logo!} alt={item.name} width={190} height={110} unoptimized /><span>{item.name}</span></a>)}</div> : <Gift className="gift-hero-icon" size={94} aria-hidden />}
+      {input.kind === "giftcards" && brands.length ? <div className="gift-brand-fan" aria-label="Marcas en el catálogo">{brands.map(item => <a href={`#gift-${item.id}`} key={item.id}><Image src={item.logo!} alt="" width={190} height={110} unoptimized /><span>{item.name}</span></a>)}</div> : <Gift className="gift-hero-icon" size={94} aria-hidden />}
     </header>
     <div className="grid gap-6 lg:grid-cols-[240px_minmax(0,1fr)] lg:gap-10">
       <aside className="space-y-5 lg:sticky lg:top-24 lg:self-start">
@@ -51,7 +51,7 @@ export default async function GiftCardsPage({ searchParams }: { searchParams: Pr
           </select>
           <button className="tapable flex min-h-11 w-full items-center justify-center gap-2 rounded-full bg-ink px-4 text-sm text-ivory">Ver catálogo<ArrowRight size={16} /></button>
         </form>
-        <p className="text-[13px] leading-relaxed text-text-2">Explora marcas, valores y condiciones de uso. La compra y entrega de tarjetas estará disponible próximamente.</p>
+        <p className="text-[13px] leading-relaxed text-text-2">{input.kind === "giftcards" ? "Explora marcas, valores y condiciones de uso. La compra y entrega de tarjetas estará disponible próximamente." : "Explora operadores y opciones disponibles. El envío de recargas estará disponible próximamente."}</p>
         {catalog?.mode === "sandbox" ? <p className="text-sm font-medium">Catálogo de pruebas</p> : null}
       </aside>
       <section className="min-w-0">
