@@ -16,5 +16,11 @@ export const metadata: Metadata = {
 };
 export const viewport: Viewport = { themeColor: "#ffffff", width: "device-width", initialScale: 1, maximumScale: 5, viewportFit: "cover" };
 export default function RootLayout({ children }: { children: React.ReactNode }) {
-  return <html lang="es-MX" className={`${fraunces.variable} ${inter.variable}`}><body>{children}<InstallApp /></body></html>;
+  return <html lang="es-MX" className={`${fraunces.variable} ${inter.variable}`}>
+    <head>
+      {/* Impact requires the value attribute for domain verification. */}
+      <meta name="impact-site-verification" {...{ value: "d1301dcb-dd94-4da4-bca1-6794e21244c0" }} />
+    </head>
+    <body>{children}<InstallApp /></body>
+  </html>;
 }
