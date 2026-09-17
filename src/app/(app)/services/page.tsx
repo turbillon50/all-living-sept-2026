@@ -1,6 +1,6 @@
 import Link from "next/link";
 import { TravelTabs } from "@/ui/travel-tabs";
-import { Star, Ship, ChefHat, Baby, Car, HeartPulse, ConciergeBell, Gift, ArrowRight } from "@/ui/icons";
+import { Star, Ship, ChefHat, Baby, Car, HeartPulse, ConciergeBell, Gift, ArrowRight, Sparkles } from "@/ui/icons";
 import { SERVICE_CATEGORIES } from "@/domains/services/categories";
 import { providersByCategory } from "@/domains/services/queries";
 import { Page, Section } from "@/ui/page";
@@ -27,6 +27,11 @@ export default async function ServicesPage({ searchParams }: { searchParams: Pro
     <Page wide><TravelTabs current="experiences" />
       <HeroHeader src="/demo/yacht.webp" alt="Mar Caribe" eyebrow="VIVIR" title="Haz más con tu estancia." subtitle="Muévete, navega, come y descubre desde un solo lugar." height="min-h-[430px] md:min-h-[520px]" />
       <SearchBar className="relative z-10 -mt-6 mx-2 md:mx-auto md:max-w-3xl rounded-full shadow-[0_18px_45px_rgb(4_63_80_/_0.14)]" placeholder="¿Qué quieres hacer?" action="/services" defaultValue={q} />
+      <Link href="/services/tours" className="tapable mt-6 flex items-center gap-4 rounded-2xl bg-accent-soft p-5 hairline">
+        <Sparkles size={30} className="shrink-0" />
+        <span className="min-w-0 flex-1"><strong className="block text-lg font-medium">Tours y experiencias con Viator</strong><span className="text-sm text-text-2">Cancún, Playa del Carmen, Tulum y Cozumel. Encuentra tu próximo plan.</span></span>
+        <ArrowRight size={22} className="shrink-0" />
+      </Link>
       <ul className="mt-5 grid grid-cols-4 gap-2.5 md:grid-cols-7">
         {TOP.map((t) => <li key={t.slug}><IconTile href={`${t.href}${suffix}`} label={t.label} Icon={t.Icon} active={t.slug === "featured" && !q} /></li>)}
         {MORE.map((m) => <li key={m.slug} className="hidden md:block"><IconTile href={`/services/${m.slug}${suffix}`} label={labelOf(m.slug)} Icon={m.Icon} /></li>)}

@@ -13,6 +13,15 @@ Regla (spec §36, §53): ninguna integración falsa. Cada capacidad externa vive
 | `MapsProvider` | `StaticMapsProvider` (coordenadas, sin tiles) · Mapbox (pendiente) | local | `MAPBOX_TOKEN` |
 | Duffel | sugerencias de aeropuertos y búsqueda de ofertas | búsqueda real activa | `DUFFEL_ACCESS_TOKEN` |
 | Reloadly | catálogo de operadores de recargas y tarjetas de regalo | catálogo real activo | `RELOADLY_CLIENT_ID`, `RELOADLY_CLIENT_SECRET`; `RELOADLY_ENV=live` o `sandbox` |
+| Viator | búsqueda afiliada de tours y actividades | conexión preparada; navegación en definición | `VIATOR_API_KEY`, `VIATOR_ENV=production` o `sandbox` |
+
+## Viator — conexión preparada, 17 de septiembre de 2026
+
+Las llaves de sandbox y producción se validaron contra `/destinations` y `/products/search` de sus respectivos entornos. Vercel `all-living` tiene `VIATOR_API_KEY` cifrada por entorno y `VIATOR_ENV` independiente. No se configuró Viator en el proyecto de Events.
+
+El adaptador preparado usa únicamente `/products/search` y `/search/freetext`, con idioma español, MXN, fecha, destino, orden, cancelación gratuita y paginación. Conserva `productUrl` con su atribución de afiliado. Incluye en el precio de referencia los cargos en destino cuando Viator los informa. La consulta se almacena cinco minutos en la caché del servidor, limita el tiempo de espera y distingue errores de resultados vacíos. No permite reservar ni cobrar mediante la API.
+
+El acceso de la cuenta es básico; Full + Booking sigue en revisión. El flujo disponible termina la reserva y el pago en Viator. El borrador de interfaz en `/services/tours` y su acceso desde `/services` están sujetos a la nueva definición de producto de Luis: experiencias de marca blanca y curadas, y hospedaje de marca blanca y curado. La ubicación de estas líneas todavía está por definir. Este documento no certifica publicación ni pruebas completas de interfaz.
 
 ## Vuelos, recargas y regalos — 16 de septiembre de 2026
 
