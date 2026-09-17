@@ -13,7 +13,7 @@ export function AirlineMark({ airline }: { airline: Carrier }) {
 function SliceSummary({ slice, label }: { slice: FlightSlice; label: string }) {
   const first = slice.segments[0]!, last = slice.segments.at(-1)!;
   const stops = stopCount(slice);
-  return <div className="journey-slice"><span className="journey-leg-label">{label}<small>{localDateLabel(first.departing_at)}</small></span>
+  return <div className="journey-slice"><span className="journey-leg-label">{label}<small><time dateTime={first.departing_at.slice(0, 10)}>{localDateLabel(first.departing_at)}</time></small></span>
     <div className="journey-time"><strong>{localTime(first.departing_at)}</strong><span>{slice.origin.iata_code}</span></div>
     <div className="journey-line"><small>{durationLabel(slice.duration)}</small><span><i /><Plane size={16} aria-hidden /><i /></span><small>{stops === 0 ? "Sin escalas" : `${stops} escala${stops > 1 ? "s" : ""}`}</small></div>
     <div className="journey-time is-arrival"><strong>{localTime(last.arriving_at)}</strong><span>{slice.destination.iata_code}</span>{last.arriving_at.slice(0, 10) !== first.departing_at.slice(0, 10) ? <small>{localDateLabel(last.arriving_at)}</small> : null}</div>

@@ -24,6 +24,15 @@ export function matchesAirports(offer: FlightOffer, input: { origin: string; des
   });
 }
 
+/** Compare each leg's first departure in the airport's local calendar, including the return. */
+export function matchesDepartureDates(offer: FlightOffer, input: { depart: string; returnDate?: string }): boolean {
+  const dates = input.returnDate ? [input.depart, input.returnDate] : [input.depart];
+  return offer.slices.length === dates.length && offer.slices.every((slice, index) => {
+    const departure = slice.segments[0]?.departing_at;
+    return typeof departure === "string" && /^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}/.test(departure) && departure.slice(0, 10) === dates[index];
+  });
+}
+
 /** Duffel timestamps are airport-local wall times; never convert them to the viewer's zone. */
 export const localTime = (value: string) => /^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}/.test(value) ? value.slice(11, 16) : "—";
 export function localDateLabel(value: string): string {

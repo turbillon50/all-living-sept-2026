@@ -2,7 +2,7 @@
 import { useEffect, useMemo, useRef, useState } from "react";
 import { ArrowRight, CalendarDays, Plane, Repeat, Users } from "@/ui/icons";
 import type { FlightOffer, Carrier } from "@/integrations/flights/types";
-import { airlineNames, durationLabel, localDateLabel, priceLabel, selectOffers, totalDuration, type OfferFilters } from "@/integrations/flights/offer-utils";
+import { airlineNames, durationLabel, localDateLabel, matchesDepartureDates, priceLabel, selectOffers, totalDuration, type OfferFilters } from "@/integrations/flights/offer-utils";
 import { AirportField, type AirportChoice } from "./airport-field";
 import { AirlineMark, FlightCard } from "./flight-results";
 
@@ -14,6 +14,7 @@ export function FlightSearch({ ready, today }: { ready: boolean; today: string }
   const [destination, setDestination] = useState<AirportChoice>({ code: "CUN", label: "Cancún · CUN" });
   const [roundTrip, setRoundTrip] = useState(true), [depart, setDepart] = useState("");
   const [loading, setLoading] = useState(false), [error, setError] = useState("");
+  const [queryChanged, setQueryChanged] = useState(false);
   const [result, setResult] = useState<SearchResult | null>(null), [now, setNow] = useState(0), [limit, setLimit] = useState(12);
   const [stops, setStops] = useState<OfferFilters["stops"]>("any"), [airline, setAirline] = useState(""), [sort, setSort] = useState<OfferFilters["sort"]>("price"), [currency, setCurrency] = useState("");
   const controller = useRef<AbortController | null>(null), resultsRef = useRef<HTMLElement>(null);
@@ -26,6 +27,12 @@ export function FlightSearch({ ready, today }: { ready: boolean; today: string }
   const cheapest = filtered.length ? Math.min(...filtered.map(offer => Number(offer.total_amount))) : null;
   const quickest = filtered.length ? Math.min(...filtered.map(totalDuration)) : null;
 
+  function invalidateResults() {
+    controller.current?.abort(); controller.current = null;
+    if (result || loading) setQueryChanged(true);
+    setResult(null); setError(""); setLoading(false);
+  }
+
   async function submit(event: React.FormEvent<HTMLFormElement>) {
     event.preventDefault();
     if (!origin.code || !destination.code) { setError("Elige el origen y el destino en las sugerencias, o escribe sus códigos de aeropuerto."); return; }
@@ -34,21 +41,24 @@ export function FlightSearch({ ready, today }: { ready: boolean; today: string }
     controller.current?.abort();
     const active = new AbortController(); controller.current = active;
     const timeout = setTimeout(() => active.abort(), 35000);
-    setLoading(true); setError(""); setResult(null);
+    setLoading(true); setError(""); setResult(null); setQueryChanged(false);
     try {
       const response = await fetch("/api/flights/search", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(request), signal: active.signal });
       const data = await response.json();
+      if (controller.current !== active) return;
+      active.signal.throwIfAborted();
       if (!response.ok) throw new Error(data.error || "No pudimos buscar vuelos.");
       const offers: FlightOffer[] = data.offers ?? [];
+      if (!offers.every(offer => matchesDepartureDates(offer, request))) throw new Error("No pudimos confirmar vuelos para las fechas elegidas. Vuelve a buscar.");
       setResult({ offers, live: data.live_mode === true, request }); setNow(Date.now()); setCurrency(offers[0]?.total_currency ?? ""); setAirline(""); setStops("any"); setSort("price"); setLimit(12);
       requestAnimationFrame(() => resultsRef.current?.scrollIntoView({ behavior: window.matchMedia("(prefers-reduced-motion: reduce)").matches ? "instant" : "smooth", block: "start" }));
     } catch (cause) { if (controller.current === active) setError(active.signal.aborted ? "La búsqueda tardó más de lo esperado. Intenta de nuevo." : cause instanceof Error ? cause.message : "No pudimos conectar. Revisa tu conexión e intenta de nuevo."); }
     finally { clearTimeout(timeout); if (controller.current === active) setLoading(false); }
   }
   return <div className="flight-discovery">
-    <form onSubmit={submit} className="journey-search" aria-label="Buscar vuelos">
-      <div className="journey-search-top"><div className="journey-trip-type" role="group" aria-label="Tipo de viaje"><button type="button" aria-pressed={roundTrip} onClick={() => setRoundTrip(true)} disabled={loading}>Ida y vuelta</button><button type="button" aria-pressed={!roundTrip} onClick={() => setRoundTrip(false)} disabled={loading}>Solo ida</button></div><span className="journey-search-label"><Plane size={16} aria-hidden />Tu viaje empieza aquí</span></div>
-      <div className="journey-locations"><AirportField label="Origen" value={origin} onChange={setOrigin} disabled={loading} /><button type="button" className="journey-swap" aria-label="Intercambiar origen y destino" disabled={loading} onClick={() => { setOrigin(destination); setDestination(origin); }}><Repeat size={20} aria-hidden /></button><AirportField label="Destino" value={destination} onChange={setDestination} disabled={loading} /></div>
+    <form onSubmit={submit} onChangeCapture={invalidateResults} className="journey-search" aria-label="Buscar vuelos">
+      <div className="journey-search-top"><div className="journey-trip-type" role="group" aria-label="Tipo de viaje"><button type="button" aria-pressed={roundTrip} onClick={() => { if (!roundTrip) invalidateResults(); setRoundTrip(true); }} disabled={loading}>Ida y vuelta</button><button type="button" aria-pressed={!roundTrip} onClick={() => { if (roundTrip) invalidateResults(); setRoundTrip(false); }} disabled={loading}>Solo ida</button></div><span className="journey-search-label"><Plane size={16} aria-hidden />Tu viaje empieza aquí</span></div>
+      <div className="journey-locations"><AirportField label="Origen" value={origin} onChange={value => { invalidateResults(); setOrigin(value); }} disabled={loading} /><button type="button" className="journey-swap" aria-label="Intercambiar origen y destino" disabled={loading} onClick={() => { invalidateResults(); setOrigin(destination); setDestination(origin); }}><Repeat size={20} aria-hidden /></button><AirportField label="Destino" value={destination} onChange={value => { invalidateResults(); setDestination(value); }} disabled={loading} /></div>
       <div className="journey-options"><label><span><CalendarDays size={16} aria-hidden />Salida</span><input type="date" name="depart" aria-label="Fecha de salida" min={today} required disabled={loading} onInput={event => setDepart(event.currentTarget.value)} /></label>
         <label className={!roundTrip ? "is-disabled" : undefined}><span><CalendarDays size={16} aria-hidden />Regreso</span>{roundTrip ? <input type="date" name="returnDate" aria-label="Fecha de regreso" min={depart || today} required disabled={loading} /> : <span className="journey-oneway">Viaje de una sola ida</span>}</label>
         <label><span><Users size={16} aria-hidden />Viajeros</span><select name="adults" aria-label="Adultos" defaultValue="1" disabled={loading}>{Array.from({ length: 9 }, (_, index) => <option key={index} value={index + 1}>{index + 1} adulto{index ? "s" : ""}</option>)}</select></label>
@@ -58,6 +68,7 @@ export function FlightSearch({ ready, today }: { ready: boolean; today: string }
       {error ? <p role="alert" className="journey-error">{error}</p> : null}
     </form>
     <section ref={resultsRef} className="journey-results" aria-label="Resultados de vuelos" aria-busy={loading}>
+      {queryChanged && !loading ? <p className="journey-search-updated" role="status">Actualizaste tu búsqueda. Pulsa «Buscar vuelos» para consultar las fechas y opciones que elegiste.</p> : null}
       {loading ? <div className="journey-loading" role="status"><div className="journey-flight-loader" aria-hidden><span /><Plane size={28} /></div><h2>Tu próximo viaje está tomando forma.</h2><p>Consultando horarios y tarifas de las aerolíneas…</p><div className="journey-skeletons" aria-hidden>{[0, 1, 2].map(index => <div key={index}><i /><span /><b /></div>)}</div></div> : null}
       {result && !loading ? <>
         <div className="journey-result-heading"><div><p className="journey-eyebrow">{result.live ? "VUELOS PARA TU VIAJE" : "RESULTADOS DE PRUEBA"}</p><h2>{result.request.origin}<ArrowRight size={23} aria-hidden />{result.request.destination}</h2><p>{localDateLabel(result.request.depart)}{result.request.returnDate ? ` — ${localDateLabel(result.request.returnDate)}` : " · Solo ida"} · {result.request.adults} adulto{result.request.adults > 1 ? "s" : ""}</p></div><span className="journey-result-count" role="status">{filtered.length} opciones</span></div>

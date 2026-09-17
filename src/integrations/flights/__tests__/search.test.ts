@@ -1,6 +1,6 @@
 import { afterEach, describe, expect, it, vi } from "vitest";
 import type { FlightOffer, FlightSlice } from "../types";
-import { durationMinutes, localTime, matchesAirports, publicOffer, selectOffers, stopCount, totalDuration } from "../offer-utils";
+import { durationMinutes, localDateLabel, localTime, matchesAirports, matchesDepartureDates, publicOffer, selectOffers, stopCount, totalDuration } from "../offer-utils";
 import { flightSearchSchema } from "../search-schema";
 
 const segment = { id: "segment", departing_at: "2030-10-20T23:10:00", arriving_at: "2030-10-21T02:20:00", duration: "PT2H10M", origin: { iata_code: "MEX" }, destination: { iata_code: "CUN" }, marketing_carrier: { name: "Carrier", iata_code: "XX" }, operating_carrier: { name: "Carrier", iata_code: "XX" } };
@@ -10,6 +10,25 @@ const filter = { currency: "USD", stops: "any" as const, airline: "", sort: "pri
 afterEach(() => vi.useRealTimers());
 
 describe("flight search correctness", () => {
+  it("rejects a different departure day instead of relabeling it as the requested day", () => {
+    expect(matchesDepartureDates(offer, { depart: "2030-10-20" })).toBe(true);
+    expect(matchesDepartureDates(offer, { depart: "2030-10-26" })).toBe(false);
+    expect(matchesDepartureDates(offer, { depart: "2030-10-27" })).toBe(false);
+    expect(localDateLabel("2030-10-20T00:05:00+14:00")).toMatch(/^20\b/);
+  });
+  it("checks both departure dates while allowing overnight arrivals and connections", () => {
+    const outbound = { ...slice, segments: [segment, { ...segment, id: "next-day", departing_at: "2030-10-21T03:00:00" }] };
+    const returnLeg = { ...slice, segments: [{ ...segment, departing_at: "2030-10-27T23:55:00-06:00", arriving_at: "2030-10-28T02:00:00" }] };
+    const roundTrip = { ...offer, slices: [outbound, returnLeg] };
+    expect(matchesDepartureDates(roundTrip, { depart: "2030-10-20", returnDate: "2030-10-27" })).toBe(true);
+    expect(matchesDepartureDates(roundTrip, { depart: "2030-10-20", returnDate: "2030-10-26" })).toBe(false);
+    expect(matchesDepartureDates(roundTrip, { depart: "2030-10-20" })).toBe(false);
+    expect(matchesDepartureDates(offer, { depart: "2030-10-20", returnDate: "2030-10-27" })).toBe(false);
+  });
+  it("rejects missing or malformed departure timestamps", () => {
+    expect(matchesDepartureDates({ ...offer, slices: [{ ...slice, segments: [] }] }, { depart: "2030-10-20" })).toBe(false);
+    expect(matchesDepartureDates({ ...offer, slices: [{ ...slice, segments: [{ ...segment, departing_at: "2030-10-20" }] }] }, { depart: "2030-10-20" })).toBe(false);
+  });
   it("never compares different currencies or expired offers as cheaper choices", () => {
     const result = selectOffers([offer, { ...offer, id: "mxn", total_currency: "MXN", total_amount: "10" }, { ...offer, id: "expired", total_amount: "1", expires_at: "2030-10-20T19:59:00Z" }, { ...offer, id: "cheap", total_amount: "150" }], filter);
     expect(result.map(item => item.id)).toEqual(["cheap", "base"]);

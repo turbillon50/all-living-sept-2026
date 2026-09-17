@@ -55,3 +55,4 @@
 @media(prefers-reduced-motion:reduce){.flight-discovery *{animation:none!important;transition:none!important;scroll-behavior:auto!important}}
 
 .journey-offer-head .journey-airline-mark{width:36px;height:36px}
+.journey-search-updated{padding:18px 20px;border:1px solid #dcebea;border-radius:16px;background:#f3f9f9;color:#345c61;font-size:14px;line-height:1.6}
