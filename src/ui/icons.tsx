@@ -62,3 +62,5 @@ export const UserRound = withWeight(P.User);
 export const Users = withWeight(P.Users);
 export const Wallet = withWeight(P.Wallet);
 export const Wrench = withWeight(P.Wrench);
+export const Menu = withWeight(P.List, "bold"); // glifo de navegación
+export const Close = withWeight(P.X, "bold"); // glifo de navegación

@@ -1,14 +1,13 @@
 import { cn } from "./cn";
 
 /**
- * LA PALMA — símbolo de ALL LIVING.
+ * LA MONSTERA — símbolo de ALL LIVING.
  *
- * Dos hojas que nacen del mismo punto y se abren: el lugar y quien lo habita,
- * la misma raíz. Leídas juntas forman la A de ALL. Entre ellas, en el hueco,
- * el punto de bronce: el sol del Caribe.
+ * La hoja que crece donde la marca opera: Tulum, el Caribe, el trópico.
+ * Sus hendiduras dejan pasar la luz — por eso la planta se llama "de costillas":
+ * crece abriéndose, no cerrándose. Es lo contrario a un candado.
  *
- * Forma llena, no contorno: se lee a 16px y en monocromo. Sustituye al arco
- * anterior, que leía como candado.
+ * Forma llena dentro de un círculo, sin contorno: se lee a 16px y en monocromo.
  */
 export function Mark({
   size = 28,
@@ -28,12 +27,11 @@ export function Mark({
       aria-hidden
     >
       <svg viewBox="0 0 24 24" width="100%" height="100%">
-        <g className="al-mark-leaves" fill="currentColor">
-          <path d="M12 2.4c-3 3.8-5.8 8.8-6.8 14.8-.2 1.3.1 2.1.9 2.6 2-1.2 3.7-3.6 4.9-6.6.6-1.7 1-3.4 1.1-5.1z" />
-          <path d="M12 2.4c3 3.8 5.8 8.8 6.8 14.8.2 1.3-.1 2.1-.9 2.6-2-1.2-3.7-3.6-4.9-6.6-.6-1.7-1-3.4-1.1-5.1z" />
-        </g>
-        {/* El sol, en el hueco entre las dos hojas. */}
-        <circle className="al-mark-sun" cx="12" cy="16.6" r="2.1" fill="var(--color-bronze-500)" />
+        <path
+          className="al-mark-leaf"
+          fill="currentColor"
+          d="M12 2C7 2 3 6.4 3 11.6c0 4.4 2.9 8 6.8 8.9v-4.6H6.2v-1.7h3.6v-2.4H5.4v-1.7h4.4V7.7H6.6V6h3.2V2.1c.4 0 .8-.1 1.2-.1zm1.4.2v3.9h3.2v1.7h-3.2v2.4h4.4v1.7h-4.4v2.4h3.6v1.7h-3.6v4.5c3.8-1 6.6-4.5 6.6-8.9 0-4.7-3.3-8.7-7.6-9.4z"
+        />
       </svg>
     </span>
   );
